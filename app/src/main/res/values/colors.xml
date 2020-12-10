@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#2A42C9</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+
+    <color name="default_screen_bg">#f9f9f9</color>
+    <color name="rounded_container_bg">#FFFFFF</color>
+    <color name="rounded_container_border">#66FF0000</color>
+    <color name="light_gray_header_color">#646663</color>
+    <color name="gray_orbis">#777777</color>
+
+
+    <color name="green_temp">#23A96E</color>
+    <color name="green_dark">#159204</color>
+    <color name="bright_green">#02D8B0</color>
+    <color name="button_green">#10a54a</color>
+    <color name="background_tab_pressed">#6633B5E5</color>
+    <color name="background_window">#FFE5E5E5</color>
+
+    <color name="colorAccent2">#FF4081</color>
+
+    <color name="background">#e5e5e5</color>
+    <color name="arrows">#757575</color>
+    <color name="text">#212121</color>
+
+    <color name="primary">#FF9800</color>
+    <color name="primary_dark">#f48024</color>
+    <color name="primary_light">#FFE0B2</color>
+    <color name="accent">#E65100</color>
+    <color name="primary_text">#f48024</color>
+    <color name="secondary_text">#f48024</color>
+    <color name="icons">#FFFFFF</color>
+    <color name="divider">#B6B6B6</color>
+
+    <color name="textcolorPrimary">#FFFFFF</color>
+
+    <color name="rose">#ED008A</color>
+    <color name="pastel_magenta">#EF9DC5</color>
+    <color name="dark_green">#244637</color>
+    <color name="dirty_green">#456015</color>
+    <color name="teal">#0B5A67</color>
+    <color name="dark_blue">#383281</color>
+    <color name="violet">#9400D3</color>
+    <color name="indigo">#4B0082</color>
+    <color name="blue">#0000FF</color>
+    <color name="green">#00FF00</color>
+    <color name="yellow">#FFFF00</color>
+    <color name="orange">#FF7F00</color>
+    <color name="red">#FF0000</color>
+
+    <color name="card1_bg">#f78507</color>
+    <color name="card2_bg">#244637</color>
+    <color name="card3_bg">#c056d9</color>
+    <color name="card4_bg">#967754</color>
+    <color name="card5_bg">#ef075c</color>
+    <color name="card6_bg">#22adf5</color>
+    <color name="card7_bg">#5cee36</color>
+
+    <color name="org1">#fff6e5</color>
+    <color name="orange2">#F39C12</color>
+    <color name="orange1">#f48024</color>
+    <color name="orange_50">#FFF3E0</color>
+    <color name="orange_100">#FFE0B2</color>
+    <color name="orange_200">#FFCC80</color>
+    <color name="orange_300">#FFB74D</color>
+    <color name="orange_400">#FFA726</color>
+    <color name="orange_500">#FF9800</color>
+    <color name="orange_600">#FB8C00</color>
+    <color name="orange_700">#F57C00</color>
+    <color name="orange_800">#EF6C00</color>
+    <color name="orange_900">#E65100</color>
+
+
+    <color name="deeporange2">#FF3D00</color>
+    <color name="deeporange1">#FF5722</color>
+    <color name="deeporange_50">#FBE9E7</color>
+    <color name="deeporange_100">#FFCCBC</color>
+    <color name="deeporange_200">#FFAB91</color>
+    <color name="deeporange_300">#FF8A65</color>
+    <color name="deeporange_400">#FF7043</color>
+    <color name="deeporange_500">#FF5722</color>
+    <color name="deeporange_600">#F4511E</color>
+    <color name="deeporange_700">#E64A19</color>
+    <color name="deeporange_800">#D84315</color>
+    <color name="deeporange_900">#BF360C</color>
+    <color name="deeporange_A100">#FF9E80</color>
+    <color name="deeporange_A200">#FF6E40</color>
+    <color name="deeporange_A700">#DD2C00</color>
+    <color name="deeporange_A400">#FF3D00</color>
+
+    <color name="koyu_yesil">#013220</color>
+    <color name="orman_yesili">#228B22</color>
+
+    <color name="viridian">#40826D</color>
+    <color name="yesil_site">#32C24D</color>
+    <color name="yesil_shape">#50B050</color>
+
+    <color name="mr_haki">#BDB76B</color>
+    <color name="mr_toolbar">#74BCE6</color>
+    <color name="mr_toolbar2">#44728A</color>
+
+    <color name="mr_haki2">#C3CB7F</color>
+    <color name="mr_haki3">#AAB264</color>
+    <color name="mr_color_input_elementframe">@color/mr_haki</color>
+    <color name="mr_color_koyugri8">#80000000</color>
+    <color name="mr_color_softbluegray">#FF66CFE6</color>
+    <color name="mr_color_end">#F1F1F1</color>
+    <color name="mr_color_center">#F0F0F0</color>
+
+    <color name="my_light_green">#AED581</color>
+    <color name="my_lime">#D4E157</color>
+    <color name="my_amber">#FFC107</color>
+    <color name="my_dark_brown">#795548</color>
+    <color name="my_metalic">#BDBDBD</color>
+    <color name="my_ice">#EEEEEE</color>
+    <color name="my_dark_green">#558B2F</color>
+    <color name="my_olive">#808000</color>
+    <color name="my_olive_drab">#6B8E23</color>
+    <color name="my_sea_green">#2E8B57</color>
+    <color name="my_burly_wood">#DEB887</color>
+    <color name="my_cornsilk">#FFF8DC</color>
+    <color name="my_foral_white">#FFFAF0</color>
+    <color name="my_lavender_blush">#FFF0F5</color>
+
+
+
+
+
+
+
+
+
+
+    <color name="alert_dialog_button_green1">#B4099930</color>
+    <color name="alert_dialog_button_green2">#b4099930</color>
+    <color name="alert_dialog_button_green_focused1">#96099930</color>
+    <color name="alert_dialog_button_green_focused2">#96099930</color>
+    <color name="alert_dialog_button_green_pressed1">#96099930</color>
+    <color name="alert_dialog_button_green_pressed2">#96099930</color>
+
+    <color name="my_bisque">#F6F6D7</color>
+    <color name="my_lavender">#F1E4E4</color>
+
+    <color name="ocean">#d6ffe0</color>
+    <color name="mercan">#b3ffe6</color>
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#727272</color>
+
+    <color name="button_color_light">#BBBBBB</color>
+    <color name="button_color_dark">#999999</color>
+    <color name="button_color_disabled">#FF430000</color>
+    <color name="button_default_border">#FF444444</color>
+    <color name="button_focused_border">#FFAAAAAA</color>
+    <color name="button_disabled_focused_border">#FF888888</color>
+    <color name="loginBkColor">#f0f0f0</color>
+    <!--colors for modern ui-->
+    <color name="whiteTextColor">#fff</color>
+    <color name="primaryTextColor">#00a5ff</color>
+
+    <!--colros for card-->
+    <color name="whiteCardColor">#fff</color>
+    <color name="colorBackground">#333C46</color>
+    <color name="colorSplashText">#F0F0F0</color>
+    <color name="colorProgressBar">#FFCE511C</color>
+    <color name="colorTextView">#83898E</color>
+
+
+</resources>
