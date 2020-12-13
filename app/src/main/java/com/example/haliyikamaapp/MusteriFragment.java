@@ -1,22 +1,36 @@
 package com.example.haliyikamaapp;
 
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.haliyikamaapp.Adapter.MusteriAdapter;
+import com.example.haliyikamaapp.Adapter.SwipeToDeleteCallback;
 import com.example.haliyikamaapp.Model.MyListData;
+import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
+
+import static java.security.AccessController.getContext;
 
 
 public class MusteriFragment extends Fragment {
+    RelativeLayout relativeLayout;
+    MusteriAdapter adapter;
+    RecyclerView recyclerView;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -34,18 +48,19 @@ public class MusteriFragment extends Fragment {
 
     void set_item(View view) {
 
-        RecyclerView rcycView = view.findViewById(R.id.musteri_recyclerview);
 
-        MyListData[] myListData = new MyListData[] {
-                new MyListData("Büşra Akbey" , "10.12.2020" , "05556159576"),
-                new MyListData("Kübra Akbey" , "10.12.2020" , "032549727667"),
+        ArrayList<MyListData> stringArrayList = new ArrayList<MyListData>();
+        stringArrayList.add(new MyListData("Büşra Akbey" , "10.12.2020" , "05556159576"));
+        stringArrayList.add(new MyListData("Kübra Akbey" , "10.12.2020" , "032549727667"));
+        relativeLayout = (RelativeLayout) view.findViewById(R.id.relativeLayout);
 
-        };
+        adapter = new MusteriAdapter(stringArrayList);
+        recyclerView = (RecyclerView) view.findViewById(R.id.musteri_recyclerview);
+       recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
 
-        MusteriAdapter adapter = new MusteriAdapter(myListData);
-        rcycView.setAdapter(adapter);
-
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT | ItemTouchHelper.DOWN | ItemTouchHelper.UP) {
+        /*ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT ) {
 
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -58,12 +73,50 @@ public class MusteriFragment extends Fragment {
                 Toast.makeText(getContext(), "on Swiped ", Toast.LENGTH_SHORT).show();
                 //Remove swiped item from list and notify the RecyclerView
                 int position = viewHolder.getAdapterPosition();
-                //arrayList.remove(position);
-               // adapter.notifyDataSetChanged();
+             //   arrayList.remove(position);
+                adapter.notifyDataSetChanged();
+
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);*/
+
+
+
+        SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(getContext()) {
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+
+
+                final int position = viewHolder.getAdapterPosition();
+                final MyListData item = adapter.getData().get(position);
+
+                adapter.removeItem(position);
+
+                Snackbar snackbar = Snackbar
+                        .make(relativeLayout, "Item was removed from the list.", Snackbar.LENGTH_LONG);
+                snackbar.setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        adapter.restoreItem(item, position);
+                        recyclerView.scrollToPosition(position);
+                    }
+                });
+
+                snackbar.setActionTextColor(Color.YELLOW);
+                snackbar.show();
 
             }
         };
 
+        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeToDeleteCallback);
+        itemTouchhelper.attachToRecyclerView(recyclerView);
+
+
     }
+
+
+
 
 }

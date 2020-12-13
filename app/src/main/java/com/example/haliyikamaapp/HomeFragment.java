@@ -1,16 +1,18 @@
 package com.example.haliyikamaapp;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import com.example.haliyikamaapp.Adapter.GridViewAdapter;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.example.haliyikamaapp.Adapter.AnaMenuAdapter;
 
 
 public class HomeFragment extends Fragment {
@@ -33,7 +35,7 @@ public class HomeFragment extends Fragment {
         String[] prgmNameList = {"Müşteri", "Sipariş", "Müşteri ve Görevlerim", "Ayarlar  \n"};
         int[] prgmImages = {R.drawable.shadow_musteri, R.drawable.shadow_siparis, R.drawable.shadow_gorevler, R.drawable.shadow_ayarlar};
         GridView gridView = view.findViewById(R.id.main_fragment_grid_view);
-        GridViewAdapter adapter = new GridViewAdapter(getContext(), prgmNameList, prgmImages);
+        AnaMenuAdapter adapter = new AnaMenuAdapter(getContext(), prgmNameList, prgmImages);
         gridView.setAdapter(adapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

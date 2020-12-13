@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context="com.example.haliyikamaapp.MainActivity">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         app:layout_collapseMode="pin"
         android:layout_width="0dp"
@@ -29,12 +29,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_marginLeft="25dp"
-            android:fontFamily="@font/seguibl"
+            android:fontFamily="@font/museosans"
             android:text="Ana Sayfa"
             android:textColor="@color/text"
             android:textSize="20dp"
             android:textStyle="bold" />
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
     <FrameLayout
         android:id="@+id/fragment_container"
@@ -55,8 +55,7 @@
 
 
 
-
-    <android.support.design.widget.BottomNavigationView
+    <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
