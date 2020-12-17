@@ -1,9 +1,9 @@
 package com.example.haliyikamaapp.Model;
 
-public class MyListData {
+public class Musteri {
 
     private String musteriAdiSoyadi, tarih, telefonNo;
-    public MyListData(String musteriAdiSoyadi, String tarih, String telefonNo ) {
+    public Musteri(String musteriAdiSoyadi, String tarih, String telefonNo ) {
         this.musteriAdiSoyadi = musteriAdiSoyadi;
         this.tarih = tarih;
         this.telefonNo = telefonNo;

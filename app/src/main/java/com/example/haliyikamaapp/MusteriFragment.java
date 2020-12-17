@@ -6,9 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,12 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.haliyikamaapp.Adapter.MusteriAdapter;
 import com.example.haliyikamaapp.Adapter.SwipeToDeleteCallback;
-import com.example.haliyikamaapp.Model.MyListData;
+import com.example.haliyikamaapp.Model.Musteri;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
-
-import static java.security.AccessController.getContext;
 
 
 public class MusteriFragment extends Fragment {
@@ -49,9 +45,9 @@ public class MusteriFragment extends Fragment {
     void set_item(View view) {
 
 
-        ArrayList<MyListData> stringArrayList = new ArrayList<MyListData>();
-        stringArrayList.add(new MyListData("Büşra Akbey" , "10.12.2020" , "05556159576"));
-        stringArrayList.add(new MyListData("Kübra Akbey" , "10.12.2020" , "032549727667"));
+        ArrayList<Musteri> stringArrayList = new ArrayList<Musteri>();
+        stringArrayList.add(new Musteri("Büşra Akbey" , "10.12.2020" , "05556159576"));
+        stringArrayList.add(new Musteri("Kübra Akbey" , "10.12.2020" , "032549727667"));
         relativeLayout = (RelativeLayout) view.findViewById(R.id.relativeLayout);
 
         adapter = new MusteriAdapter(stringArrayList);
@@ -89,13 +85,13 @@ public class MusteriFragment extends Fragment {
 
 
                 final int position = viewHolder.getAdapterPosition();
-                final MyListData item = adapter.getData().get(position);
+                final Musteri item = adapter.getData().get(position);
 
                 adapter.removeItem(position);
 
                 Snackbar snackbar = Snackbar
                         .make(relativeLayout, "Item was removed from the list.", Snackbar.LENGTH_LONG);
-                snackbar.setAction("UNDO", new View.OnClickListener() {
+                snackbar.setAction("Geri Al", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
