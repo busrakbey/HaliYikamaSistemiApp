@@ -1,134 +1,328 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/mr_color_end"
-    android:orientation="vertical">
+    tools:context=".MainActivity">
 
-
-
-
-    <GridView
-        android:id="@+id/main_fragment_grid_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/grid_item"
-        android:horizontalSpacing="16dp"
-        android:verticalSpacing="16dp"
-        android:padding="16dp"
-        android:stretchMode="columnWidth"
-        android:clipToPadding="false"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:numColumns="2"></GridView>
-
-    <!--
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/ic_bg_top"
+        android:orientation="vertical">
 
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
             android:layout_weight="1"
-            android:background="@color/mr_color_center"
-            android:orientation="horizontal">
+            android:background="@drawable/ic_bg_top"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteY="10dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/musteri_cardview"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.25">
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:foreground="@drawable/mr_drawermenugradient_grey"
+                app:cardCornerRadius="15dp">
 
-                <Button
-                    android:layout_width="50dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="15dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/mr_drawermenugradient"
-                    android:fontFamily="@font/seguibl"
-                    android:gravity="center"
-                    android:icon="@drawable/mus_gorevlerim"
-                    android:onClick="home2_plan_onclick"
-                    android:text="Müşteri"
-                    android:textAllCaps="false">
+                    android:orientation="vertical">
 
-                </ Button>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_gravity="center_vertical|center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="0.6"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/bus"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerHorizontal="true"
+                            android:layout_gravity="center_vertical|center"
+                            android:layout_margin="25dp"
+                            android:layout_marginTop="15dp"
+                            app:srcCompat="@drawable/musterim" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+
+                        android:layout_height="0dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="35dp"
+                        android:layout_weight="0.4"
+                        android:background="@drawable/mr_drawermenugradient_normal"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txt_item"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_below="@id/bus"
+                            android:layout_gravity="center_vertical|center"
+                            android:layout_margin="15dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="10dp"
+                            android:fontFamily="@font/segoeuib"
+                            android:gravity="center"
+                            android:text="Müşteri"
+                            android:textColor="@color/text"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            app:fontFamily="@font/segoeuib"></TextView>
+
+                    </LinearLayout>
 
 
-            </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/siparis_cardview"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.25"
-                android:orientation="horizontal">
+                android:layout_margin="10dp"
+                android:layout_weight="1"
 
-                <Button
-                    android:layout_width="0dp"
+                android:foreground="@drawable/mr_drawermenugradient_grey"
+                app:cardCornerRadius="15dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="15dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/mr_drawermenugradient"
-                    android:fontFamily="@font/seguibl"
-                    android:onClick="home2_ip_onclick"
-                    android:text="Sipariş"
+                    android:orientation="vertical">
 
-                    android:textAllCaps="false" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_gravity="center_vertical|center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="0.6"
+                        android:orientation="vertical">
 
-            </LinearLayout>
+                        <ImageView
+                            android:id="@+id/busu"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerHorizontal="true"
+                            android:layout_gravity="center_vertical|center"
+                            android:layout_margin="25dp"
+                            android:layout_marginTop="15dp"
+                            app:srcCompat="@drawable/notepad" />
+                    </LinearLayout>
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+
+                        android:layout_height="0dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="35dp"
+                        android:layout_weight="0.4"
+                        android:background="@drawable/mr_drawermenugradient_normal"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txt_itemu"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_below="@id/bus"
+                            android:layout_gravity="center_vertical|center"
+                            android:layout_margin="15dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="10dp"
+                            android:fontFamily="@font/segoeuib"
+                            android:gravity="center"
+                            android:text="Sipariş"
+                            android:textColor="@color/text"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            app:fontFamily="@font/segoeuib"></TextView>
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
             android:layout_weight="1"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/mus_gorevlerim_cardview"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.25"
-                android:orientation="horizontal">
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:foreground="@drawable/mr_drawermenugradient_grey"
+                app:cardCornerRadius="15dp">
 
-                <Button
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="15dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/mr_drawermenugradient"
-                    android:drawableTop="@drawable/profile"
-                    android:fontFamily="@font/seguibl"
-                    android:onClick="home2_plan_onclick"
-                    android:text="Müşteri ve Görevlerim"
-                    android:textAllCaps="false" />
-            </LinearLayout>
+                    android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_gravity="center_vertical|center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="0.6"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/bus6"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerHorizontal="true"
+                            android:layout_gravity="center_vertical|center"
+                            android:layout_margin="25dp"
+                            android:layout_marginTop="15dp"
+                            app:srcCompat="@drawable/calendar" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+
+                        android:layout_height="0dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="35dp"
+                        android:layout_weight="0.4"
+                        android:background="@drawable/mr_drawermenugradient_normal"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txt_item6"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_below="@id/bus"
+                            android:layout_gravity="center_vertical|center"
+                            android:layout_margin="5dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="10dp"
+                            android:fontFamily="@font/segoeuib"
+                            android:gravity="center"
+                            android:text="Müşteri ve Görevlerim"
+                            android:textColor="@color/text"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            app:fontFamily="@font/segoeuib"></TextView>
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/ayarlar_cardview"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.25"
-                android:orientation="horizontal">
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:foreground="@drawable/mr_drawermenugradient_grey"
+                app:cardCornerRadius="15dp">
 
-                <Button
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="15dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/mr_drawermenugradient"
-                    android:fontFamily="@font/seguibl"
-                    android:onClick="home2_ip_onclick"
-                    android:text="Ayarlar"
+                    android:orientation="vertical">
 
-                    android:textAllCaps="false" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_gravity="center_vertical|center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="0.6"
+                        android:orientation="vertical">
 
-            </LinearLayout>
+                        <ImageView
+                            android:id="@+id/buse"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_centerHorizontal="true"
+                            android:layout_gravity="center_vertical|center"
+                            android:layout_margin="25dp"
+                            android:layout_marginTop="15dp"
+                            app:srcCompat="@drawable/cog" />
+                    </LinearLayout>
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+
+                        android:layout_height="0dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="35dp"
+                        android:layout_weight="0.4"
+                        android:background="@drawable/mr_drawermenugradient_normal"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txt_itemy"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_below="@id/bus"
+                            android:layout_gravity="center_vertical|center"
+                            android:layout_margin="15dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginTop="10dp"
+                            android:fontFamily="@font/segoeuib"
+                            android:gravity="center"
+                            android:text="Ayarlar"
+                            android:textColor="@color/text"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            app:fontFamily="@font/segoeuib"></TextView>
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
         </LinearLayout>
-    -->
+    </LinearLayout>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

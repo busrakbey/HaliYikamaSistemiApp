@@ -2,9 +2,8 @@ package com.example.haliyikamaapp;
 
 
 import android.annotation.SuppressLint;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.Typeface;
+
+import android.os.Build;
 import android.os.Bundle;
 
 import android.view.MenuItem;
@@ -19,8 +18,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.amulyakhare.textdrawable.TextDrawable;
-import com.amulyakhare.textdrawable.util.ColorGenerator;
+
+import com.example.haliyikamaapp.Adapter.CustomBottomNavigationView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -28,14 +27,21 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     FloatingActionButton ekleButon;
+    CustomBottomNavigationView customBottomNavigationView;
 
     @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+      /*  requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().setStatusBarColor(getResources().getColor(R.color.whiteCardColor));
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
         setContentView(R.layout.deneme);
 
         init_item();
@@ -89,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
             toolbar = (Toolbar) findViewById(R.id.toolbar);
             // toolbar.setNavigationIcon(R.drawable.left);
-          //  setSupportActionBar(toolbar);
+            //  setSupportActionBar(toolbar);
 
             /*getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -114,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    void init_item(){
+    void init_item() {
        /* final int[][] states = new int[][]{
                 new int[]{android.R.attr.state_pressed}
 
@@ -124,11 +130,10 @@ public class MainActivity extends AppCompatActivity {
                 ContextCompat.getColor(MainActivity.this, R.color.green)
         };*/
         ekleButon = (FloatingActionButton) findViewById(R.id.btnAdd);
-      //  ekleButon.setBackgroundTintList(new ColorStateList(states, colors));
+        //  ekleButon.setBackgroundTintList(new ColorStateList(states, colors));
         ekleButon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
 
 
             }

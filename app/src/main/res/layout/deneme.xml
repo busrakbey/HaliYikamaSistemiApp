@@ -9,6 +9,7 @@
     android:fitsSystemWindows="true"
     tools:context="com.example.haliyikamaapp.MainActivity">
 
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="0dp"
@@ -22,30 +23,49 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:titleTextColor="@color/text">
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <TextView
-            android:id="@+id/toolbar_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginLeft="25dp"
-            android:fontFamily="@font/museosans"
-            android:text="Ana Sayfa"
-            android:textColor="@color/text"
-            android:textSize="20dp"
-            android:textStyle="bold" />
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center"
+                android:layout_marginLeft="16dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/museosans"
+                android:text="Ana Sayfa"
+                android:textColor="@color/text"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:fontFamily="@font/segoeuib" />
+
+            <ImageView
+                android:id="@+id/toolbar_right_subtitle"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginRight="10dp"
+                android:padding="5dp"
+                android:scaleType="centerCrop"
+                android:singleLine="true"
+                android:src="@drawable/user_profile"
+                android:text="Start a new Journey"
+                android:textSize="16dp" />
+        </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-
-        app:layout_constraintBottom_toBottomOf="@+id/cordinatorBottom"
-        app:layout_constraintEnd_toEndOf="@id/toolbar"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toTopOf="@+id/cordinatorBottom"
+        app:layout_constraintEnd_toEndOf="@id/cordinatorBottom"
         app:layout_constraintStart_toStartOf="@id/toolbar"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
         tools:ignore="NotSibling" />
@@ -54,14 +74,16 @@
         android:id="@+id/cordinatorBottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:background="@drawable/ic_bg_top"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/fragment_container">
 
         <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/bottom_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="33dp"
             android:paddingBottom="0dp"
             android:theme="@style/Theme.MaterialComponents.Light"
             app:contentInsetStart="0dp"
@@ -71,32 +93,30 @@
             app:fabCradleRoundedCornerRadius="25dp"
             app:fabCradleVerticalOffset="0dp">
 
+
             <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/bottom_navigation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="0dp"
-                android:layout_marginEnd="0dp"
+                android:layout_gravity="bottom"
                 app:itemIconTint="@color/bottom_bar_item_selector"
                 app:labelVisibilityMode="selected"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:menu="@menu/bottom_navigation" />
+                app:menu="@menu/bottom_navigation"		/>
         </com.google.android.material.bottomappbar.BottomAppBar>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnAdd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:clickable="true"
-            android:clipChildren="false"
-            android:clipToPadding="false"
             android:src="@drawable/floating_button_background"
             app:backgroundTint="#7E85CC"
-            app:elevation="6dp"
+            app:elevation="150dp"
             app:layout_anchor="@id/bottom_bar"
-            app:fabCustomSize="62dp"
-            app:maxImageSize="64dp" />
+            app:maxImageSize="75dp" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

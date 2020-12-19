@@ -15,7 +15,7 @@
     <color name="green_dark">#159204</color>
     <color name="bright_green">#02D8B0</color>
     <color name="button_green">#10a54a</color>
-    <color name="background_tab_pressed">#66388BA7</color>
+    <color name="background_tab_pressed">#57419DCE</color>
     <color name="background_window">#FFE5E5E5</color>
 
     <color name="colorAccent2">#FF4081</color>
@@ -105,8 +105,9 @@
     <color name="mr_color_input_elementframe">@color/mr_haki</color>
     <color name="mr_color_koyugri8">#80000000</color>
     <color name="mr_color_softbluegray">#FF66CFE6</color>
-    <color name="mr_color_end">#F1F1F1</color>
-    <color name="mr_color_center">#F0F0F0</color>
+    <color name="mr_color_end">#B4F1F1F1</color>
+    <color name="mr_color_center">#90F0F0F0</color>
+    <color name="mr_color_end2">#22F8F3F3</color>
 
     <color name="my_light_green">#AED581</color>
     <color name="my_lime">#D4E157</color>
