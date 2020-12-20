@@ -1,7 +1,5 @@
 package com.example.haliyikamaapp.Adapter;
 
-import android.graphics.Color;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,16 +11,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
-import com.example.haliyikamaapp.Model.Musteri;
+import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHolder> {
 
-    private ArrayList<Musteri> data;
+    private List<Musteri> data;
 
-    public MusteriAdapter(ArrayList<Musteri> data) {
+    public MusteriAdapter(List<Musteri> data) {
         this.data = data;
     }
 
@@ -35,9 +34,9 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final Musteri myListData = data.get(position);
-        holder.adiSoyadi_item.setText(data.get(position).getMusteriAdiSoyadi());
-        holder.tarih_item.setText(data.get(position).getTarih());
-        holder.telefonNo_item.setText(data.get(position).getTelefonNo());
+        holder.adiSoyadi_item.setText(data.get(position).getMusteriAdi());
+        holder.tarih_item.setText(data.get(position).getMusteriSoyadi());
+        holder.telefonNo_item.setText(data.get(position).getTelefonNumarasi());
 
 
         ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
@@ -50,7 +49,7 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
                 .endConfig()
                 .rect();
         TextDrawable ic1 =   TextDrawable.builder()
-                .buildRound((data.get(position).getMusteriAdiSoyadi().substring(0,1)), color);
+                .buildRound((data.get(position).getMusteriAdi().substring(0,1)), color);
         holder.isimBasHarfi_item.setImageDrawable(ic1);
 
 
@@ -78,7 +77,7 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
         notifyItemInserted(position);
     }
 
-    public ArrayList<Musteri> getData() {
+    public List<Musteri> getData() {
         return data;
     }
 

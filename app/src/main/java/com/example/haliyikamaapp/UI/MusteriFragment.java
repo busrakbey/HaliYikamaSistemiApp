@@ -1,4 +1,4 @@
-package com.example.haliyikamaapp;
+package com.example.haliyikamaapp.UI;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -17,10 +17,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.haliyikamaapp.Adapter.MusteriAdapter;
 import com.example.haliyikamaapp.Adapter.SwipeToDeleteCallback;
-import com.example.haliyikamaapp.Model.Musteri;
+import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
+import com.example.haliyikamaapp.Model.Entity.Musteri;
+import com.example.haliyikamaapp.R;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MusteriFragment extends Fragment {
@@ -36,7 +39,8 @@ public class MusteriFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        set_item(view);
+     //   set_item(view);
+        deneme(view);
 
 
     }
@@ -46,9 +50,8 @@ public class MusteriFragment extends Fragment {
 
 
         ArrayList<Musteri> stringArrayList = new ArrayList<Musteri>();
-        stringArrayList.add(new Musteri("Büşra Akbey" , "10.12.2020" , "05556159576"));
-        stringArrayList.add(new Musteri("Kübra Akbey" , "10.12.2020" , "032549727667"));
-        relativeLayout = (RelativeLayout) view.findViewById(R.id.relativeLayout);
+       // stringArrayList.add(new Musteri("Büşra Akbey" , "10.12.2020" , "05556159576"));
+       // stringArrayList.add(new Musteri("Kübra Akbey" , "10.12.2020" , "032549727667"));
 
         adapter = new MusteriAdapter(stringArrayList);
         recyclerView = (RecyclerView) view.findViewById(R.id.musteri_recyclerview);
@@ -112,7 +115,20 @@ public class MusteriFragment extends Fragment {
 
     }
 
+    void deneme(View view){
+        HaliYikamaDatabase db = HaliYikamaDatabase.getInstance(getContext());
+        Musteri kisi = new Musteri();
+        kisi.setMusteriAdi("Busra");
 
+        db.musteriDao().setMusteri(kisi);
+        List<Musteri> kisiler = db.musteriDao().getMusteriAll();
+
+        adapter = new MusteriAdapter(kisiler);
+        recyclerView = (RecyclerView) view.findViewById(R.id.musteri_recyclerview);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
+    }
 
 
 }

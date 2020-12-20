@@ -1,4 +1,4 @@
-package com.example.haliyikamaapp;
+package com.example.haliyikamaapp.UI;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -6,9 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.GridView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,7 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
-import com.example.haliyikamaapp.Adapter.AnaMenuAdapter;
+import com.example.haliyikamaapp.R;
 
 
 public class HomeFragment extends Fragment {
@@ -164,5 +161,7 @@ public class HomeFragment extends Fragment {
             e.printStackTrace();
         }
     }
+
+
 
 }

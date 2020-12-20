@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:clipChildren="true"
     android:fitsSystemWindows="true"
-    tools:context="com.example.haliyikamaapp.MainActivity">
+    tools:context="com.example.haliyikamaapp.UI.MainActivity">
 
 
     <androidx.appcompat.widget.Toolbar
