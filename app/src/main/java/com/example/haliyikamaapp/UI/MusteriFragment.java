@@ -1,5 +1,6 @@
 package com.example.haliyikamaapp.UI;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -10,6 +11,7 @@ import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,6 +22,8 @@ import com.example.haliyikamaapp.Adapter.SwipeToDeleteCallback;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -30,6 +34,8 @@ public class MusteriFragment extends Fragment {
     RelativeLayout relativeLayout;
     MusteriAdapter adapter;
     RecyclerView recyclerView;
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -39,7 +45,7 @@ public class MusteriFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-     //   set_item(view);
+      // init_item(view);
         deneme(view);
 
 
@@ -82,6 +88,25 @@ public class MusteriFragment extends Fragment {
 
 
 
+
+
+
+    }
+
+    void deneme(View view){
+        HaliYikamaDatabase db = HaliYikamaDatabase.getInstance(getContext());
+        Musteri kisi = new Musteri();
+        kisi.setMusteriAdi("Busra");
+
+        db.musteriDao().setMusteri(kisi);
+        List<Musteri> kisiler = db.musteriDao().getMusteriAll();
+
+        adapter = new MusteriAdapter(kisiler);
+        recyclerView = (RecyclerView) view.findViewById(R.id.musteri_recyclerview);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
+
         SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(getContext()) {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
@@ -111,24 +136,8 @@ public class MusteriFragment extends Fragment {
 
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeToDeleteCallback);
         itemTouchhelper.attachToRecyclerView(recyclerView);
-
-
     }
 
-    void deneme(View view){
-        HaliYikamaDatabase db = HaliYikamaDatabase.getInstance(getContext());
-        Musteri kisi = new Musteri();
-        kisi.setMusteriAdi("Busra");
-
-        db.musteriDao().setMusteri(kisi);
-        List<Musteri> kisiler = db.musteriDao().getMusteriAll();
-
-        adapter = new MusteriAdapter(kisiler);
-        recyclerView = (RecyclerView) view.findViewById(R.id.musteri_recyclerview);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(adapter);
-    }
 
 
 }

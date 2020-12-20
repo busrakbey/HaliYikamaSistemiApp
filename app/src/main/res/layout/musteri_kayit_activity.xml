@@ -14,6 +14,7 @@
         android:id="@+id/toolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:background="@color/whiteCardColor"
         android:elevation="4dp"
         app:contentInsetEnd="0dp"
@@ -38,7 +39,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/museosans"
-                android:text="Ana Sayfa"
+                android:text="Müşteri Girişi"
                 android:textColor="@color/text"
                 android:textSize="25sp"
                 android:textStyle="bold"
@@ -59,63 +60,41 @@
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
-    <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constrainedHeight="true"
-        app:layout_constraintBottom_toTopOf="@+id/cordinatorBottom"
-        app:layout_constraintEnd_toEndOf="@id/cordinatorBottom"
-        app:layout_constraintStart_toStartOf="@id/toolbar"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:ignore="NotSibling" />
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/cordinatorBottom"
+
+    <ScrollView
+
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@drawable/ic_bg_top"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@id/fragment_container">
-
-        <com.google.android.material.bottomappbar.BottomAppBar
-            android:id="@+id/bottom_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginTop="33dp"
-            android:paddingBottom="0dp"
-            android:theme="@style/Theme.MaterialComponents.Light"
-            app:contentInsetStart="0dp"
-            app:contentInsetStartWithNavigation="0dp"
-            app:fabAlignmentMode="center"
-            app:fabCradleMargin="10dp"
-            app:fabCradleRoundedCornerRadius="25dp"
-            app:fabCradleVerticalOffset="0dp">
+        tools:ignore="MissingConstraints">
 
 
-            <com.google.android.material.bottomnavigation.BottomNavigationView
-                android:id="@+id/bottom_navigation"
+
+        <RelativeLayout style="@style/parent">
+
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                app:itemIconTint="@color/bottom_bar_item_selector"
-                app:labelVisibilityMode="selected"
-                app:menu="@menu/bottom_navigation"		/>
-        </com.google.android.material.bottomappbar.BottomAppBar>
+                android:layout_height="match_parent"
+                android:weightSum="12" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnAdd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:clickable="true"
-            android:src="@drawable/floating_button_background"
-            app:backgroundTint="#7E85CC"
-            app:elevation="150dp"
-            app:layout_anchor="@id/bottom_bar"
-            app:maxImageSize="75dp" />
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="60dp"
+                android:layout_marginRight="8dp"
+                android:orientation="vertical">
+
+
+                <include layout="@layout/layout_register" />
+
+            </LinearLayout>
+        </RelativeLayout>
+
+    </ScrollView>
 
 
 

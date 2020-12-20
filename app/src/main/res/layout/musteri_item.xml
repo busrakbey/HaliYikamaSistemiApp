@@ -14,11 +14,11 @@
 
         <ImageView
             android:id="@+id/imageview"
-            android:layout_weight="0.2"
             android:layout_width="0dp"
-            android:layout_margin="10dp"
             android:layout_height="65dp"
             android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:layout_weight="0.1"
             android:gravity="center_vertical"
             android:text="tarih              "
             android:textSize="16sp" />

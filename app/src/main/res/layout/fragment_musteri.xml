@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/relativeLayout"
     android:background="@drawable/ic_bg_top">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/musteri_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"
         android:clickable="true"
-        android:id="@+id/musteri_recyclerview">
+        android:scrollbars="vertical"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintStart_toStartOf="@id/relativeLayout"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
 
     </androidx.recyclerview.widget.RecyclerView>
-</RelativeLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

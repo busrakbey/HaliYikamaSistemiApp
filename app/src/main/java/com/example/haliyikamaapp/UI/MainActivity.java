@@ -1,6 +1,7 @@
 package com.example.haliyikamaapp.UI;
 import android.annotation.SuppressLint;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(getResources().getColor(R.color.whiteCardColor));
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
-        setContentView(R.layout.deneme);
+        setContentView(R.layout.activity_main);
 
         init_item();
         if (savedInstanceState == null) {
@@ -118,20 +119,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void init_item() {
-       /* final int[][] states = new int[][]{
-                new int[]{android.R.attr.state_pressed}
 
-        };
-
-        final int[] colors = new int[]{
-                ContextCompat.getColor(MainActivity.this, R.color.green)
-        };*/
         ekleButon = (FloatingActionButton) findViewById(R.id.btnAdd);
         //  ekleButon.setBackgroundTintList(new ColorStateList(states, colors));
         ekleButon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+                Intent musteri = new Intent(getApplication().getApplicationContext(), MusteriKayitActivity.class);
+                startActivity(musteri);
 
             }
         });
