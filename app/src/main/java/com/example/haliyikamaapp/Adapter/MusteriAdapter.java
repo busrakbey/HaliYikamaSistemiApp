@@ -52,9 +52,11 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
                 .withBorder(1)
                 .endConfig()
                 .rect();
-        TextDrawable ic1 =   TextDrawable.builder()
-                .buildRound((data.get(position).getMusteriAdi().substring(0,1)), color);
-        holder.isimBasHarfi_item.setImageDrawable(ic1);
+       if( !data.get(position).getMusteriAdi().trim().equalsIgnoreCase("")) {
+           TextDrawable ic1 = TextDrawable.builder()
+                   .buildRound((data.get(position).getMusteriAdi().substring(0, 1)), color);
+           holder.isimBasHarfi_item.setImageDrawable(ic1);
+       }
 
 
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
@@ -62,6 +64,7 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
             public void onClick(View view) {
                 Intent musteri = new Intent(mContext, MusteriDetayActivity.class);
                 musteri.putExtra("musteriMid" , String.valueOf(data.get(position).getMid()));
+                musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.getApplicationContext().startActivity(musteri);            }
         });
     }

@@ -55,19 +55,21 @@
 
                 <TextView
                     android:id="@+id/telefon_no_item"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.6"
+                    android:layout_weight="0.4"
                     android:text="05543283278"
                     android:textSize="16sp" />
 
                 <ImageView
                     android:id="@+id/telefon"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="left"
                     android:layout_weight="0.1"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginLeft="10dp"
                     android:src="@drawable/telephone"
+
                     android:textSize="16sp" />
 
 

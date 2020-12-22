@@ -109,7 +109,7 @@ public class MusteriDetayKayitActivity extends AppCompatActivity {
         musteri.setIlId(Long.valueOf(il_spinner.getSelectedItemPosition()));
         musteri.setIlceId(Long.valueOf(ilce_spinner.getSelectedItemPosition()));
         musteri.setAdres(adres_edittw.getText().toString());
-        musteri.setMusteriMid(Long.valueOf(musteriMid));
+        musteri.setMustId(Long.valueOf(musteriMid));
 
         new Thread(new Runnable() {
             @Override
@@ -127,8 +127,10 @@ public class MusteriDetayKayitActivity extends AppCompatActivity {
                         if (Integer.valueOf(String.valueOf(finalYeniKayitMusteriMid)) > 0) {
                             MessageBox.showAlert(MusteriDetayKayitActivity.this, "Kayıt Başarılı..\n", false);
                             Intent i = new Intent(MusteriDetayKayitActivity.this, MusteriDetayActivity.class);
-                            i.putExtra("musteriMid", String.valueOf(finalYeniKayitMusteriMid));
+                            i.putExtra("musteriMid", String.valueOf(musteriMid));
+                            finish();
                             startActivity(i);
+
                         } else
                             MessageBox.showAlert(MusteriDetayKayitActivity.this, "Kayıt başarısız..\n", false);
 
@@ -151,7 +153,7 @@ public class MusteriDetayKayitActivity extends AppCompatActivity {
             sokak_edittw.setText(updateKayitList.get(0).getSokak());
           //  il_spinner.setSelection(updateKayitList.get(0).getId());
            // ilce_spinner.setSelection();
-            adres_edittw.setText(sokak_edittw.getText().toString());
+            adres_edittw.setText(adres_edittw.getText().toString());
 
         }
 

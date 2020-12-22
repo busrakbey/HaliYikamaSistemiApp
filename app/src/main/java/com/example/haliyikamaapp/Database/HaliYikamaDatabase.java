@@ -29,7 +29,7 @@ import com.example.haliyikamaapp.Model.Entity.UrunSube;
 
 
 @Database(entities = {Musteri.class, Siparis.class, SiparisDetay.class, Urun.class, UrunSube.class, UrunFiyat.class, STenant.class, MusteriIletisim.class, OlcuBirim.class},
-        version = 1, exportSchema = false)
+        version = 2, exportSchema = false)
 public abstract class HaliYikamaDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "HALIYIKAMA_DB";
     private static HaliYikamaDatabase instance;

@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,7 +32,7 @@ import java.util.List;
 
 
 public class MusteriFragment extends Fragment {
-    RelativeLayout relativeLayout;
+    ConstraintLayout relativeLayout;
     MusteriAdapter adapter;
     RecyclerView recyclerView;
 
@@ -97,6 +98,7 @@ public class MusteriFragment extends Fragment {
         HaliYikamaDatabase db = HaliYikamaDatabase.getInstance(getContext());
         List<Musteri> kisiler = db.musteriDao().getMusteriAll();
 
+        relativeLayout = (ConstraintLayout) view.findViewById(R.id.relativeLayout);
         adapter = new MusteriAdapter(getContext(), kisiler);
         recyclerView = (RecyclerView) view.findViewById(R.id.musteri_recyclerview);
         recyclerView.setHasFixedSize(true);

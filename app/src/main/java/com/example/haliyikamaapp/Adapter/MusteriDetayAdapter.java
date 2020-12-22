@@ -11,8 +11,11 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.MusteriIletisim;
 import com.example.haliyikamaapp.R;
+import com.example.haliyikamaapp.ToolLayer.MessageBox;
+import com.example.haliyikamaapp.UI.MusteriDetayActivity;
 import com.example.haliyikamaapp.UI.MusteriDetayKayitActivity;
 
 import java.util.List;
@@ -21,6 +24,7 @@ public class MusteriDetayAdapter extends RecyclerView.Adapter<MusteriDetayAdapte
 
     private List<MusteriIletisim> data;
     private Context mContext;
+    HaliYikamaDatabase db;
 
 
     public MusteriDetayAdapter(Context mContext, List<MusteriIletisim> data) {
@@ -46,8 +50,9 @@ public class MusteriDetayAdapter extends RecyclerView.Adapter<MusteriDetayAdapte
             @Override
             public void onClick(View view) {
                 Intent musteri = new Intent(mContext, MusteriDetayKayitActivity.class);
-                musteri.putExtra("musteriMid", data.get(position).getMusteriMid().toString());
-                musteri.putExtra("musteriDetayMid" , data.get(position).getMid().toString());
+                musteri.putExtra("musteriMid", data.get(position).getMustId().toString());
+                musteri.putExtra("musteriDetayMid", data.get(position).getMid().toString());
+                musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.getApplicationContext().startActivity(musteri);
             }
         });
@@ -59,14 +64,20 @@ public class MusteriDetayAdapter extends RecyclerView.Adapter<MusteriDetayAdapte
     }
 
 
-    public void removeItem(int position) {
+    public void removeItem(final int position, final List<MusteriIletisim> data) {
         data.remove(position);
         notifyItemRemoved(position);
+
+        db = HaliYikamaDatabase.getInstance(mContext);
+
     }
 
-    public void restoreItem(MusteriIletisim item, int position) {
+    public void restoreItem(MusteriIletisim item, final int position) {
         data.add(position, item);
         notifyItemInserted(position);
+
+
+
     }
 
     public List<MusteriIletisim> getData() {
