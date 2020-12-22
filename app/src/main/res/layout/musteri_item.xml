@@ -2,9 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
-    android:layout_margin="7dp"
     android:layout_height="wrap_content"
+    android:layout_margin="7dp"
     android:background="@drawable/shadow">
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,50 +13,66 @@
         android:layout_weight="1"
         android:orientation="horizontal">
 
+
         <ImageView
             android:id="@+id/imageview"
-            android:layout_width="0dp"
+            android:layout_width="65dp"
             android:layout_height="65dp"
             android:layout_gravity="center"
             android:layout_margin="10dp"
-            android:layout_weight="0.1"
             android:gravity="center_vertical"
-            android:text="tarih              "
-            android:textSize="16sp" />
-
-
-        <TextView
-            android:id="@+id/item2"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:layout_weight="0.2"
             android:text="tarih              "
             android:textSize="16sp" />
 
         <View
-            android:layout_margin="10dp"
-            style="@style/listTable_satirAyracView"></View>
+            style="@style/listTable_satirAyracView"
+            android:layout_margin="10dp"></View>
 
-        <TextView
-            android:id="@+id/item1"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="müşteri adı"
-            android:layout_weight="0.2"
+            android:orientation="vertical">
 
-            android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/item3"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:layout_weight="0.5"
-            android:text="müşteri adı"
-            android:textSize="16sp" />
+            <TextView
+                android:id="@+id/adi_soyad_item"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:gravity="center_vertical"
+                android:text="Adı Soyadı "
+                android:textColor="@color/text"
+                android:textSize="16sp" />
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:id="@+id/telefon_no_item"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.6"
+                    android:text="05543283278"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/telefon"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.1"
+                    android:layout_marginLeft="5dp"
+                    android:src="@drawable/telephone"
+                    android:textSize="16sp" />
+
+
+            </LinearLayout>
+        </LinearLayout>
 
     </LinearLayout>
 

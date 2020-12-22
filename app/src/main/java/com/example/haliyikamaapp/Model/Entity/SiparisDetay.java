@@ -22,6 +22,9 @@ public class SiparisDetay {
     @ColumnInfo(name = "siparisId")
     public Long siparisId;
 
+    @ColumnInfo(name = "siparisMid")
+    public Long siparisMid;
+
     @ColumnInfo(name = "urunId")
     public Long urunId;
 
@@ -40,5 +43,92 @@ public class SiparisDetay {
     @ColumnInfo(name = "tenantId")
     public Long tenantId;
 
+    @NonNull
+    public Long getMid() {
+        return mid;
+    }
 
+    public void setMid(@NonNull Long mid) {
+        this.mid = mid;
+    }
+
+    public Long getMustId() {
+        return mustId;
+    }
+
+    public void setMustId(Long mustId) {
+        this.mustId = mustId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getSiparisId() {
+        return siparisId;
+    }
+
+    public void setSiparisId(Long siparisId) {
+        this.siparisId = siparisId;
+    }
+
+    public Long getSiparisMid() {
+        return siparisMid;
+    }
+
+    public void setSiparisMid(Long siparisMid) {
+        this.siparisMid = siparisMid;
+    }
+
+    public Long getUrunId() {
+        return urunId;
+    }
+
+    public void setUrunId(Long urunId) {
+        this.urunId = urunId;
+    }
+
+    public Double getBirimFiyat() {
+        return birimFiyat;
+    }
+
+    public void setBirimFiyat(Double birimFiyat) {
+        this.birimFiyat = birimFiyat;
+    }
+
+    public Double getMiktar() {
+        return miktar;
+    }
+
+    public void setMiktar(Double miktar) {
+        this.miktar = miktar;
+    }
+
+    public Long getOlcuBirimId() {
+        return olcuBirimId;
+    }
+
+    public void setOlcuBirimId(Long olcuBirimId) {
+        this.olcuBirimId = olcuBirimId;
+    }
+
+    public String getMusteriId() {
+        return musteriId;
+    }
+
+    public void setMusteriId(String musteriId) {
+        this.musteriId = musteriId;
+    }
+
+    public Long getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(Long tenantId) {
+        this.tenantId = tenantId;
+    }
 }

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/beyaz"
+        android:orientation="vertical">
+        <!-- Title layout -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <!-- <ImageView
+                android:src="@mipmap/ic_launcher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" /> -->
+            <TextView
+                android:id="@+id/mr_dialog_title_textbox"
+                style="@style/mr_dialog_title_textview" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/mr_dialog_mesbox_bodycontent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/mr_dia_messagebox_messtxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Message" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp">
+
+            <Button
+                android:id="@+id/mr_dia_messbox_btnok"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@color/transparent"
+                android:text="Tamam"
+                android:textAllCaps="false"
+                android:textColor="@color/beyaz"
+                android:textSize="@dimen/mr_dialog_title_text"
+                android:visibility="invisible" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

@@ -39,7 +39,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/museosans"
-                android:text="Müşteri"
+                android:text="İletişim Bilgileri"
                 android:textColor="@color/text"
                 android:textSize="25sp"
                 android:textStyle="bold"
@@ -89,7 +89,7 @@
                 android:orientation="vertical">
 
 
-                <include layout="@layout/layout_musteri_kaydi" />
+                <include layout="@layout/layout_musteri_detay_kayit" />
 
             </LinearLayout>
         </RelativeLayout>

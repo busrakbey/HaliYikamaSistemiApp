@@ -59,7 +59,7 @@ public class MusteriFragment extends Fragment {
        // stringArrayList.add(new Musteri("Büşra Akbey" , "10.12.2020" , "05556159576"));
        // stringArrayList.add(new Musteri("Kübra Akbey" , "10.12.2020" , "032549727667"));
 
-        adapter = new MusteriAdapter(stringArrayList);
+        adapter = new MusteriAdapter(getContext(), stringArrayList);
         recyclerView = (RecyclerView) view.findViewById(R.id.musteri_recyclerview);
        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -95,18 +95,13 @@ public class MusteriFragment extends Fragment {
 
     void deneme(View view){
         HaliYikamaDatabase db = HaliYikamaDatabase.getInstance(getContext());
-        Musteri kisi = new Musteri();
-        kisi.setMusteriAdi("Busra");
-
-        db.musteriDao().setMusteri(kisi);
         List<Musteri> kisiler = db.musteriDao().getMusteriAll();
 
-        adapter = new MusteriAdapter(kisiler);
+        adapter = new MusteriAdapter(getContext(), kisiler);
         recyclerView = (RecyclerView) view.findViewById(R.id.musteri_recyclerview);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
-
         SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(getContext()) {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
@@ -118,7 +113,7 @@ public class MusteriFragment extends Fragment {
                 adapter.removeItem(position);
 
                 Snackbar snackbar = Snackbar
-                        .make(relativeLayout, "Item was removed from the list.", Snackbar.LENGTH_LONG);
+                        .make(relativeLayout, "Kayıt silinmiştir.", Snackbar.LENGTH_LONG);
                 snackbar.setAction("Geri Al", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -133,9 +128,10 @@ public class MusteriFragment extends Fragment {
 
             }
         };
-
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeToDeleteCallback);
         itemTouchhelper.attachToRecyclerView(recyclerView);
+
+
     }
 
 

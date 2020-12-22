@@ -81,4 +81,15 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="mr_dialog_title_textview">
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textSize">@dimen/mr_dialog_title_text</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:text">"Sistem Mesajı"</item>
+        <item name="android:layout_marginLeft">1dp</item>
+
+    </style>
+
 </resources>

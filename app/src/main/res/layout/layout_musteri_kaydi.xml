@@ -21,7 +21,6 @@
             <EditText
                 style="@style/modifiedEditText"
                 android:inputType="text"
-                android:maxLines="1"
                 android:id="@+id/tc_no"
                 android:hint="TC Kimlik No"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -32,7 +31,6 @@
             <EditText
                 style="@style/modifiedEditText"
                 android:inputType="text"
-                android:maxLines="1"
                 android:id="@+id/musteri_adi"
                 android:hint="Adı"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -43,7 +41,6 @@
             <EditText
                 style="@style/modifiedEditText"
                 android:inputType="text"
-                android:maxLines="1"
                 android:id="@+id/musteri_soyadi"
                 android:hint="Soyadı"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -55,7 +52,6 @@
             <EditText
                 style="@style/modifiedEditText"
                 android:inputType="number"
-                android:maxLines="1"
                 android:id="@+id/telefon_no"
                 android:hint="Telefon Numarası"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -63,10 +59,8 @@
         <com.google.android.material.textfield.TextInputLayout
             style="@style/parent"
             android:layout_marginTop="@dimen/signup_text_margin_top">
-            <EditText
+            <Spinner
                 style="@style/modifiedEditText"
-                android:hint="Müşteri Türü"
-                android:maxLines="1"
                 android:id="@+id/musteri_turu"
                 />
         </com.google.android.material.textfield.TextInputLayout>
@@ -74,17 +68,20 @@
         <com.google.android.material.textfield.TextInputLayout
             style="@style/parent"
             android:layout_marginTop="@dimen/signup_text_margin_top">
+
             <EditText
+                android:id="@+id/vergş_no"
                 style="@style/modifiedEditText"
                 android:hint="Vergi Kimlik No"
-                android:maxLines="1"
-                android:id="@+id/vergş_no"/>
+                android:inputType="number" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             style="@style/loginButton"
+            android:id="@+id/musteri_kayit_button"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/signup_text_margin_top"
+            android:onClick="musteriKayitOnclik"
             android:text="KAYDET" />
 
     </LinearLayout>

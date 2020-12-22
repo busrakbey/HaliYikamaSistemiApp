@@ -10,16 +10,18 @@ import com.example.haliyikamaapp.Model.Entity.Musteri;
 
 import java.util.List;
 
+import static androidx.room.OnConflictStrategy.IGNORE;
+
 @Dao
 public interface MusteriDao {
     @Query("SELECT * FROM MUSTERI")
     List<Musteri> getMusteriAll();
 
     @Insert
-    void setMusteri(Musteri musteri);
+    long setMusteri(Musteri musteri);
 
     @Query("DELETE FROM MUSTERI")
-     void deleteMusteriAll();
+    void deleteMusteriAll();
 
     @Query("DELETE FROM MUSTERI where mid = :mid")
     void deletedMusteriForMid(Long mid );

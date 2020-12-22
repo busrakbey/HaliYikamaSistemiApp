@@ -17,12 +17,15 @@
         </activity>
 
         <activity android:name=".UI.MusteriDetayActivity">
-
         </activity>
 
 
         <activity android:name=".UI.MusteriKayitActivity">
         </activity>
+
+        <activity android:name=".UI.MusteriDetayKayitActivity">
+        </activity>
+
 
     </application>
 

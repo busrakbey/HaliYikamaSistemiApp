@@ -1,5 +1,7 @@
 package com.example.haliyikamaapp.Adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,16 +15,19 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.R;
+import com.example.haliyikamaapp.UI.MusteriDetayActivity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHolder> {
 
     private List<Musteri> data;
+    private Context mContext;
 
-    public MusteriAdapter(List<Musteri> data) {
+
+    public MusteriAdapter(Context mContext, List<Musteri> data) {
         this.data = data;
+        this.mContext = mContext;
     }
 
     @Override
@@ -32,10 +37,9 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
         final Musteri myListData = data.get(position);
-        holder.adiSoyadi_item.setText(data.get(position).getMusteriAdi());
-        holder.tarih_item.setText(data.get(position).getMusteriSoyadi());
+        holder.adiSoyadi_item.setText(data.get(position).getMusteriAdi() + " " + data.get(position).getMusteriSoyadi());
         holder.telefonNo_item.setText(data.get(position).getTelefonNumarasi());
 
 
@@ -56,8 +60,9 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Toast.makeText(view.getContext(),"click on item: "+myListData.getDescription(),Toast.LENGTH_LONG).show();
-            }
+                Intent musteri = new Intent(mContext, MusteriDetayActivity.class);
+                musteri.putExtra("musteriMid" , String.valueOf(data.get(position).getMid()));
+                mContext.getApplicationContext().startActivity(musteri);            }
         });
     }
 
@@ -90,10 +95,9 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            this.adiSoyadi_item = (TextView) itemView.findViewById(R.id.item2);
-            this.tarih_item = (TextView) itemView.findViewById(R.id.item1);
-            this.telefonNo_item = (TextView) itemView.findViewById(R.id.item3);
             this.isimBasHarfi_item = (ImageView) itemView.findViewById(R.id.imageview);
+            this.adiSoyadi_item = (TextView) itemView.findViewById(R.id.adi_soyad_item);
+            this.telefonNo_item = (TextView) itemView.findViewById(R.id.telefon_no_item);
             relativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayout);
         }
     }
