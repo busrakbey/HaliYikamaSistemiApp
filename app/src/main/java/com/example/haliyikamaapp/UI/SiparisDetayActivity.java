@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,16 +15,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.haliyikamaapp.Adapter.MusteriDetayAdapter;
+import com.example.haliyikamaapp.Adapter.SiparisDetayAdapter;
 import com.example.haliyikamaapp.Adapter.SwipeToDeleteCallback;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
-import com.example.haliyikamaapp.Model.Entity.MusteriIletisim;
+import com.example.haliyikamaapp.Model.Entity.SiparisDetay;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -34,16 +31,17 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
-public class MusteriDetayActivity extends AppCompatActivity {
-    BottomNavigationView bottomNavigationView;
-    Toolbar toolbar;
+public class SiparisDetayActivity extends AppCompatActivity {
     ConstraintLayout relativeLayout;
-    MusteriDetayAdapter musteri_detay_adapter;
+    SiparisDetayAdapter siparis_detay_adapter;
     RecyclerView recyclerView;
-    String musteriMid;
+    String siparisMid;
     HaliYikamaDatabase db;
     Snackbar snackbar;
-    FloatingActionButton yeni_musteri_detay_button;
+    FloatingActionButton yeni_siparis_detay_button;
+    BottomNavigationView bottomNavigationView;
+    Toolbar toolbar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,57 +52,57 @@ public class MusteriDetayActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(getResources().getColor(R.color.whiteCardColor));
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
-        setContentView(R.layout.musteri_detay_activity);
-        init_item();
+        setContentView(R.layout.siparis_detay_activity);
         initToolBar();
+        init_item();
         get_list();
 
     }
 
     void init_item() {
-        db = HaliYikamaDatabase.getInstance(MusteriDetayActivity.this);
+        db = HaliYikamaDatabase.getInstance(SiparisDetayActivity.this);
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-        bottomNav.setSelectedItemId(R.id.nav_musteri);
+        bottomNav.setSelectedItemId(R.id.nav_siparis);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
 
-        yeni_musteri_detay_button = (FloatingActionButton) findViewById(R.id.btnAdd);
-        relativeLayout = (ConstraintLayout) findViewById(R.id.container);
-        recyclerView = (RecyclerView) findViewById(R.id.musteri_detay_recyclerview);
-        Intent intent = getIntent();
-        musteriMid = intent.getStringExtra("musteriMid");
 
-        yeni_musteri_detay_button.setOnClickListener(new View.OnClickListener() {
+        yeni_siparis_detay_button = (FloatingActionButton) findViewById(R.id.btnAdd);
+        relativeLayout = (ConstraintLayout) findViewById(R.id.container);
+        recyclerView = (RecyclerView) findViewById(R.id.siparis_detay_recyclerview);
+        Intent intent = getIntent();
+        siparisMid = intent.getStringExtra("siparisMid");
+
+        yeni_siparis_detay_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(MusteriDetayActivity.this, MusteriDetayKayitActivity.class);
-                i.putExtra("musteriMid", musteriMid);
+                Intent i = new Intent(SiparisDetayActivity.this, MusteriDetayKayitActivity.class);
+                i.putExtra("siparisMid", siparisMid);
                 finish();
                 startActivity(i);
             }
         });
     }
 
-
     public void get_list() {
-        final List<MusteriIletisim> kisiler = db.musteriIletisimDao().getMusteriIletisimForMustId(Long.valueOf(musteriMid));
+        final List<SiparisDetay> kisiler = db.siparisDetayDao().getSiparisDetayForMustId(Long.valueOf(siparisMid));
 
-        musteri_detay_adapter = new MusteriDetayAdapter(MusteriDetayActivity.this, kisiler);
+        siparis_detay_adapter = new SiparisDetayAdapter(SiparisDetayActivity.this, kisiler);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(MusteriDetayActivity.this));
-        recyclerView.setAdapter(musteri_detay_adapter);
-        SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(MusteriDetayActivity.this) {
+        recyclerView.setLayoutManager(new LinearLayoutManager(SiparisDetayActivity.this));
+        recyclerView.setAdapter(siparis_detay_adapter);
+        SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(SiparisDetayActivity.this) {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
                 final int position = viewHolder.getAdapterPosition();
-                final int silinenMusteriDetayMid = db.musteriIletisimDao().deletedMusteriIletisimForMid(musteri_detay_adapter.getData().get(position).getMid());
-                MusteriDetayActivity.this.runOnUiThread(new Runnable() {
+                final int silinenMusteriDetayMid = db.musteriIletisimDao().deletedMusteriIletisimForMid(siparis_detay_adapter.getData().get(position).getMid());
+                SiparisDetayActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if (silinenMusteriDetayMid == 1) {
-                            musteri_detay_adapter.getData().remove(position);
-                            musteri_detay_adapter.notifyDataSetChanged();
+                            siparis_detay_adapter.getData().remove(position);
+                            siparis_detay_adapter.notifyDataSetChanged();
                             snackbar = Snackbar
                                     .make(relativeLayout, "Kayıt silinmiştir.", Snackbar.LENGTH_LONG);
                             snackbar.setActionTextColor(Color.YELLOW);
@@ -112,7 +110,7 @@ public class MusteriDetayActivity extends AppCompatActivity {
 
 
                         } else
-                            MessageBox.showAlert(MusteriDetayActivity.this, "İşlem başarısız..\n", false);
+                            MessageBox.showAlert(SiparisDetayActivity.this, "İşlem başarısız..\n", false);
 
                     }
                 });
@@ -142,26 +140,27 @@ public class MusteriDetayActivity extends AppCompatActivity {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
+
                     Fragment selectedFragment = null;
                     Intent i = null;
                     switch (item.getItemId()) {
                         case R.id.nav_home:
-                            i = new Intent(MusteriDetayActivity.this, MainActivity.class);
+                            i = new Intent(SiparisDetayActivity.this, MainActivity.class);
                             i.putExtra("gelenPage", "anasayfa");
                             startActivity(i);
                             break;
                         case R.id.nav_musteri:
-                            i = new Intent(MusteriDetayActivity.this, MainActivity.class);
+                            i = new Intent(SiparisDetayActivity.this, MainActivity.class);
                             i.putExtra("gelenPage", "müşteri");
                             startActivity(i);
                             break;
                         case R.id.nav_siparis:
-                            i = new Intent(MusteriDetayActivity.this, MainActivity.class);
+                            i = new Intent(SiparisDetayActivity.this, MainActivity.class);
                             i.putExtra("gelenPage", "sipariş");
                             startActivity(i);
                             break;
                         case R.id.nav_musterigorevlerim:
-                            i = new Intent(MusteriDetayActivity.this, MainActivity.class);
+                            i = new Intent(SiparisDetayActivity.this, MainActivity.class);
                             i.putExtra("gelenPage", "müşteri_görevlerim");
                             startActivity(i);
                             break;
@@ -172,14 +171,13 @@ public class MusteriDetayActivity extends AppCompatActivity {
                 }
             };
 
-
     public void initToolBar() {
         try {
 
             toolbar = (Toolbar) findViewById(R.id.toolbar);
             toolbar.setNavigationIcon(R.drawable.left);
             TextView toolbarTextView = (TextView) findViewById(R.id.toolbar_title);
-            toolbarTextView.setText("İletişim Bilgileri");
+            toolbarTextView.setText("Sipariş Detay Bilgileri");
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -200,6 +198,5 @@ public class MusteriDetayActivity extends AppCompatActivity {
         super.onResume();
         get_list();
     }
-
 
 }

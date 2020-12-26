@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,12 +14,21 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
+import com.example.haliyikamaapp.Model.Entity.Musteri;
+import com.example.haliyikamaapp.Model.Entity.Siparis;
 import com.example.haliyikamaapp.R;
+
+import java.util.List;
 
 
 public class HomeFragment extends Fragment {
     Toolbar toolbar;
     CardView siparis_button, musteri_button, ayarlar_button, musteri_gorevlerim_button;
+    TextView toplam_musteri_tw, toplam_siparis_tw;
+    HaliYikamaDatabase db;
+
+
 
     @Nullable
     @Override
@@ -37,9 +47,6 @@ public class HomeFragment extends Fragment {
     }
 
     void set_item(View view) {
-        String[] prgmNameList = {"Müşteri", "Sipariş", "Müşteri ve Görevlerim", "Ayarlar  \n"};
-        int[] prgmImages = {R.drawable.shadow_musteri, R.drawable.shadow_siparis, R.drawable.shadow_gorevler, R.drawable.shadow_ayarlar};
-
         musteri_button = (CardView) view.findViewById(R.id.musteri_cardview);
         siparis_button = (CardView) view.findViewById(R.id.siparis_cardview);
         musteri_gorevlerim_button = (CardView) view.findViewById(R.id.mus_gorevlerim_cardview);
@@ -54,6 +61,9 @@ public class HomeFragment extends Fragment {
                         selectedFragment).commit();
                 ((MainActivity) getActivity()).initToolBar("Müşteri");
                 ((MainActivity) getActivity()).ekleButon.setVisibility(View.VISIBLE);
+                ((MainActivity) getActivity()).click_ekle_button("Müşteri");
+                ((MainActivity) getActivity()).bottomNavigationView.setSelectedItemId(R.id.nav_musteri);
+
             }
         });
 
@@ -61,11 +71,15 @@ public class HomeFragment extends Fragment {
             @SuppressLint("RestrictedApi")
             @Override
             public void onClick(View view) {
-                Fragment selectedFragment = new MusteriGorevlerimFragment();
+                Fragment selectedFragment = new SiparisFragment();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         selectedFragment).commit();
-                ((MainActivity) getActivity()).initToolBar("Müşrei ve Görevlerim");
+                ((MainActivity) getActivity()).initToolBar("Sipariş");
                 ((MainActivity) getActivity()).ekleButon.setVisibility(View.VISIBLE);
+                ((MainActivity) getActivity()).click_ekle_button("Sipariş");
+                ((MainActivity) getActivity()).bottomNavigationView.setSelectedItemId(R.id.nav_siparis);
+
+
             }
         });
 
@@ -77,8 +91,10 @@ public class HomeFragment extends Fragment {
                 Fragment selectedFragment = new MusteriGorevlerimFragment();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         selectedFragment).commit();
-                ((MainActivity) getActivity()).initToolBar("Müşrei ve Görevlerim");
+                ((MainActivity) getActivity()).initToolBar("Müşteri ve Görevlerim");
                 ((MainActivity) getActivity()).ekleButon.setVisibility(View.VISIBLE);
+                ((MainActivity) getActivity()).bottomNavigationView.setSelectedItemId(R.id.nav_musterigorevlerim);
+
             }
         });
 
@@ -87,50 +103,21 @@ public class HomeFragment extends Fragment {
             public void onClick(View view) {
                 ((MainActivity) getActivity()).initToolBar("Ayarlar");
 
+
             }
         });
 
-
-       /* GridView gridView = view.findViewById(R.id.main_fragment_grid_view);
-        AnaMenuAdapter adapter = new AnaMenuAdapter(getContext(), prgmNameList, prgmImages);
-        gridView.setAdapter(adapter);
-
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @SuppressLint("RestrictedApi")
-            @Override
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
-
-                if (position == 0) {
-
-                }
-
-                if (position == 1) {
-                    Fragment selectedFragment = new SiparisFragment();
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            selectedFragment).commit();
-                    ((MainActivity) getActivity()).initToolBar("Sipariş");
-                    ((MainActivity) getActivity()).ekleButon.setVisibility(View.VISIBLE);
+        toplam_musteri_tw = (TextView) view.findViewById(R.id.toplam_kayit_musteri);
+        toplam_siparis_tw = (TextView) view.findViewById(R.id.toplam_kayit_siparis);
+        db = HaliYikamaDatabase.getInstance(getContext());
+        List<Siparis> siparisler = db.siparisDao().getSiparisAll();
+        List<Musteri> musteriler = db.musteriDao().getMusteriAll();
+        toplam_siparis_tw.setText("Toplam Sipariş: " + siparisler.size());
+        toplam_musteri_tw.setText("Toplam Müşteri: " + musteriler.size());
 
 
-                }
 
-                if (position == 2) {
-                    Fragment selectedFragment = new MusteriGorevlerimFragment();
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            selectedFragment).commit();
-                    ((MainActivity) getActivity()).initToolBar("Müşrei ve Görevlerim");
-                    ((MainActivity) getActivity()).ekleButon.setVisibility(View.VISIBLE);
 
-                }
-
-                if (position == 3) {
-                    ((MainActivity) getActivity()).initToolBar("Ayarlar");
-
-                }
-
-            }
-        });*/
     }
 
     private void initToolBar(View view) {

@@ -15,13 +15,13 @@
     <color name="green_dark">#159204</color>
     <color name="bright_green">#02D8B0</color>
     <color name="button_green">#10a54a</color>
-    <color name="background_tab_pressed">#57419DCE</color>
+    <color name="background_tab_pressed">#250077B6</color>
     <color name="background_window">#FFE5E5E5</color>
 
     <color name="colorAccent2">#FF4081</color>
 
     <color name="background">#e5e5e5</color>
-    <color name="arrows">#757575</color>
+    <color name="grey">#999999</color>
     <color name="text">#212121</color>
 
     <color name="primary">#FF9800</color>
@@ -99,6 +99,8 @@
     <color name="mr_haki">#BDB76B</color>
     <color name="mr_toolbar">#74BCE6</color>
     <color name="mr_toolbar2">#44728A</color>
+    <color name="mr_toolbar3">#3D6279</color>
+
 
     <color name="mr_haki2">#C3CB7F</color>
     <color name="mr_haki3">#AAB264</color>

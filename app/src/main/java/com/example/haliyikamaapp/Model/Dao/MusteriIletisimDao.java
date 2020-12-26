@@ -26,6 +26,9 @@ public interface MusteriIletisimDao {
     @Query("DELETE FROM MUSTERI_ILETISIM where mid = :mid")
     int deletedMusteriIletisimForMid(Long mid);
 
+    @Query("DELETE FROM MUSTERI_ILETISIM where mustId = :musteriMid")
+    int deletedMusteriIletisimForMustId(Long musteriMid);
+
     @Query("SELECT * FROM MUSTERI_ILETISIM where mid = :mid")
     List<MusteriIletisim> getMusteriIletisimForMid(Long mid);
 

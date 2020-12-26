@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -16,10 +17,12 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.MusteriIletisim;
+import com.example.haliyikamaapp.Model.Entity.S_IL;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MusteriDetayKayitActivity extends AppCompatActivity {
@@ -44,33 +47,11 @@ public class MusteriDetayKayitActivity extends AppCompatActivity {
         }
         setContentView(R.layout.musteri_detay_kayit_activity);
         init_item();
+        initToolBar();
 
 
     }
 
-
-    public void initToolBar(String tittle) {
-        try {
-
-            toolbar = (Toolbar) findViewById(R.id.toolbar);
-            TextView toolbarTextView = (TextView) findViewById(R.id.toolbar_title);
-            toolbarTextView.setText(tittle);
-
-
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                }
-            });
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-    }
 
     void init_item() {
         db = HaliYikamaDatabase.getInstance(MusteriDetayKayitActivity.this);
@@ -86,8 +67,31 @@ public class MusteriDetayKayitActivity extends AppCompatActivity {
         Intent intent = getIntent();
         musteriMid = intent.getStringExtra("musteriMid");
         musteriDetayMid = intent.getStringExtra("musteriDetayMid");
+
+        if (musteriDetayMid == null ){
+            cep_no_edittw.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    cep_no_edittw.setHint("Lütfen ilk hanesini sıfır giriniz");
+                    if(!hasFocus)
+                        cep_no_edittw.setHint(cep_no_edittw.getText().toString());
+                }
+            });
+
+
+
+        }
+
         if (musteriDetayMid != null)
             getEditMode(Long.valueOf(musteriDetayMid));
+
+       /* S_IL il = new S_IL();
+       il.setId(6L);
+       il.setAd("Ankara");
+
+        List<Long> il_id = new ArrayList<Long>();//add ids in this list
+        List<String> il_adi = new ArrayList<String>();//add names in this list*/
+
 
     }
 
@@ -96,50 +100,58 @@ public class MusteriDetayKayitActivity extends AppCompatActivity {
     }
 
     void yeni_ietisim_kayit() {
-      /*  if(!tc_no_edittw.getText().toString().trim().equalsIgnoreCase("") || !adi_edittw.getText().toString().trim().equalsIgnoreCase("")
-                || !soyadi_edittw.getText().toString().trim().equalsIgnoreCase("")|| !tel_no_edittw.getText().toString().trim().equalsIgnoreCase("")){
-        }*/
-        //  else{
-        final MusteriIletisim musteri = new MusteriIletisim();
-        musteri.setIletisimAdi(iletisim_baslik_edittw.getText().toString());
-        musteri.setTelefonNo(cep_no_edittw.getText().toString());
-        musteri.setCadde(cadde_edittw.getText().toString());
-        musteri.setKapiNo(kapi_no_edittw.getText().toString());
-        musteri.setSokak(sokak_edittw.getText().toString());
-        musteri.setIlId(Long.valueOf(il_spinner.getSelectedItemPosition()));
-        musteri.setIlceId(Long.valueOf(ilce_spinner.getSelectedItemPosition()));
-        musteri.setAdres(adres_edittw.getText().toString());
-        musteri.setMustId(Long.valueOf(musteriMid));
+        if (iletisim_baslik_edittw.getText().toString().trim().equalsIgnoreCase("") ||
+                cep_no_edittw.getText().toString().trim().equalsIgnoreCase("")
+                /* || (il_spinner.getSelectedItemPosition() == -1) || (ilce_spinner.getSelectedItemPosition() == -1)*/ ||
+                adres_edittw.getText().toString().trim().equalsIgnoreCase("")) {
+            MessageBox.showAlert(MusteriDetayKayitActivity.this, "Lütfen zorunlu alanları eksiksiz doldurunuz.", false);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                long yeniKayitMusteriMid = -1;
-                if (musteriDetayMid == null)
-                    yeniKayitMusteriMid = db.musteriIletisimDao().setMusteriIletisim(musteri);
-                if (musteriDetayMid != null)
-                    yeniKayitMusteriMid = db.musteriIletisimDao().updateMusteriIletisim(musteri);
+        } else {
+            final MusteriIletisim musteri = new MusteriIletisim();
+            musteri.setIletisimAdi(iletisim_baslik_edittw.getText().toString());
+            musteri.setTelefonNo(cep_no_edittw.getText().toString());
+            musteri.setCadde(cadde_edittw.getText().toString());
+            musteri.setKapiNo(kapi_no_edittw.getText().toString());
+            musteri.setSokak(sokak_edittw.getText().toString());
+            musteri.setIlId(Long.valueOf(il_spinner.getSelectedItemPosition()));
+            musteri.setIlceId(Long.valueOf(ilce_spinner.getSelectedItemPosition()));
+            musteri.setAdres(adres_edittw.getText().toString());
+            musteri.setMustId(Long.valueOf(musteriMid));
 
-                final long finalYeniKayitMusteriMid = yeniKayitMusteriMid;
-                MusteriDetayKayitActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (Integer.valueOf(String.valueOf(finalYeniKayitMusteriMid)) > 0) {
-                            MessageBox.showAlert(MusteriDetayKayitActivity.this, "Kayıt Başarılı..\n", false);
-                            Intent i = new Intent(MusteriDetayKayitActivity.this, MusteriDetayActivity.class);
-                            i.putExtra("musteriMid", String.valueOf(musteriMid));
-                            finish();
-                            startActivity(i);
-
-                        } else
-                            MessageBox.showAlert(MusteriDetayKayitActivity.this, "Kayıt başarısız..\n", false);
-
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    long yeniKayitMusteriMid = -1;
+                    if (musteriDetayMid == null)
+                        yeniKayitMusteriMid = db.musteriIletisimDao().setMusteriIletisim(musteri);
+                    if (musteriDetayMid != null) {
+                        musteri.setMid(Long.valueOf(musteriDetayMid));
+                        yeniKayitMusteriMid = db.musteriIletisimDao().updateMusteriIletisim(musteri);
                     }
-                });
 
-            }
-        }).start();
-        //}
+                    final long finalYeniKayitMusteriMid = yeniKayitMusteriMid;
+                    MusteriDetayKayitActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (musteriDetayMid == null && Integer.valueOf(String.valueOf(finalYeniKayitMusteriMid)) > 0) {
+                                MessageBox.showAlert(MusteriDetayKayitActivity.this, "Kayıt Başarılı..\n", false);
+                                Intent i = new Intent(MusteriDetayKayitActivity.this, MusteriDetayActivity.class);
+                                i.putExtra("musteriMid", String.valueOf(musteriMid));
+                                finish();
+                                startActivity(i);
+                            }
+                            if (musteriDetayMid != null && finalYeniKayitMusteriMid == 1) {
+                                MessageBox.showAlert(MusteriDetayKayitActivity.this, "İşlem Başarılı..\n", false);
+
+                            } else if (finalYeniKayitMusteriMid < 0)
+                                MessageBox.showAlert(MusteriDetayKayitActivity.this, "İşlem başarısız..\n", false);
+
+                        }
+                    });
+
+                }
+            }).start();
+        }
 
     }
 
@@ -151,13 +163,35 @@ public class MusteriDetayKayitActivity extends AppCompatActivity {
             cadde_edittw.setText(updateKayitList.get(0).getCadde());
             kapi_no_edittw.setText(updateKayitList.get(0).getKapiNo());
             sokak_edittw.setText(updateKayitList.get(0).getSokak());
-          //  il_spinner.setSelection(updateKayitList.get(0).getId());
-           // ilce_spinner.setSelection();
+            //  il_spinner.setSelection(updateKayitList.get(0).getId());
+            // ilce_spinner.setSelection();
             adres_edittw.setText(adres_edittw.getText().toString());
 
         }
 
 
+    }
+
+    public void initToolBar() {
+        try {
+
+            toolbar = (Toolbar) findViewById(R.id.toolbar);
+            toolbar.setNavigationIcon(R.drawable.left);
+            TextView toolbarTextView = (TextView) findViewById(R.id.toolbar_title);
+            toolbarTextView.setText("İletişim Bilgileri");
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
     }
 }
 

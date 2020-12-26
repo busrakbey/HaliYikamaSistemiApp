@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="7dp"
     android:background="@drawable/shadow">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="10dp"
         android:layout_weight="1"
         android:orientation="horizontal">
 
@@ -43,8 +47,9 @@
                 android:layout_weight="0.5"
                 android:gravity="center_vertical"
                 android:text="Adı Soyadı "
-                android:textColor="@color/text"
-                android:textSize="16sp" />
+                android:textColor="@color/mr_toolbar3"
+                android:textSize="@dimen/text_size_medium"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -59,15 +64,15 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.4"
                     android:text="05543283278"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/text_size_normal" />
 
                 <ImageView
                     android:id="@+id/telefon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
-                    android:layout_weight="0.1"
                     android:layout_marginLeft="10dp"
+                    android:layout_weight="0.1"
                     android:src="@drawable/telephone"
 
                     android:textSize="16sp" />
@@ -76,7 +81,23 @@
             </LinearLayout>
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/edit_musteri"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="5dp"
+                android:src="@drawable/pencil" />
+
+        </LinearLayout>
+
     </LinearLayout>
+
 
 
 </RelativeLayout>

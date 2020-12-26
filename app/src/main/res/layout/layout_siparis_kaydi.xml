@@ -18,11 +18,21 @@
         <com.google.android.material.textfield.TextInputLayout
             style="@style/parent"
             android:layout_marginTop="@dimen/signup_text_margin_top">
-            <EditText
+            <AutoCompleteTextView
                 style="@style/modifiedEditText"
-                android:inputType="number"
-                android:id="@+id/tc_no"
-                android:hint="TC Kimlik No"/>
+                android:inputType="text"
+                android:id="@+id/musteri_autocomplete"
+                android:hint="Müşteri"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/parent"
+            android:layout_marginTop="@dimen/signup_text_margin_top">
+            <AutoCompleteTextView
+                style="@style/modifiedEditText"
+                android:inputType="text"
+                android:id="@+id/sube_adi"
+                android:hint="Şube"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -31,18 +41,9 @@
             <EditText
                 style="@style/modifiedEditText"
                 android:inputType="text"
-                android:id="@+id/musteri_adi"
-                android:hint="Adı"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/parent"
-            android:layout_marginTop="@dimen/signup_text_margin_top">
-            <EditText
-                style="@style/modifiedEditText"
-                android:inputType="text"
-                android:id="@+id/musteri_soyadi"
-                android:hint="Soyadı"/>
+                android:id="@+id/siparis_tarihi"
+                android:clickable="true"
+                android:hint="Tarih"/>
         </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -52,29 +53,22 @@
             <EditText
                 style="@style/modifiedEditText"
                 android:inputType="number"
-                android:id="@+id/telefon_no"
-                android:hint="Telefon Numarası"/>
+                android:id="@+id/siparis_tutar"
+                android:hint="Tutar"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/parent"
             android:layout_marginTop="@dimen/signup_text_margin_top">
-            <Spinner
+            <EditText
                 style="@style/modifiedEditText"
-                android:id="@+id/musteri_turu"
+                android:inputType="text"
+                android:id="@+id/siparis_aciklama"
+                android:hint="Açıklama"
                 />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/parent"
-            android:layout_marginTop="@dimen/signup_text_margin_top">
 
-            <EditText
-                android:id="@+id/vergş_no"
-                style="@style/modifiedEditText"
-                android:hint="Vergi Kimlik No"
-                android:inputType="number" />
-        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             style="@style/loginButton"

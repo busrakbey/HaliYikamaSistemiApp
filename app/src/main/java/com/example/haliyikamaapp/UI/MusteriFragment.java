@@ -22,7 +22,9 @@ import com.example.haliyikamaapp.Adapter.MusteriAdapter;
 import com.example.haliyikamaapp.Adapter.SwipeToDeleteCallback;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
+import com.example.haliyikamaapp.Model.Entity.MusteriIletisim;
 import com.example.haliyikamaapp.R;
+import com.example.haliyikamaapp.ToolLayer.MessageBox;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -35,6 +37,8 @@ public class MusteriFragment extends Fragment {
     ConstraintLayout relativeLayout;
     MusteriAdapter adapter;
     RecyclerView recyclerView;
+    HaliYikamaDatabase db;
+    Snackbar snackbar;
 
 
     @Nullable
@@ -46,87 +50,63 @@ public class MusteriFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-      // init_item(view);
-        deneme(view);
+        init_item(view);
+        get_list();
 
 
     }
 
-
-    void set_item(View view) {
-
-
-        ArrayList<Musteri> stringArrayList = new ArrayList<Musteri>();
-       // stringArrayList.add(new Musteri("Büşra Akbey" , "10.12.2020" , "05556159576"));
-       // stringArrayList.add(new Musteri("Kübra Akbey" , "10.12.2020" , "032549727667"));
-
-        adapter = new MusteriAdapter(getContext(), stringArrayList);
-        recyclerView = (RecyclerView) view.findViewById(R.id.musteri_recyclerview);
-       recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(adapter);
-
-        /*ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT ) {
-
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                Toast.makeText(getContext(), "on Move", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                Toast.makeText(getContext(), "on Swiped ", Toast.LENGTH_SHORT).show();
-                //Remove swiped item from list and notify the RecyclerView
-                int position = viewHolder.getAdapterPosition();
-             //   arrayList.remove(position);
-                adapter.notifyDataSetChanged();
-
-            }
-        };
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-        itemTouchHelper.attachToRecyclerView(recyclerView);*/
-
-
-
-
-
-
-    }
-
-    void deneme(View view){
-        HaliYikamaDatabase db = HaliYikamaDatabase.getInstance(getContext());
-        List<Musteri> kisiler = db.musteriDao().getMusteriAll();
-
+    void init_item(View view) {
         relativeLayout = (ConstraintLayout) view.findViewById(R.id.relativeLayout);
-        adapter = new MusteriAdapter(getContext(), kisiler);
+        db = HaliYikamaDatabase.getInstance(getContext());
         recyclerView = (RecyclerView) view.findViewById(R.id.musteri_recyclerview);
+
+
+    }
+
+    void get_list() {
+        List<Musteri> kisiler = db.musteriDao().getMusteriAll();
+        adapter = new MusteriAdapter(getContext(), kisiler);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(getContext()) {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-
-
                 final int position = viewHolder.getAdapterPosition();
-                final Musteri item = adapter.getData().get(position);
+                final List<MusteriIletisim> silinecekDetayListe = db.musteriIletisimDao().getMusteriIletisimForMustId(adapter.getData().get(position).getMid());
+                final int silinenMusteriDetayMid = db.musteriIletisimDao().deletedMusteriIletisimForMustId(adapter.getData().get(position).getMid());
+                if (silinenMusteriDetayMid == silinecekDetayListe.size()) {
+                    final int silinenMusteriMid = db.musteriDao().deletedMusteriForMid(adapter.getData().get(position).getMid());
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (silinenMusteriMid == 1) {
+                                adapter.getData().remove(position);
+                                adapter.notifyDataSetChanged();
+                                snackbar = Snackbar
+                                        .make(relativeLayout, "Kayıt silinmiştir.", Snackbar.LENGTH_LONG);
+                                snackbar.setActionTextColor(Color.YELLOW);
+                                snackbar.show();
 
-                adapter.removeItem(position);
+                            } else
+                                MessageBox.showAlert(getContext(), "İşlem başarısız..\n", false);
 
-                Snackbar snackbar = Snackbar
-                        .make(relativeLayout, "Kayıt silinmiştir.", Snackbar.LENGTH_LONG);
-                snackbar.setAction("Geri Al", new View.OnClickListener() {
+                        }
+                    });
+
+
+                } else
+                    MessageBox.showAlert(getContext(), "İşlem başarısız..\n", false);
+
+                /*snackbar.setAction("Geri Al", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
                         adapter.restoreItem(item, position);
                         recyclerView.scrollToPosition(position);
                     }
-                });
-
-                snackbar.setActionTextColor(Color.YELLOW);
-                snackbar.show();
+                });*/
 
             }
         };
@@ -135,7 +115,10 @@ public class MusteriFragment extends Fragment {
 
 
     }
-
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        get_list();
+    }
 
 }

@@ -16,6 +16,7 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.UI.MusteriDetayActivity;
+import com.example.haliyikamaapp.UI.MusteriKayitActivity;
 
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
                 .rect();
        if( !data.get(position).getMusteriAdi().trim().equalsIgnoreCase("")) {
            TextDrawable ic1 = TextDrawable.builder()
-                   .buildRound((data.get(position).getMusteriAdi().substring(0, 1)), color);
+                   .buildRound((data.get(position).getMusteriAdi().substring(0, 1).toUpperCase()), color);
            holder.isimBasHarfi_item.setImageDrawable(ic1);
        }
 
@@ -67,6 +68,16 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
                 musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.getApplicationContext().startActivity(musteri);            }
         });
+
+       holder.edit_musteri.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               Intent musteri = new Intent(mContext, MusteriKayitActivity.class);
+               musteri.putExtra("musteriMid" , String.valueOf(data.get(position).getMid()));
+               musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+               mContext.getApplicationContext().startActivity(musteri);
+           }
+       });
     }
 
     @Override
@@ -93,7 +104,7 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
 
         RelativeLayout relativeLayout;
         public TextView adiSoyadi_item, tarih_item, telefonNo_item;
-        ImageView isimBasHarfi_item;
+        ImageView isimBasHarfi_item, edit_musteri;
 
 
         public MyViewHolder(View itemView) {
@@ -101,6 +112,7 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
             this.isimBasHarfi_item = (ImageView) itemView.findViewById(R.id.imageview);
             this.adiSoyadi_item = (TextView) itemView.findViewById(R.id.adi_soyad_item);
             this.telefonNo_item = (TextView) itemView.findViewById(R.id.telefon_no_item);
+            this.edit_musteri = (ImageView) itemView.findViewById(R.id.edit_musteri);
             relativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayout);
         }
     }

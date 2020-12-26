@@ -4,6 +4,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 
 import com.example.haliyikamaapp.Model.Entity.Musteri;
@@ -20,11 +21,14 @@ public interface MusteriDao {
     @Insert
     long setMusteri(Musteri musteri);
 
+    @Update
+    int updateMusteri(Musteri musteri);
+
     @Query("DELETE FROM MUSTERI")
     void deleteMusteriAll();
 
     @Query("DELETE FROM MUSTERI where mid = :mid")
-    void deletedMusteriForMid(Long mid );
+    int deletedMusteriForMid(Long mid );
 
     @Query("SELECT * FROM MUSTERI where mid = :mid")
     List<Musteri> getMusteriForMid(Long mid);

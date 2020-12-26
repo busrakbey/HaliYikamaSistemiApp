@@ -8,6 +8,7 @@
     android:clipChildren="true"
     android:fitsSystemWindows="true"
     android:background="@drawable/ic_bg_top"
+
     tools:context="com.example.haliyikamaapp.UI.MainActivity">
 
 
@@ -39,7 +40,7 @@
                 android:layout_gravity="left|center"
                 android:layout_weight="1"
                 android:fontFamily="@font/museosans"
-                android:text="Müşteri"
+                android:text="Sipariş Detay Bilgileri"
                 android:textColor="@color/text"
                 android:textSize="25sp"
                 android:textStyle="bold"
@@ -89,13 +90,12 @@
                 android:orientation="vertical">
 
 
-                <include layout="@layout/layout_musteri_kaydi" />
+                <include layout="@layout/layout_siparis_detay_kayit" />
 
             </LinearLayout>
         </RelativeLayout>
 
     </ScrollView>
-
 
 
 

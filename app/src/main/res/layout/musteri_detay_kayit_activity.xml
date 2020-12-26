@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:clipChildren="true"
     android:fitsSystemWindows="true"
+
     android:background="@drawable/ic_bg_top"
 
     tools:context="com.example.haliyikamaapp.UI.MainActivity">
@@ -38,7 +39,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center"
-                android:layout_marginLeft="16dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/museosans"
                 android:text="İletişim Bilgileri"
@@ -69,6 +69,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/ic_bg_top"
+
         tools:ignore="MissingConstraints">
 
 
@@ -96,7 +97,10 @@
             </LinearLayout>
         </RelativeLayout>
 
+
+
     </ScrollView>
+
 
 
 

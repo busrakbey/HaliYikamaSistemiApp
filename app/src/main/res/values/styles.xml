@@ -5,11 +5,16 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+
     </style>
     <style name="AppBaseTheme" parent="Theme.AppCompat.Light">
 
         <item name="android:actionBarStyle">@style/AppBaseTheme.MyActionBarStyle</item>
         <item name="actionBarStyle">@style/AppBaseTheme.MyActionBarStyle</item>
+        <item name="colorControlNormal">#c5c5c5</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
+
     </style>
     <style name="AppBaseTheme.MyActionBarStyle" parent="@style/Widget.AppCompat.ActionBar.Solid">
         <item name="logo">@mipmap/ic_launcher</item>
@@ -31,6 +36,7 @@
 
 
 
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -40,6 +46,8 @@
     <style name="parent">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="colorControlNormal">@color/grey</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
     </style>
 
     <style name="loginParent" parent="parent">
@@ -71,12 +79,12 @@
     </style>
 
     <style name="viewParent">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/button_heigh</item>
     </style>
 
     <style name="loginButton" parent="viewParent">
-        <item name="android:background">@drawable/login_shape_bk</item>
+        <item name="android:background">@drawable/kaydet_button_bg</item>
         <item name="android:textColor">@color/whiteTextColor</item>
         <item name="android:textStyle">bold</item>
     </style>

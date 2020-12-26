@@ -3,6 +3,7 @@ package com.example.haliyikamaapp.Model.Dao;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.example.haliyikamaapp.Model.Entity.Siparis;
 
@@ -11,18 +12,21 @@ import java.util.List;
 @Dao
 public interface SiparisDao {
     @Query("SELECT * FROM SIPARIS")
-    List<Siparis> getMusteriAll();
+    List<Siparis> getSiparisAll();
 
     @Insert
-    void setMusteri(Siparis siparis);
+    long setSiparis(Siparis siparis);
+
+    @Update
+    int updateSiparis(Siparis siparis);
 
     @Query("DELETE FROM SIPARIS")
-    void deleteMusteriAll();
+    void deleteSiparisAll();
 
     @Query("DELETE FROM SIPARIS where mid = :mid")
-    void deletedMusteriForMid(Long mid );
+    int deletedSiparisForMid(Long mid );
 
     @Query("SELECT * FROM SIPARIS where mid = :mid")
-    List<Siparis> getMusteriForMid(Long mid);
+    List<Siparis> getSiparisForMid(Long mid);
 
 }

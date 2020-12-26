@@ -20,9 +20,9 @@
             android:layout_marginTop="@dimen/signup_text_margin_top">
 
             <EditText
-                android:id="@+id/iletisim_baslik"
+                android:id="@+id/sip_urun_adi"
                 style="@style/modifiedEditText"
-                android:hint="İletişim Başlığı(*)"
+                android:hint="Ürün"
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -31,9 +31,9 @@
             android:layout_marginTop="@dimen/signup_text_margin_top">
 
             <EditText
-                android:id="@+id/cep_to_iletisim"
+                android:id="@+id/sip_birim_fiyat"
                 style="@style/modifiedEditText"
-                android:hint="Cep Telefonu(*)"
+                android:hint="Birim Fiyatı"
                 android:inputType="phone" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -44,19 +44,6 @@
             android:layout_weight="1"
             android:orientation="horizontal">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/signup_text_margin_top"
-                android:layout_weight="0.5">
-
-                <Spinner
-                    android:id="@+id/il"
-                    style="@style/modifiedEditText"
-                    android:hint="İl"
-                />
-            </com.google.android.material.textfield.TextInputLayout>
-
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="wrap_content"
@@ -66,10 +53,10 @@
                 android:layout_weight="0.5">
 
                 <Spinner
-                    android:id="@+id/ilce"
+                    android:id="@+id/sip_olcu_birim"
                     style="@style/modifiedEditText"
                     android:layout_weight="0.5"
-                    android:hint="İlçe"/>
+                    android:hint="Ölçü Birimi"/>
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
@@ -81,59 +68,20 @@
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/signup_text_margin_top"
-                android:layout_weight="0.5">
+                style="@style/parent"
+                android:layout_marginTop="@dimen/signup_text_margin_top">
 
                 <EditText
-                    android:id="@+id/cadde"
+                    android:id="@+id/sip_miktar"
                     style="@style/modifiedEditText"
-                    android:hint="Cadde"
-                    android:inputType="text" />
+                    android:hint="Miktar" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/signup_text_margin_top"
-                android:layout_weight="0.5">
 
-                <EditText
-                    android:id="@+id/sokak"
-                    style="@style/modifiedEditText"
-                    android:hint="Sokak" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/signup_text_margin_top"
-                android:layout_weight="0.5">
-
-                <EditText
-                    android:id="@+id/kapi_no"
-                    style="@style/modifiedEditText"
-                    android:hint="Kapı No"
-                    android:inputType="number" />
-            </com.google.android.material.textfield.TextInputLayout>
 
 
         </LinearLayout>
 
-
-
-
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/parent"
-            android:layout_marginTop="@dimen/signup_text_margin_top">
-
-            <EditText
-                android:id="@+id/adres"
-                style="@style/modifiedEditText"
-                android:hint="Adres(*)" />
-        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             style="@style/loginButton"

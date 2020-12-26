@@ -42,7 +42,8 @@ public class MusteriDetayAdapter extends RecyclerView.Adapter<MusteriDetayAdapte
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final MusteriIletisim myListData = data.get(position);
         holder.adres_item.setText(data.get(position).getAdres() != null ? data.get(position).getAdres() : "");
-        holder.il_ilce_item.setText((data.get(position).getIlceId() != null ? data.get(position).getIlceId() : "") + "/" + (data.get(position).getIlId() != null ? data.get(position).getIlId() : ""));
+        holder.il_ilce_item.setText("Ankara/Pursaklar");
+      //  holder.il_ilce_item.setText((data.get(position).getIlceId() != null ? data.get(position).getIlceId() : "") + "/" + (data.get(position).getIlId() != null ? data.get(position).getIlId() : ""));
         holder.iletisim_adi_item.setText(data.get(position).getIletisimAdi() != null ? data.get(position).getIletisimAdi() : "");
         holder.telefonNo_item.setText(data.get(position).getTelefonNo() != null ? data.get(position).getTelefonNo() : "");
 

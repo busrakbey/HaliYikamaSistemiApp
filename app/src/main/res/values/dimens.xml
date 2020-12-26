@@ -8,6 +8,11 @@
     <dimen name="signup_text_margin_top">20dp</dimen>
     <dimen name="mr_dialog_title_text">17sp</dimen>
 
+    <dimen name="text_size_small">13sp</dimen>
+    <dimen name="text_size_medium">16sp</dimen>
+
+    <dimen name="text_size_big">20sp</dimen>
+
 
 </resources>
  

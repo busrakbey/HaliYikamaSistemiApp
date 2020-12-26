@@ -2,11 +2,11 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
         <shape xmlns:android="http://schemas.android.com/apk/res/android">
-            <solid android:color="@color/background_tab_pressed" />
+            <solid android:color="@color/grey" />
             <corners android:radius="7dp" />
         </shape>
     </item>
 
 
-    <item android:drawable="@drawable/item_shadow" />
+    <item android:drawable="@drawable/login_shape_bk" />
 </selector>

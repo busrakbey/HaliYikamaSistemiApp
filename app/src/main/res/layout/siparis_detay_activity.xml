@@ -7,6 +7,8 @@
     android:layout_height="match_parent"
     android:clipChildren="true"
     android:fitsSystemWindows="true"
+    android:background="@drawable/ic_bg_top"
+
     tools:context="com.example.haliyikamaapp.UI.MainActivity">
 
 
@@ -14,6 +16,7 @@
         android:id="@+id/toolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:background="@color/whiteCardColor"
         android:elevation="4dp"
         app:buttonGravity="bottom"
@@ -38,7 +41,7 @@
                 android:layout_gravity="left|center"
                 android:layout_weight="1"
                 android:fontFamily="@font/museosans"
-                android:text="Ana Sayfa"
+                android:text="Sipariş Detayları"
                 android:textColor="@color/text"
                 android:textSize="25sp"
                 android:textStyle="bold"
@@ -59,25 +62,30 @@
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
-    <FrameLayout
-        android:id="@+id/fragment_container"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/siparis_detay_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/ic_bg_top"
+        android:layout_height="match_parent"
+        android:layout_marginTop="70dp"
+        android:layout_marginBottom="100dp"
+        android:clickable="true"
+        android:layout_marginRight="2dp"
+        android:layout_marginLeft="2dp"
+        android:scrollbars="vertical"
         app:layout_constrainedHeight="true"
-        app:layout_constraintBottom_toTopOf="@+id/cordinatorBottom"
-        app:layout_constraintEnd_toEndOf="@id/cordinatorBottom"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/toolbar"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:ignore="NotSibling" />
+        app:layout_constraintTop_toBottomOf="@+id/cordinatorBottom">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/cordinatorBottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/ic_bg_top"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@id/fragment_container">
+        app:layout_constraintStart_toStartOf="@id/musteri_detay_recyclerview">
 
         <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/bottom_bar"

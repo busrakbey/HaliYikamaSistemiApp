@@ -16,16 +16,17 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".UI.MusteriDetayActivity">
-        </activity>
+        <activity android:name=".UI.MusteriDetayActivity"></activity>
 
+        <activity android:name=".UI.MusteriKayitActivity"></activity>
 
-        <activity android:name=".UI.MusteriKayitActivity">
-        </activity>
+        <activity android:name=".UI.MusteriDetayKayitActivity"></activity>
 
-        <activity android:name=".UI.MusteriDetayKayitActivity">
-        </activity>
+        <activity android:name=".UI.SiparisDetayActivity"></activity>
 
+        <activity android:name=".UI.SiparisDetayKayitActivity"></activity>
+
+        <activity android:name=".UI.SiparisKayitActivity"></activity>
 
     </application>
 
