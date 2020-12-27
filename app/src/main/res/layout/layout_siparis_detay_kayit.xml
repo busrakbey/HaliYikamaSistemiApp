@@ -34,7 +34,7 @@
                 android:id="@+id/sip_birim_fiyat"
                 style="@style/modifiedEditText"
                 android:hint="Birim Fiyatı"
-                android:inputType="phone" />
+                android:inputType="numberDecimal" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
@@ -52,7 +52,7 @@
 
                 android:layout_weight="0.5">
 
-                <Spinner
+                <AutoCompleteTextView
                     android:id="@+id/sip_olcu_birim"
                     style="@style/modifiedEditText"
                     android:layout_weight="0.5"
@@ -74,7 +74,8 @@
                 <EditText
                     android:id="@+id/sip_miktar"
                     style="@style/modifiedEditText"
-                    android:hint="Miktar" />
+                    android:hint="Miktar"
+                    android:inputType="numberDecimal" />
             </com.google.android.material.textfield.TextInputLayout>
 
 

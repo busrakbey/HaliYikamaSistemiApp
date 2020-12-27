@@ -85,12 +85,19 @@ public class MusteriDetayKayitActivity extends AppCompatActivity {
         if (musteriDetayMid != null)
             getEditMode(Long.valueOf(musteriDetayMid));
 
-       /* S_IL il = new S_IL();
-       il.setId(6L);
-       il.setAd("Ankara");
+        List<String> list = new ArrayList<String>();
+        list.add("İl Seçiniz..");
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, list);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        il_spinner.setAdapter(dataAdapter);
 
-        List<Long> il_id = new ArrayList<Long>();//add ids in this list
-        List<String> il_adi = new ArrayList<String>();//add names in this list*/
+        List<String> list2 = new ArrayList<String>();
+        list2.add("İlçe Seçiniz..");
+        ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, list2);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ilce_spinner.setAdapter(dataAdapter2);
 
 
     }
@@ -165,7 +172,7 @@ public class MusteriDetayKayitActivity extends AppCompatActivity {
             sokak_edittw.setText(updateKayitList.get(0).getSokak());
             //  il_spinner.setSelection(updateKayitList.get(0).getId());
             // ilce_spinner.setSelection();
-            adres_edittw.setText(adres_edittw.getText().toString());
+            adres_edittw.setText(updateKayitList.get(0).getAdres());
 
         }
 

@@ -7,16 +7,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.haliyikamaapp.AutoCompleteAdapter.MusteriAutoCompleteAdapter;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
+import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.Model.Entity.Siparis;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
@@ -28,11 +31,15 @@ import java.util.List;
 public class SiparisKayitActivity extends AppCompatActivity {
     Toolbar toolbar;
     FloatingActionButton ekleButon;
-    EditText musteri_edittw, sube_edittw, tarih_edittw, tutar_edittw, aciklama_edittw;
+    EditText sube_edittw, tarih_edittw, tutar_edittw, aciklama_edittw;
+    AutoCompleteTextView musteri_edittw;
     Button kayit_button;
     String gelenSiparisMid;
     HaliYikamaDatabase db;
     private DatePickerDialog datePickerDialog;
+    MusteriAutoCompleteAdapter autoCompleteAdapter;
+    Long secilen_musteri_mid;
+    String secilen_musteri_adi;
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -76,7 +83,7 @@ public class SiparisKayitActivity extends AppCompatActivity {
 
     void init_item() {
         db = HaliYikamaDatabase.getInstance(SiparisKayitActivity.this);
-        musteri_edittw = (EditText) findViewById(R.id.musteri_autocomplete);
+        musteri_edittw = (AutoCompleteTextView) findViewById(R.id.musteri_autocomplete);
         sube_edittw = (EditText) findViewById(R.id.sube_adi);
         tarih_edittw = (EditText) findViewById(R.id.siparis_tarihi);
         tutar_edittw = (EditText) findViewById(R.id.siparis_tutar);
@@ -99,11 +106,30 @@ public class SiparisKayitActivity extends AppCompatActivity {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                                tarih_edittw.setText(day + "." + Integer.valueOf(month+1)+ "." + year);
+                                tarih_edittw.setText(day + "." + Integer.valueOf(month + 1) + "." + year);
                             }
-                        },  year,   month,  dayOfMonth);
+                        }, year, month, dayOfMonth);
                 datePickerDialog.show();
 
+            }
+        });
+
+
+        List<Musteri> allMusteri = db.musteriDao().getMusteriAll();
+        autoCompleteAdapter = new MusteriAutoCompleteAdapter(this, R.layout.activity_main, android.R.layout.simple_dropdown_item_1line, allMusteri);
+        musteri_edittw.setThreshold(2);
+        musteri_edittw.setAdapter(autoCompleteAdapter);
+
+
+        musteri_edittw.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Musteri dty = (Musteri) parent.getAdapter().getItem(position);
+
+                if (dty != null) {
+                    secilen_musteri_mid = dty.getMid();
+                    secilen_musteri_adi = dty.getMusteriAdi() + " " + dty.getMusteriSoyadi();
+                }
             }
         });
 
@@ -120,10 +146,11 @@ public class SiparisKayitActivity extends AppCompatActivity {
         //  else{
 
         final Siparis siparis = new Siparis();
-        siparis.setMusteriId(1L);
+        siparis.setMusteriMid(secilen_musteri_mid);
         siparis.setSubeId(1L);
         siparis.setSiparisTarihi(tarih_edittw.getText().toString());
-        siparis.setSiparisTutar(Double.parseDouble(tutar_edittw.getText().toString()));
+        if (!tutar_edittw.getText().toString().equalsIgnoreCase(""))
+            siparis.setSiparisTutar(Double.parseDouble(tutar_edittw.getText().toString()));
         siparis.setAciklama(aciklama_edittw.getText().toString());
 
 
@@ -145,14 +172,14 @@ public class SiparisKayitActivity extends AppCompatActivity {
                         if (gelenSiparisMid == null && Integer.valueOf(String.valueOf(finalYeniKayitSiparisMid)) > 0) {
                             MessageBox.showAlert(SiparisKayitActivity.this, "Kayıt Başarılı..\n", false);
                             Intent i = new Intent(SiparisKayitActivity.this, SiparisDetayKayitActivity.class);
-                            i.putExtra("siparisMid", String.valueOf(gelenSiparisMid));
+                            i.putExtra("siparisMid", String.valueOf(finalYeniKayitSiparisMid));
                             finish();
                             startActivity(i);
                         }
                         if (gelenSiparisMid != null && finalYeniKayitSiparisMid == 1) {
                             MessageBox.showAlert(SiparisKayitActivity.this, "İşlem Başarılı..\n", false);
 
-                        } else if(finalYeniKayitSiparisMid < 0)
+                        } else if (finalYeniKayitSiparisMid < 0)
                             MessageBox.showAlert(SiparisKayitActivity.this, "İşlem başarısız..\n", false);
 
                     }
@@ -168,11 +195,14 @@ public class SiparisKayitActivity extends AppCompatActivity {
     void getEditMode(Long siparisMid) {
         List<Siparis> updateKayitList = db.siparisDao().getSiparisForMid(siparisMid);
         if (updateKayitList != null && updateKayitList.size() > 0 && updateKayitList.get(0).getMid() == siparisMid) {
-            musteri_edittw.setText(updateKayitList.get(0).getMusteriId().toString());
-            sube_edittw.setText(updateKayitList.get(0).getSubeId().toString());
-            tarih_edittw.setText(updateKayitList.get(0).getSiparisTarihi().toString());
-            tutar_edittw.setText(updateKayitList.get(0).getSiparisTutar().toString());
-            aciklama_edittw.setText(updateKayitList.get(0).getAciklama().toString());
+            if(updateKayitList.get(0).getMusteriMid() != null){
+                List<Musteri> allMusteri = db.musteriDao().getMusteriForMid(updateKayitList.get(0).getMusteriMid());
+                musteri_edittw.setText(allMusteri.get(0).getMusteriAdi()+ " " + allMusteri.get(0).getMusteriSoyadi());
+            }
+            sube_edittw.setText("");
+            tarih_edittw.setText(updateKayitList.get(0).getSiparisTarihi());
+            tutar_edittw.setText(updateKayitList.get(0).getSiparisTutar() != null ? updateKayitList.get(0).getSiparisTutar().toString() : "");
+            aciklama_edittw.setText(updateKayitList.get(0).getAciklama());
 
 
         }

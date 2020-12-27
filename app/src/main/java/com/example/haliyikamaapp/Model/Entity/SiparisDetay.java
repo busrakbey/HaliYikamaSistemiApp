@@ -37,6 +37,9 @@ public class SiparisDetay {
     @ColumnInfo(name = "olcuBirimId")
     public Long olcuBirimId;
 
+    @ColumnInfo(name = "olcuBirimMid")
+    public Long olcuBirimMid;
+
     @ColumnInfo(name = "musteriId")
     public String musteriId;
 
@@ -130,5 +133,13 @@ public class SiparisDetay {
 
     public void setTenantId(Long tenantId) {
         this.tenantId = tenantId;
+    }
+
+    public Long getOlcuBirimMid() {
+        return olcuBirimMid;
+    }
+
+    public void setOlcuBirimMid(Long olcuBirimMid) {
+        this.olcuBirimMid = olcuBirimMid;
     }
 }

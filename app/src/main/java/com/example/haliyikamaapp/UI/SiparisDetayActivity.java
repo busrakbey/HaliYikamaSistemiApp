@@ -77,7 +77,7 @@ public class SiparisDetayActivity extends AppCompatActivity {
         yeni_siparis_detay_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(SiparisDetayActivity.this, MusteriDetayKayitActivity.class);
+                Intent i = new Intent(SiparisDetayActivity.this, SiparisDetayKayitActivity.class);
                 i.putExtra("siparisMid", siparisMid);
                 finish();
                 startActivity(i);

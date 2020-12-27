@@ -28,4 +28,52 @@ public class OlcuBirim {
     @ColumnInfo(name = "aciklama")
     public String aciklama;
 
+    @NonNull
+    public Long getMid() {
+        return mid;
+    }
+
+    public void setMid(@NonNull Long mid) {
+        this.mid = mid;
+    }
+
+    public Long getMustId() {
+        return mustId;
+    }
+
+    public void setMustId(Long mustId) {
+        this.mustId = mustId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getOlcuBirimi() {
+        return olcuBirimi;
+    }
+
+    public void setOlcuBirimi(String olcuBirimi) {
+        this.olcuBirimi = olcuBirimi;
+    }
+
+    public Boolean getAktif() {
+        return aktif;
+    }
+
+    public void setAktif(Boolean aktif) {
+        this.aktif = aktif;
+    }
+
+    public String getAciklama() {
+        return aciklama;
+    }
+
+    public void setAciklama(String aciklama) {
+        this.aciklama = aciklama;
+    }
 }
