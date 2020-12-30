@@ -261,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
 
         ContentResolver cr = getBaseContext().getContentResolver();
 
-        if(telephoneNumber != null ){
+        if (telephoneNumber != null) {
             AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
             View mView = getLayoutInflater().inflate(R.layout.popup_window, null);
             final TextView call_tittle = (TextView) mView.findViewById(R.id.call_tittle);
@@ -274,11 +274,12 @@ public class MainActivity extends AppCompatActivity {
             if (telephoneNumber.length() == 13) {
                 telephoneNumber = telephoneNumber.substring(2, 13);
                 List<Musteri> allMusteriList = db.musteriDao().getMusteriAll();
+                Boolean telefonNumarasiVarMi = false;
                 for (final Musteri item : allMusteriList) {
                     if (item.getTelefonNumarasi().equalsIgnoreCase(telephoneNumber)) {
-
+                        telefonNumarasiVarMi = true;
                         call_button.setText("Sipariş Oluştur");
-                        call_message.setText("Müşteri Adı : " + item.getMusteriAdi() + " " + item.getMusteriSoyadi() );
+                        call_message.setText("Müşteri Adı : " + item.getMusteriAdi() + " " + item.getMusteriSoyadi());
                         mBuilder.setView(mView);
                         final AlertDialog dialog = mBuilder.create();
                         dialog.show();
@@ -300,9 +301,9 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 }
-                if (allMusteriList.size() == 0) {
+                if (!telefonNumarasiVarMi) {
                     call_button.setText("Müşteri Oluştur");
-                    call_message.setVisibility(View.GONE);
+                    call_message.setText("Telefon No : " + telephoneNumber);
                     mBuilder.setView(mView);
                     final AlertDialog dialog = mBuilder.create();
                     dialog.show();
@@ -322,8 +323,6 @@ public class MainActivity extends AppCompatActivity {
                             dialog.dismiss();
                         }
                     });
-
-
                 }
 
 
@@ -421,8 +420,8 @@ public class MainActivity extends AppCompatActivity {
         Boolean hasCallPermission = ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED  && ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED  && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.SYSTEM_ALERT_WINDOW) == PackageManager.PERMISSION_GRANTED;
         if (!hasCallPermission)
             ActivityCompat.requestPermissions(this,

@@ -70,6 +70,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_weight="0.1"
                     android:text="Birim Fiyatı : "
                     android:textColor="@color/mr_toolbar"
@@ -80,6 +81,7 @@
                     android:id="@+id/siparis_detay_birim_fiyati_item"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_weight="0.1"
                     android:text="300 TL"
                     android:textColor="@color/mr_toolbar"
