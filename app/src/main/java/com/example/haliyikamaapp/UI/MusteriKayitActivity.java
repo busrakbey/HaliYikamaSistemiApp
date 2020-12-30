@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -22,6 +23,7 @@ import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MusteriKayitActivity extends AppCompatActivity {
@@ -30,7 +32,7 @@ public class MusteriKayitActivity extends AppCompatActivity {
     EditText tc_no_edittw, adi_edittw, soyadi_edittw, tel_no_edittw, vergi_no_edittw;
     Spinner musteri_turu_spinner;
     Button kayit_button;
-    String gelenMusteriMid;
+    String gelenMusteriMid, gelenTelefonNumarasi;
     HaliYikamaDatabase db;
 
     @SuppressLint("RestrictedApi")
@@ -81,24 +83,34 @@ public class MusteriKayitActivity extends AppCompatActivity {
         musteri_turu_spinner = (Spinner) findViewById(R.id.musteri_turu);
         vergi_no_edittw = (EditText) findViewById(R.id.vergş_no);
         kayit_button = (Button) findViewById(R.id.musteri_kayit_button);
-        if (gelenMusteriMid == null ){
+        if (gelenMusteriMid == null) {
             tel_no_edittw.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     tel_no_edittw.setHint("Lütfen ilk hanesini sıfır giriniz");
-                    if(!hasFocus)
+                    if (!hasFocus)
                         tel_no_edittw.setHint(tel_no_edittw.getText().toString());
                 }
             });
-
 
 
         }
 
 
         gelenMusteriMid = getIntent().getStringExtra("musteriMid");
-        if(gelenMusteriMid != null)
+        if (gelenMusteriMid != null)
             getEditMode(Long.valueOf(gelenMusteriMid));
+        gelenTelefonNumarasi = getIntent().getStringExtra("number");
+        if (gelenTelefonNumarasi != null)
+            tel_no_edittw.setText(gelenTelefonNumarasi);
+
+        List<String> list = new ArrayList<String>();
+        list.add("Müşteri türü seçiniz..");
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, list);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        musteri_turu_spinner.setAdapter(dataAdapter);
+
     }
 
     public void musteriKayitOnclik(View v) {
@@ -137,7 +149,7 @@ public class MusteriKayitActivity extends AppCompatActivity {
 
                             if (gelenMusteriMid == null && Integer.valueOf(String.valueOf(finalMusteriMid)) > 0) {
                                 MessageBox.showAlert(MusteriKayitActivity.this, "Kayıt Başarılı..\n", false);
-                                Intent i = new Intent(MusteriKayitActivity.this, MusteriDetayKayitActivity.class);
+                                Intent i = new Intent(MusteriKayitActivity.this, SiparisKayitActivity.class);
                                 i.putExtra("musteriMid", String.valueOf(finalMusteriMid));
                                 finish();
                                 startActivity(i);
@@ -145,7 +157,7 @@ public class MusteriKayitActivity extends AppCompatActivity {
                             if (gelenMusteriMid != null && finalMusteriMid == 1) {
                                 MessageBox.showAlert(MusteriKayitActivity.this, "İşlem Başarılı..\n", false);
 
-                            } else if(finalMusteriMid < 0)
+                            } else if (finalMusteriMid < 0)
                                 MessageBox.showAlert(MusteriKayitActivity.this, "İşlem başarısız..\n", false);
 
 
@@ -165,7 +177,7 @@ public class MusteriKayitActivity extends AppCompatActivity {
             soyadi_edittw.setText(updateKayitList.get(0).getMusteriSoyadi().toString());
             tel_no_edittw.setText(updateKayitList.get(0).getTelefonNumarasi().toString());
             tc_no_edittw.setText(updateKayitList.get(0).getTcKimlikNo().toString());
-           // musteri_turu_spinner.setText(updateKayitList.get(0).getAciklama().toString());
+            // musteri_turu_spinner.setText(updateKayitList.get(0).getAciklama().toString());
             vergi_no_edittw.setText(updateKayitList.get(0).getVergiKimlikNo());
 
 

@@ -12,11 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.SiparisDetay;
+import com.example.haliyikamaapp.Model.Entity.Urun;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.UI.SiparisDetayKayitActivity;
 
 import java.util.List;
+import java.util.function.DoubleUnaryOperator;
 
 public class SiparisDetayAdapter extends RecyclerView.Adapter<SiparisDetayAdapter.MyViewHolder> {
 
@@ -38,11 +41,14 @@ public class SiparisDetayAdapter extends RecyclerView.Adapter<SiparisDetayAdapte
     @Override
     public void onBindViewHolder(SiparisDetayAdapter.MyViewHolder holder, final int position) {
         final SiparisDetay myListData = data.get(position);
-        holder.urun_adi_item.setText("Ürün Adı");
-        holder.olcu_birimi_item.setText("Ölçü Birimi");
-        holder.miktar_item.setText("Miktar");
-        holder.fiyat_item.setText("100 TL");
+        HaliYikamaDatabase db = HaliYikamaDatabase.getInstance(mContext);
+        List<Urun> allUrun = db.urunDao().getUrunForMid(data.get(position).getUrunMid());
+        if (allUrun != null && allUrun.size() > 0)
+            holder.urun_adi_item.setText(allUrun.get(0).getUrunAdi());
 
+        holder.olcu_birimi_item.setText("Ölçü Birimi : ");
+        holder.miktar_item.setText("Miktarı : " + (data.get(position).getMiktar() != null ? data.get(position).getMiktar().toString() : ""));
+        holder.fiyat_item.setText(data.get(position).getBirimFiyat() != null ? data.get(position).getBirimFiyat().toString() + " TL" : "");
 
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override

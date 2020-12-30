@@ -17,6 +17,16 @@
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/parent"
+            android:layout_marginTop="@dimen/signup_text_margin_top"
+            android:visibility="gone">
+
+            <Spinner
+                android:id="@+id/musteri_turu"
+                style="@style/modifiedEditText" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/parent"
             android:layout_marginTop="@dimen/signup_text_margin_top">
             <EditText
                 style="@style/modifiedEditText"
@@ -54,15 +64,7 @@
                 android:inputType="number"
                 android:id="@+id/telefon_no"
                 android:hint="Telefon Numarası"/>
-        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/parent"
-            android:layout_marginTop="@dimen/signup_text_margin_top">
-            <Spinner
-                style="@style/modifiedEditText"
-                android:id="@+id/musteri_turu"
-                />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout

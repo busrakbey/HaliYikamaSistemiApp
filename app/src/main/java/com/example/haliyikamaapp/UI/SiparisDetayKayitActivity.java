@@ -19,9 +19,11 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.haliyikamaapp.AutoCompleteAdapter.MusteriAutoCompleteAdapter;
 import com.example.haliyikamaapp.AutoCompleteAdapter.OlcuBirimAutoCompleteAdapter;
+import com.example.haliyikamaapp.AutoCompleteAdapter.UrunAutoCompleteAdapter;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.OlcuBirim;
 import com.example.haliyikamaapp.Model.Entity.SiparisDetay;
+import com.example.haliyikamaapp.Model.Entity.Urun;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -32,14 +34,15 @@ import java.util.List;
 public class SiparisDetayKayitActivity extends AppCompatActivity {
     Toolbar toolbar;
     FloatingActionButton ekleButon;
-    EditText urun_adi_edittw, birim_fiyati_edittw, miktar_edittw;
-    Button kaydet_button;
-    AutoCompleteTextView olcu_birim_autocomplete;
+    EditText birim_fiyati_edittw, miktar_edittw;
+    Button kaydet_button, siparis_detay_ileri_button;
+    AutoCompleteTextView olcu_birim_autocomplete, urun_adi_autocomplete;
     String siparisMid, siparisDetayMid;
     HaliYikamaDatabase db;
     OlcuBirimAutoCompleteAdapter autoCompleteAdapter;
-    Long olcuBirimMid;
-    String olcuBirimAdi;
+    Long olcuBirimMid, secilen_urun_mid;
+    String olcuBirimAdi, secilen_urun_adi;
+    UrunAutoCompleteAdapter urunAutoCompleteAdapter;
 
 
     @SuppressLint("RestrictedApi")
@@ -84,11 +87,12 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
 
     void init_item() {
         db = HaliYikamaDatabase.getInstance(SiparisDetayKayitActivity.this);
-        urun_adi_edittw = (EditText) findViewById(R.id.sip_urun_adi);
+        urun_adi_autocomplete = (AutoCompleteTextView) findViewById(R.id.sip_urun_adi);
         birim_fiyati_edittw = (EditText) findViewById(R.id.sip_birim_fiyat);
         miktar_edittw = (EditText) findViewById(R.id.sip_miktar);
         olcu_birim_autocomplete = (AutoCompleteTextView) findViewById(R.id.sip_olcu_birim);
         kaydet_button = (Button) findViewById(R.id.iletisim_kaydet);
+        siparis_detay_ileri_button = (Button) findViewById(R.id.iletisim_ileri_button) ;
         Intent intent = getIntent();
         siparisMid = intent.getStringExtra("siparisMid");
         siparisDetayMid = intent.getStringExtra("siparisDetayMid");
@@ -96,14 +100,10 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
             getEditMode(Long.valueOf(siparisDetayMid));
 
 
-
-
         List<OlcuBirim> allOlcuBirim = db.olcuBirimDao().getOlcuBirimAll();
         autoCompleteAdapter = new OlcuBirimAutoCompleteAdapter(this, R.layout.activity_main, android.R.layout.simple_dropdown_item_1line, allOlcuBirim);
         olcu_birim_autocomplete.setThreshold(2);
         olcu_birim_autocomplete.setAdapter(autoCompleteAdapter);
-
-
         olcu_birim_autocomplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -117,13 +117,48 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
         });
 
 
+        List<Urun> allUrun = db.urunDao().getUrunAll();
+        urunAutoCompleteAdapter = new UrunAutoCompleteAdapter(this, R.layout.activity_main, android.R.layout.simple_dropdown_item_1line, allUrun);
+        urun_adi_autocomplete.setThreshold(2);
+        urun_adi_autocomplete.setAdapter(urunAutoCompleteAdapter);
+
+
+        urun_adi_autocomplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Urun dty = (Urun) parent.getAdapter().getItem(position);
+
+                if (dty != null) {
+                    secilen_urun_mid = dty.getMid();
+                    secilen_urun_adi = dty.getUrunAdi();
+                }
+            }
+        });
+
+
+      /*  Urun a = new Urun();
+        a.setUrunAdi("Ürün-1");
+
+
+        Urun b= new Urun();
+        b.setUrunAdi("Ürün-2");
+
+        db.urunDao().setUrun(a);
+        db.urunDao().setUrun(b);*/
+
+
+
     }
 
     public void iletisimOnClick(View v) {
-        yeni_ietisim_kayit();
+        yeni_ietisim_kayit(true);
     }
 
-    void yeni_ietisim_kayit() {
+    public void iletisimIleriOnclik(View v) {
+        yeni_ietisim_kayit(false);
+    }
+
+    void yeni_ietisim_kayit(final Boolean tamamla) {
      /*   if (iletisim_baslik_edittw.getText().toString().trim().equalsIgnoreCase("") ||
                 cep_no_edittw.getText().toString().trim().equalsIgnoreCase("")
                 /* || (il_spinner.getSelectedItemPosition() == -1) || (ilce_spinner.getSelectedItemPosition() == -1) ||
@@ -132,13 +167,13 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
 
         } else {*/
         final SiparisDetay siparisDetay = new SiparisDetay();
-        siparisDetay.setUrunId(1L);
-        if(!birim_fiyati_edittw.getText().toString().equalsIgnoreCase(""))
-        siparisDetay.setBirimFiyat(Double.parseDouble(birim_fiyati_edittw.getText().toString()));
+        if (!birim_fiyati_edittw.getText().toString().equalsIgnoreCase(""))
+            siparisDetay.setBirimFiyat(Double.parseDouble(birim_fiyati_edittw.getText().toString()));
         siparisDetay.setOlcuBirimMid(olcuBirimMid);
-        if(!miktar_edittw.getText().toString().equalsIgnoreCase(""))
-        siparisDetay.setMiktar(Double.parseDouble(miktar_edittw.getText().toString()));
+        if (!miktar_edittw.getText().toString().equalsIgnoreCase(""))
+            siparisDetay.setMiktar(Double.parseDouble(miktar_edittw.getText().toString()));
         siparisDetay.setMustId(Long.valueOf(siparisMid));
+        siparisDetay.setUrunMid(secilen_urun_mid);
 
         new Thread(new Runnable() {
             @Override
@@ -154,16 +189,36 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (siparisDetayMid == null && Integer.valueOf(String.valueOf(finalYeniKayitSiparisMid)) > 0) {
-                            MessageBox.showAlert(SiparisDetayKayitActivity.this, "Kayıt Başarılı..\n", false);
-                            Intent i = new Intent(SiparisDetayKayitActivity.this, SiparisDetayActivity.class);
-                            i.putExtra("siparisMid", String.valueOf(siparisMid));
-                            finish();
-                            startActivity(i);
+                            if(tamamla){
+                                MessageBox.showAlert(SiparisDetayKayitActivity.this, "Kayıt Başarılı..\n", false);
+                                Intent i = new Intent(SiparisDetayKayitActivity.this, SiparisDetayActivity.class);
+                                i.putExtra("siparisMid", String.valueOf(siparisMid));
+                                finish();
+                                startActivity(i);
+                            }else{
+                                Intent i = new Intent(SiparisDetayKayitActivity.this, SiparisDetayKayitActivity.class);
+                                i.putExtra("siparisMid", siparisMid);
+                                finish();
+                                startActivity(i);
+                            }
+
                         }
                         if (siparisDetayMid != null && finalYeniKayitSiparisMid == 1) {
-                            MessageBox.showAlert(SiparisDetayKayitActivity.this, "İşlem Başarılı..\n", false);
 
-                        } else if(finalYeniKayitSiparisMid < 0)
+                            if(tamamla){
+                                MessageBox.showAlert(SiparisDetayKayitActivity.this, "Kayıt Başarılı..\n", false);
+                                Intent i = new Intent(SiparisDetayKayitActivity.this, SiparisDetayActivity.class);
+                                i.putExtra("siparisMid", String.valueOf(siparisMid));
+                                finish();
+                                startActivity(i);
+                            }else{
+                                Intent i = new Intent(SiparisDetayKayitActivity.this, SiparisDetayKayitActivity.class);
+                                i.putExtra("siparisMid", siparisMid);
+                                finish();
+                                startActivity(i);
+                            }
+
+                        } else if (finalYeniKayitSiparisMid < 0)
                             MessageBox.showAlert(SiparisDetayKayitActivity.this, "İşlem başarısız..\n", false);
 
                     }
@@ -178,10 +233,13 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
     void getEditMode(Long siparisDetayMid) {
         List<SiparisDetay> updateKayitList = db.siparisDetayDao().getSiparisDetayForMid(siparisDetayMid);
         if (updateKayitList != null && updateKayitList.size() > 0 && updateKayitList.get(0).getMid() == siparisDetayMid) {
-            urun_adi_edittw.setText(""/*updateKayitList.get(0).getUrunId()*/);
-            birim_fiyati_edittw.setText(updateKayitList.get(0).getBirimFiyat().toString());
-            miktar_edittw.setText(updateKayitList.get(0).getMiktar().toString());
+            birim_fiyati_edittw.setText( updateKayitList.get(0).getBirimFiyat() != null ? updateKayitList.get(0).getBirimFiyat().toString() : "");
+            miktar_edittw.setText(updateKayitList.get(0).getMiktar() != null ? updateKayitList.get(0).getMiktar().toString() : "");
             //  olcu_birim_spinne.setText(updateKayitList.get(0).getKapiNo());
+
+            List<Urun> allUrun = db.urunDao().getUrunForMid(updateKayitList.get(0).getUrunMid());
+            if (allUrun != null && allUrun.size() > 0)
+                urun_adi_autocomplete.setText(allUrun.get(0).getUrunAdi());
 
         }
     }

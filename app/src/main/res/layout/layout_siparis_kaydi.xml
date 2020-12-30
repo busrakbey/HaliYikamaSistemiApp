@@ -1,83 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/loginCard"
-    app:cardCornerRadius="@dimen/loginCardRadius"
-    android:elevation="5dp"
     android:layout_gravity="center"
     android:layout_marginTop="@dimen/loginViewsMargin"
     android:layout_marginBottom="@dimen/loginViewsMargin"
-    android:background="@color/whiteCardColor">
+    android:background="@color/whiteCardColor"
+    android:elevation="5dp"
+    app:cardCornerRadius="@dimen/loginCardRadius">
 
     <LinearLayout
         style="@style/linearParent"
         android:layout_gravity="center"
         android:padding="@dimen/loginViewsMargin">
 
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/signup_text_margin_top">
+
+            <CheckBox
+                android:id="@+id/siparis_teslim_alinacakmi"
+                android:layout_width="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_height="wrap_content"
+                android:hint="Teslim Alınacak"
+                android:gravity="right|center"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.textfield.TextInputLayout
             style="@style/parent"
             android:layout_marginTop="@dimen/signup_text_margin_top">
+
             <AutoCompleteTextView
-                style="@style/modifiedEditText"
-                android:inputType="text"
                 android:id="@+id/musteri_autocomplete"
-                android:hint="Müşteri"/>
+                style="@style/modifiedEditText"
+                android:hint="Müşteri"
+                android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/parent"
             android:layout_marginTop="@dimen/signup_text_margin_top">
+
             <AutoCompleteTextView
-                style="@style/modifiedEditText"
-                android:inputType="text"
                 android:id="@+id/sube_adi"
-                android:hint="Şube"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/parent"
-            android:layout_marginTop="@dimen/signup_text_margin_top">
-            <EditText
                 style="@style/modifiedEditText"
-                android:inputType="text"
+                android:hint="Şube"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/parent"
+            android:layout_marginTop="@dimen/signup_text_margin_top">
+
+            <EditText
                 android:id="@+id/siparis_tarihi"
+                style="@style/modifiedEditText"
                 android:clickable="true"
-                android:hint="Tarih"/>
+                android:hint="Tarih"
+                android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/parent"
-            android:layout_marginTop="@dimen/signup_text_margin_top">
+            android:layout_marginTop="@dimen/signup_text_margin_top"
+            android:visibility="gone">
 
             <EditText
                 android:id="@+id/siparis_tutar"
                 style="@style/modifiedEditText"
                 android:hint="Tutar"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                android:visibility="gone" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/parent"
             android:layout_marginTop="@dimen/signup_text_margin_top">
+
             <EditText
-                style="@style/modifiedEditText"
-                android:inputType="text"
                 android:id="@+id/siparis_aciklama"
-                android:hint="Açıklama"
-                />
+                style="@style/modifiedEditText"
+                android:inputType="textMultiLine"
+                android:gravity="top|left"
+                android:lines="8"
+                android:maxLines="12"
+                android:minLines="1"
+                android:scrollbars="vertical"
+                android:hint="Açıklama" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
+            <Button
+                android:id="@+id/musteri_tamamla_button"
+                style="@style/tamamlaButton"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:layout_weight="0.5"
+                android:onClick="musteriTamamlaOnclik"
+                android:textColor="@color/text"
+                android:drawableLeft="@drawable/ic_check_black_24dp"
+                android:paddingLeft="10dp"
+                android:text="TAMAMLA" />
 
-        <Button
-            style="@style/loginButton"
-            android:id="@+id/musteri_kayit_button"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/signup_text_margin_top"
-            android:onClick="musteriKayitOnclik"
-            android:text="KAYDET" />
-
+            <Button
+                android:id="@+id/musteri_kayit_button"
+                style="@style/loginButton"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="100dp"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:onClick="musteriKayitOnclik"
+                android:layout_weight="0.5"
+                android:drawableRight="@drawable/ic_arrow_forward_black_24dp"
+                android:paddingRight="10dp"
+                android:text="İLERLE" />
+        </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

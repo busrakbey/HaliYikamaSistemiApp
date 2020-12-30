@@ -28,6 +28,9 @@ public class SiparisDetay {
     @ColumnInfo(name = "urunId")
     public Long urunId;
 
+    @ColumnInfo(name = "urunMid")
+    public Long urunMid;
+
     @ColumnInfo(name = "birimFiyat")
     public Double birimFiyat;
 
@@ -141,5 +144,13 @@ public class SiparisDetay {
 
     public void setOlcuBirimMid(Long olcuBirimMid) {
         this.olcuBirimMid = olcuBirimMid;
+    }
+
+    public Long getUrunMid() {
+        return urunMid;
+    }
+
+    public void setUrunMid(Long urunMid) {
+        this.urunMid = urunMid;
     }
 }

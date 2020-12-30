@@ -43,7 +43,7 @@ public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHo
         holder.tarih_item.setText(data.get(position).getSiparisTarihi() != null ? data.get(position).getSiparisTarihi() : "" );
        // holder.sipariş_durumu_item.setText(data.get(position).getSiparisDurumu() != null ? data.get(position).getSiparisDurumu() : "" );
         holder.sipariş_durumu_item.setText("SİPARİŞ ALINDI");
-        holder.siparis_tutari_item.setText(data.get(position).getSiparisTutar() != null ? data.get(position).getSiparisTutar().toString() : "" );
+        holder.siparis_tutari_item.setText(data.get(position).getSiparisTutar() != null ? data.get(position).getSiparisTutar().toString() + " TL": ""  );
         holder.sube_item.setText("Merkez Şube" );
 
 

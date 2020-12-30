@@ -17,6 +17,7 @@ import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.UI.MusteriDetayActivity;
 import com.example.haliyikamaapp.UI.MusteriKayitActivity;
+import com.example.haliyikamaapp.UI.SiparisKayitActivity;
 
 import java.util.List;
 
@@ -78,6 +79,16 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
                mContext.getApplicationContext().startActivity(musteri);
            }
        });
+
+       holder.new_siparis_button.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               Intent musteri = new Intent(mContext, SiparisKayitActivity.class);
+               musteri.putExtra("musteriMid" , String.valueOf(data.get(position).getMid()));
+               musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+               mContext.getApplicationContext().startActivity(musteri);
+           }
+       });
     }
 
     @Override
@@ -104,7 +115,7 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
 
         RelativeLayout relativeLayout;
         public TextView adiSoyadi_item, tarih_item, telefonNo_item;
-        ImageView isimBasHarfi_item, edit_musteri;
+        ImageView isimBasHarfi_item, edit_musteri, new_siparis_button;
 
 
         public MyViewHolder(View itemView) {
@@ -113,6 +124,7 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
             this.adiSoyadi_item = (TextView) itemView.findViewById(R.id.adi_soyad_item);
             this.telefonNo_item = (TextView) itemView.findViewById(R.id.telefon_no_item);
             this.edit_musteri = (ImageView) itemView.findViewById(R.id.edit_musteri);
+            this.new_siparis_button = (ImageView) itemView.findViewById(R.id.new_siparis);
             relativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayout);
         }
     }

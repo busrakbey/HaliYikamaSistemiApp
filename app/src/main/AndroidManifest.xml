@@ -2,16 +2,36 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.haliyikamaapp">
 
+    <uses-permission android:name="android.permission.READ_CALL_LOG"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+
+
+
+
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/hali_icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppBaseTheme.NoActionBar">
-        <activity android:name=".UI.MainActivity">
+
+        <receiver android:name=".UI.IncomingCallInterceptor">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE"/>
+                <action android:name="android.intent.action.CALL" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name="com.example.haliyikamaapp.UI.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.PHONE_STATE"/>
+                <action android:name="android.intent.action.CALL" />
             </intent-filter>
         </activity>
 
@@ -26,6 +46,9 @@
         <activity android:name=".UI.SiparisDetayKayitActivity"></activity>
 
         <activity android:name=".UI.SiparisKayitActivity"></activity>
+        <activity android:name=".UI.CallHelper"></activity>
+
+
 
     </application>
 

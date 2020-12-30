@@ -89,6 +89,12 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="tamamlaButton" parent="viewParent">
+        <item name="android:background">@drawable/tamamla_button_bg</item>
+        <item name="android:textColor">@color/whiteTextColor</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="mr_dialog_title_textview">
         <item name="android:textColor">@color/text</item>
         <item name="android:textSize">@dimen/mr_dialog_title_text</item>

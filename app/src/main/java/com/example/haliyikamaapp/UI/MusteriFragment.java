@@ -1,5 +1,6 @@
 package com.example.haliyikamaapp.UI;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -121,5 +122,7 @@ public class MusteriFragment extends Fragment {
         super.onResume();
         get_list();
     }
+
+
 
 }

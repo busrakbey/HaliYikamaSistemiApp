@@ -19,7 +19,7 @@
             style="@style/parent"
             android:layout_marginTop="@dimen/signup_text_margin_top">
 
-            <EditText
+            <AutoCompleteTextView
                 android:id="@+id/sip_urun_adi"
                 style="@style/modifiedEditText"
                 android:hint="Ürün"
@@ -84,13 +84,41 @@
         </LinearLayout>
 
 
-        <Button
-            style="@style/loginButton"
-            android:id="@+id/iletisim_kaydet"
-            android:onClick="iletisimOnClick"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/signup_text_margin_top"
-            android:text="KAYDET" />
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/iletisim_kaydet"
+                style="@style/tamamlaButton"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:layout_weight="0.5"
+                android:onClick="iletisimOnClick"
+                android:textColor="@color/text"
+                android:drawableLeft="@drawable/ic_check_black_24dp"
+                android:paddingLeft="10dp"
+                android:text="TAMAMLA" />
+
+            <Button
+                android:id="@+id/iletisim_ileri_button"
+                style="@style/loginButton"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="100dp"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:onClick="iletisimIleriOnclik"
+                android:layout_weight="0.5"
+                android:drawableRight="@drawable/ic_arrow_forward_black_24dp"
+                android:paddingRight="10dp"
+                android:text="İLERLE" />
+
+
+        </LinearLayout>
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>
