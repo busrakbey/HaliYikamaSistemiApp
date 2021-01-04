@@ -142,7 +142,9 @@ public class MusteriDetayKayitActivity extends AppCompatActivity {
                         public void run() {
                             if (musteriDetayMid == null && Integer.valueOf(String.valueOf(finalYeniKayitMusteriMid)) > 0) {
                                 MessageBox.showAlert(MusteriDetayKayitActivity.this, "Kayıt Başarılı..\n", false);
-                                Intent i = new Intent(MusteriDetayKayitActivity.this, MusteriDetayActivity.class);
+
+                               // Intent i = new Intent(MusteriDetayKayitActivity.this, MusteriDetayActivity.class);
+                                 Intent i = new Intent(MusteriDetayKayitActivity.this, SiparisKayitActivity.class);
                                 i.putExtra("musteriMid", String.valueOf(musteriMid));
                                 finish();
                                 startActivity(i);

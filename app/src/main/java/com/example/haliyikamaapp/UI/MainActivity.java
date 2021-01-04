@@ -267,6 +267,7 @@ public class MainActivity extends AppCompatActivity {
             final TextView call_tittle = (TextView) mView.findViewById(R.id.call_tittle);
             final TextView call_message = (TextView) mView.findViewById(R.id.call_message);
             final Button call_button = (Button) mView.findViewById(R.id.call_button);
+            final Button call_button2 = (Button) mView.findViewById(R.id.call_button2);
             final ImageView cancel_button = (ImageView) mView.findViewById(R.id.call_close);
             call_tittle.setText("ÇAĞRI BİLGİ EKRANI");
 
@@ -278,6 +279,8 @@ public class MainActivity extends AppCompatActivity {
                 for (final Musteri item : allMusteriList) {
                     if (item.getTelefonNumarasi().equalsIgnoreCase(telephoneNumber)) {
                         telefonNumarasiVarMi = true;
+                        call_button2.setVisibility(View.VISIBLE);
+                        call_button2.setText("Müşteri İşlemleri");
                         call_button.setText("Sipariş Oluştur");
                         call_message.setText("Müşteri Adı : " + item.getMusteriAdi() + " " + item.getMusteriSoyadi());
                         mBuilder.setView(mView);
@@ -299,9 +302,22 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
 
+
+                        call_button2.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent(MainActivity.this, MusteriKayitActivity.class);
+                                intent.putExtra("musteriMid", item.getMid().toString());
+                                finish();
+                                startActivity(intent);
+                            }
+                        });
+
+
                     }
                 }
                 if (!telefonNumarasiVarMi) {
+                    call_button2.setVisibility(View.GONE);
                     call_button.setText("Müşteri Oluştur");
                     call_message.setText("Telefon No : " + telephoneNumber);
                     mBuilder.setView(mView);

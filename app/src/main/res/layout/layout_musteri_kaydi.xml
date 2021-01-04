@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/loginCard"
-    app:cardCornerRadius="@dimen/loginCardRadius"
-    android:elevation="5dp"
     android:layout_gravity="center"
     android:layout_marginTop="@dimen/loginViewsMargin"
     android:layout_marginBottom="@dimen/loginViewsMargin"
-    android:background="@color/whiteCardColor">
+    android:background="@color/whiteCardColor"
+    android:elevation="5dp"
+    app:cardCornerRadius="@dimen/loginCardRadius">
 
     <LinearLayout
         style="@style/linearParent"
@@ -27,43 +27,52 @@
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/parent"
-            android:layout_marginTop="@dimen/signup_text_margin_top">
+            android:layout_marginTop="@dimen/signup_text_margin_top"
+            android:visibility="gone"
+            tools:visibility="gone">
+
             <EditText
-                style="@style/modifiedEditText"
-                android:inputType="number"
                 android:id="@+id/tc_no"
-                android:hint="TC Kimlik No"/>
+                style="@style/modifiedEditText"
+                android:hint="TC Kimlik No"
+                android:inputType="number" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/parent"
             android:layout_marginTop="@dimen/signup_text_margin_top">
+
             <EditText
-                style="@style/modifiedEditText"
-                android:inputType="text"
                 android:id="@+id/musteri_adi"
-                android:hint="Adı"/>
+                style="@style/modifiedEditText"
+                android:hint="Adı"
+                android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/parent"
             android:layout_marginTop="@dimen/signup_text_margin_top">
+
             <EditText
-                style="@style/modifiedEditText"
-                android:inputType="text"
                 android:id="@+id/musteri_soyadi"
-                android:hint="Soyadı"/>
+                style="@style/modifiedEditText"
+                android:hint="Soyadı"
+                android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/parent"
             android:layout_marginTop="@dimen/signup_text_margin_top">
+
             <EditText
-                style="@style/modifiedEditText"
-                android:inputType="number"
                 android:id="@+id/telefon_no"
-                android:hint="Telefon Numarası"/>
+                style="@style/modifiedEditText"
+                android:hint="Telefon Numarası"
+                android:clickable="true"
+                android:paddingBottom="15dp"
+                android:drawableRight="@drawable/whatsapp_icon"
+                android:inputType="number" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -79,12 +88,74 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            style="@style/loginButton"
             android:id="@+id/musteri_kayit_button"
+            style="@style/loginButton"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/signup_text_margin_top"
             android:onClick="musteriKayitOnclik"
             android:text="KAYDET" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/adres_gir_button"
+                style="@style/tamamlaButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:layout_weight="0.3"
+                android:drawableTop="@android:drawable/ic_menu_edit"
+                android:onClick="musteriKayitOnclik"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:textSize="@dimen/text_size_small"
+                android:text="ADRES GİR"
+                android:textColor="@color/text" />
+
+            <Button
+                android:id="@+id/siparis_olustur_button"
+                style="@style/tamamlaButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:layout_weight="0.3"
+                android:drawableTop="@android:drawable/ic_menu_add"
+                android:onClick="musteriKayitOnclik"
+
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:text="SİPARİŞ OLUŞTUR"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_size_small" />
+
+
+            <Button
+                android:id="@+id/siparis_listele_button"
+                style="@style/tamamlaButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp"
+                android:paddingBottom="5dp"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:layout_weight="0.3"
+                android:paddingTop="5dp"
+                android:drawableTop="@android:drawable/ic_menu_my_calendar"
+                android:onClick="musteriKayitOnclik"
+                android:text="SİPARİŞLERİM"
+                android:textSize="@dimen/text_size_small"
+                android:textColor="@color/text" />
+        </LinearLayout>
+
+
+
+
+
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

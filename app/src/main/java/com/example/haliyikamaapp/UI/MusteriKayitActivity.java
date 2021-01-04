@@ -2,17 +2,23 @@ package com.example.haliyikamaapp.UI;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -23,10 +29,12 @@ import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import net.cachapa.expandablelayout.ExpandableLayout;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class MusteriKayitActivity extends AppCompatActivity {
+public class MusteriKayitActivity extends AppCompatActivity implements  ExpandableLayout.OnExpansionUpdateListener {
     Toolbar toolbar;
     FloatingActionButton ekleButon;
     EditText tc_no_edittw, adi_edittw, soyadi_edittw, tel_no_edittw, vergi_no_edittw;
@@ -34,6 +42,11 @@ public class MusteriKayitActivity extends AppCompatActivity {
     Button kayit_button;
     String gelenMusteriMid, gelenTelefonNumarasi;
     HaliYikamaDatabase db;
+
+    private ExpandableLayout expandableLayout;
+    private ImageView expandButton;
+    TextView deneme, deneme2, deneme7;
+    LinearLayout toplamalan;
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -111,6 +124,34 @@ public class MusteriKayitActivity extends AppCompatActivity {
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         musteri_turu_spinner.setAdapter(dataAdapter);
 
+
+        expandableLayout = findViewById(R.id.expandable_layout);
+
+        expandButton = findViewById(R.id.expand_button);
+       // deneme = findViewById(R.id.deneme);
+        deneme2 = findViewById(R.id.deneme2);
+        toplamalan = findViewById(R.id.toplam_alan1);
+
+
+        expandableLayout.setOnExpansionUpdateListener(this);
+
+        tel_no_edittw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String url = "https://api.whatsapp.com/send?phone=+9" + tel_no_edittw.getText().toString() + "&text=Merhabalar! ...";
+                try {
+                    PackageManager pm = getApplicationContext().getPackageManager();
+                    pm.getPackageInfo("com.whatsapp", PackageManager.GET_ACTIVITIES);
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(url));
+                    startActivity(i);
+                } catch (PackageManager.NameNotFoundException e) {
+                    Toast.makeText(MusteriKayitActivity.this, "Lütfen cihazınıza Whatsapp uygulamasını yükleyiniz..", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
 
     public void musteriKayitOnclik(View v) {
@@ -118,8 +159,8 @@ public class MusteriKayitActivity extends AppCompatActivity {
     }
 
     void yeni_musteri_kayit() {
-        if (tc_no_edittw.getText().toString().length() != 11 || adi_edittw.getText().toString().trim().equalsIgnoreCase("")
-                || soyadi_edittw.getText().toString().trim().equalsIgnoreCase("") || tel_no_edittw.getText().toString().length() != 11) {
+        if ( adi_edittw.getText().toString().trim().equalsIgnoreCase("")
+                || soyadi_edittw.getText().toString().trim().equalsIgnoreCase("") /*|| tel_no_edittw.getText().toString().length() != 11*/) {
             MessageBox.showAlert(MusteriKayitActivity.this, "Lütfen bilgileri eksizksiz bir şekilde giriniz.", false);
 
         } else {
@@ -149,7 +190,9 @@ public class MusteriKayitActivity extends AppCompatActivity {
 
                             if (gelenMusteriMid == null && Integer.valueOf(String.valueOf(finalMusteriMid)) > 0) {
                                 MessageBox.showAlert(MusteriKayitActivity.this, "Kayıt Başarılı..\n", false);
-                                Intent i = new Intent(MusteriKayitActivity.this, SiparisKayitActivity.class);
+                               // Intent i = new Intent(MusteriKayitActivity.this, SiparisKayitActivity.class);
+
+                                Intent i = new Intent(MusteriKayitActivity.this, MusteriDetayKayitActivity.class);
                                 i.putExtra("musteriMid", String.valueOf(finalMusteriMid));
                                 finish();
                                 startActivity(i);
@@ -179,6 +222,28 @@ public class MusteriKayitActivity extends AppCompatActivity {
             tc_no_edittw.setText(updateKayitList.get(0).getTcKimlikNo().toString());
             // musteri_turu_spinner.setText(updateKayitList.get(0).getAciklama().toString());
             vergi_no_edittw.setText(updateKayitList.get(0).getVergiKimlikNo());
+
+
+        }
+    }
+
+    @Override
+    public void onExpansionUpdate(float expansionFraction, int state) {
+        Log.d("ExpandableLayout", "State: " + state);
+        expandButton.setRotation(expansionFraction * 90);
+    }
+
+    public void detayOnClick(View view) {
+        expandableLayout.toggle();
+
+        if(expandableLayout.getState() == 2) {
+           // deneme.setVisibility(View.VISIBLE);
+           deneme2.setVisibility(View.GONE);
+            toplamalan.setVisibility(View.VISIBLE);
+        }
+        else{
+            expandableLayout.collapse();
+              deneme2.setVisibility(View.VISIBLE);
 
 
         }

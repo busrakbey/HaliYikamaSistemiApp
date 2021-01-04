@@ -5,6 +5,7 @@ buildscript {
         google()
         jcenter()
         maven { url "http://jcenter.bintray.com"}
+        maven { url 'https://jitpack.io' }
 
     }
     dependencies {
