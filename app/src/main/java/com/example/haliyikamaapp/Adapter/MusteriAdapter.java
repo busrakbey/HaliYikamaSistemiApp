@@ -2,6 +2,9 @@ package com.example.haliyikamaapp.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,41 +57,72 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
                 .withBorder(1)
                 .endConfig()
                 .rect();
-       if( !data.get(position).getMusteriAdi().trim().equalsIgnoreCase("")) {
-           TextDrawable ic1 = TextDrawable.builder()
-                   .buildRound((data.get(position).getMusteriAdi().substring(0, 1).toUpperCase()), color);
-           holder.isimBasHarfi_item.setImageDrawable(ic1);
-       }
+        if (!data.get(position).getMusteriAdi().trim().equalsIgnoreCase("")) {
+            TextDrawable ic1 = TextDrawable.builder()
+                    .buildRound((data.get(position).getMusteriAdi().substring(0, 1).toUpperCase()), color);
+            holder.isimBasHarfi_item.setImageDrawable(ic1);
+        }
 
 
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent musteri = new Intent(mContext, MusteriDetayActivity.class);
-                musteri.putExtra("musteriMid" , String.valueOf(data.get(position).getMid()));
+                Intent musteri = new Intent(mContext, MusteriKayitActivity.class);
+                musteri.putExtra("musteriMid", String.valueOf(data.get(position).getMid()));
                 musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.getApplicationContext().startActivity(musteri);            }
+                mContext.getApplicationContext().startActivity(musteri);
+            }
         });
 
-       holder.edit_musteri.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-               Intent musteri = new Intent(mContext, MusteriKayitActivity.class);
-               musteri.putExtra("musteriMid" , String.valueOf(data.get(position).getMid()));
-               musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-               mContext.getApplicationContext().startActivity(musteri);
-           }
-       });
+        holder.edit_musteri.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent musteri = new Intent(mContext, MusteriKayitActivity.class);
+                musteri.putExtra("musteriMid", String.valueOf(data.get(position).getMid()));
+                musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.getApplicationContext().startActivity(musteri);
+            }
+        });
 
-       holder.new_siparis_button.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-               Intent musteri = new Intent(mContext, SiparisKayitActivity.class);
-               musteri.putExtra("musteriMid" , String.valueOf(data.get(position).getMid()));
-               musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-               mContext.getApplicationContext().startActivity(musteri);
-           }
-       });
+        holder.new_siparis_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent musteri = new Intent(mContext, SiparisKayitActivity.class);
+                musteri.putExtra("musteriMid", String.valueOf(data.get(position).getMid()));
+                musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.getApplicationContext().startActivity(musteri);
+            }
+        });
+        holder.telefon_et_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(!data.get(position).getTelefonNumarasi().equalsIgnoreCase(""))
+                {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel: " + data.get(position).getTelefonNumarasi()));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.getApplicationContext().startActivity(intent);
+                }else {
+                    Cursor telefonun_rehberi = mContext.getApplicationContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
+                    while (telefonun_rehberi.moveToNext()) {
+                        String isim = telefonun_rehberi.getString(telefonun_rehberi.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                        String numara = telefonun_rehberi.getString(telefonun_rehberi.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        if (isim.equalsIgnoreCase(data.get(position).getMusteriAdi() + " " + data.get(position).getMusteriSoyadi())) {
+                            Intent intent = new Intent();
+                            intent.setAction(Intent.ACTION_DIAL); // Action for what intent called for
+                            intent.setData(Uri.parse("tel: " + numara)); // Data with intent respective action on intent
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            mContext.getApplicationContext().startActivity(intent);
+                            telefonun_rehberi.close();
+
+                        }
+                    }
+                }
+
+            }
+        });
     }
 
     @Override
@@ -115,7 +149,7 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
 
         RelativeLayout relativeLayout;
         public TextView adiSoyadi_item, tarih_item, telefonNo_item;
-        ImageView isimBasHarfi_item, edit_musteri, new_siparis_button;
+        ImageView isimBasHarfi_item, edit_musteri, new_siparis_button, telefon_et_button;
 
 
         public MyViewHolder(View itemView) {
@@ -125,6 +159,7 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
             this.telefonNo_item = (TextView) itemView.findViewById(R.id.telefon_no_item);
             this.edit_musteri = (ImageView) itemView.findViewById(R.id.edit_musteri);
             this.new_siparis_button = (ImageView) itemView.findViewById(R.id.new_siparis);
+            this.telefon_et_button = (ImageView) itemView.findViewById(R.id.telefon_button);
             relativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayout);
         }
     }

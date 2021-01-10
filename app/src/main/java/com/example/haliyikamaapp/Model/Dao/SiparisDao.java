@@ -29,4 +29,7 @@ public interface SiparisDao {
     @Query("SELECT * FROM SIPARIS where mid = :mid")
     List<Siparis> getSiparisForMid(Long mid);
 
+    @Query("SELECT * FROM SIPARIS where musteriMid = :musteriMid")
+    List<Siparis> getSiparisForMusteriMid(Long musteriMid);
+
 }

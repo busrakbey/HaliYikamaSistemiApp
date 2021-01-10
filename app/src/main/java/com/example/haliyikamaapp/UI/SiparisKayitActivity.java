@@ -165,7 +165,7 @@ public class SiparisKayitActivity extends AppCompatActivity {
         //  else{
 
         final Siparis siparis = new Siparis();
-        siparis.setMusteriMid(secilen_musteri_mid);
+        siparis.setMusteriMid(gelenMusteriMid != null ? Long.valueOf(gelenMusteriMid) : secilen_musteri_mid);
         siparis.setSubeId(1L);
         siparis.setSiparisTarihi(tarih_edittw.getText().toString());
      /*   if (!tutar_edittw.getText().toString().equalsIgnoreCase(""))

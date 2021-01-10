@@ -8,6 +8,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import com.example.haliyikamaapp.Model.Dao.AuthTokenDao;
 import com.example.haliyikamaapp.Model.Dao.MusteriDao;
 import com.example.haliyikamaapp.Model.Dao.MusteriIletisimDao;
 import com.example.haliyikamaapp.Model.Dao.OlcuBirimDao;
@@ -17,6 +18,7 @@ import com.example.haliyikamaapp.Model.Dao.SiparisDetayDao;
 import com.example.haliyikamaapp.Model.Dao.UrunDao;
 import com.example.haliyikamaapp.Model.Dao.UrunFiyatDao;
 import com.example.haliyikamaapp.Model.Dao.UrunSubeDao;
+import com.example.haliyikamaapp.Model.Entity.AuthToken;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.Model.Entity.MusteriIletisim;
 import com.example.haliyikamaapp.Model.Entity.OlcuBirim;
@@ -28,8 +30,8 @@ import com.example.haliyikamaapp.Model.Entity.UrunFiyat;
 import com.example.haliyikamaapp.Model.Entity.UrunSube;
 
 
-@Database(entities = {Musteri.class, Siparis.class, SiparisDetay.class, Urun.class, UrunSube.class, UrunFiyat.class, STenant.class, MusteriIletisim.class, OlcuBirim.class},
-        version = 4, exportSchema = false)
+@Database(entities = {Musteri.class, Siparis.class, SiparisDetay.class, Urun.class, UrunSube.class, UrunFiyat.class, STenant.class, MusteriIletisim.class, OlcuBirim.class, AuthToken.class},
+        version = 5, exportSchema = false)
 public abstract class HaliYikamaDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "HALIYIKAMA_DB";
     private static HaliYikamaDatabase instance;
@@ -43,6 +45,8 @@ public abstract class HaliYikamaDatabase extends RoomDatabase {
     public abstract UrunDao urunDao();
     public abstract UrunFiyatDao urunFiyatDao();
     public abstract UrunSubeDao urunSubeDao();
+    public abstract AuthTokenDao authToken();
+
 
 
 

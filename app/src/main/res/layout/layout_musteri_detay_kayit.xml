@@ -34,6 +34,7 @@
                 android:id="@+id/cep_to_iletisim"
                 style="@style/modifiedEditText"
                 android:hint="Cep Telefonu(*)"
+                android:drawableRight="@drawable/whatsapp_icon"
                 android:inputType="phone" />
         </com.google.android.material.textfield.TextInputLayout>
 

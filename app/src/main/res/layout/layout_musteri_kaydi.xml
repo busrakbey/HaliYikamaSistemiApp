@@ -60,21 +60,29 @@
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/parent"
-            android:layout_marginTop="@dimen/signup_text_margin_top">
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/parent"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:layout_weight="0.5">
 
-            <EditText
-                android:id="@+id/telefon_no"
-                style="@style/modifiedEditText"
-                android:hint="Telefon Numarası"
-                android:clickable="true"
-                android:paddingBottom="15dp"
-                android:drawableRight="@drawable/whatsapp_icon"
-                android:inputType="number" />
+                <EditText
+                    android:id="@+id/telefon_no"
+                    style="@style/modifiedEditText"
+                    android:layout_weight="0.5"
+                    android:clickable="true"
+                    android:drawableRight="@drawable/whatsapp_icon"
+                    android:hint="Telefon Numarası"
+                    android:inputType="number"
+                    android:paddingBottom="15dp" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/parent"
@@ -110,12 +118,28 @@
                 android:layout_marginTop="@dimen/signup_text_margin_top"
                 android:layout_weight="0.3"
                 android:drawableTop="@android:drawable/ic_menu_edit"
-                android:onClick="musteriKayitOnclik"
-                android:paddingBottom="5dp"
+                android:onClick="adresGirOnClick"
                 android:paddingTop="5dp"
-                android:textSize="@dimen/text_size_small"
+                android:paddingBottom="5dp"
                 android:text="ADRES GİR"
-                android:textColor="@color/text" />
+                android:textColor="@color/text"
+                android:textSize="@dimen/newsMoreTextSize" />
+
+            <Button
+                android:id="@+id/adres_listele_button"
+                style="@style/tamamlaButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:layout_weight="0.3"
+                android:drawableTop="@android:drawable/ic_menu_my_calendar"
+                android:onClick="adresListeleOnClick"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:text="ADRESLERİM"
+                android:textColor="@color/text"
+                android:textSize="@dimen/newsMoreTextSize" />
 
             <Button
                 android:id="@+id/siparis_olustur_button"
@@ -126,13 +150,12 @@
                 android:layout_marginTop="@dimen/signup_text_margin_top"
                 android:layout_weight="0.3"
                 android:drawableTop="@android:drawable/ic_menu_add"
-                android:onClick="musteriKayitOnclik"
-
+                android:onClick="siparisOlusturOnClick"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
                 android:text="SİPARİŞ OLUŞTUR"
                 android:textColor="@color/text"
-                android:textSize="@dimen/text_size_small" />
+                android:textSize="@dimen/newsMoreTextSize" />
 
 
             <Button
@@ -141,20 +164,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="15dp"
-                android:paddingBottom="5dp"
                 android:layout_marginTop="@dimen/signup_text_margin_top"
                 android:layout_weight="0.3"
-                android:paddingTop="5dp"
                 android:drawableTop="@android:drawable/ic_menu_my_calendar"
-                android:onClick="musteriKayitOnclik"
+                android:onClick="siparisListeleOnClick"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:text="SİPARİŞLERİM"
-                android:textSize="@dimen/text_size_small"
-                android:textColor="@color/text" />
+                android:textColor="@color/text"
+                android:textSize="@dimen/newsMoreTextSize" />
+
+
         </LinearLayout>
-
-
-
-
 
 
     </LinearLayout>

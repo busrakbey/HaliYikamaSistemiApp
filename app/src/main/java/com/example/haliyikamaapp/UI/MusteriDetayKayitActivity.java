@@ -2,6 +2,8 @@ package com.example.haliyikamaapp.UI;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -31,7 +34,7 @@ public class MusteriDetayKayitActivity extends AppCompatActivity {
     EditText iletisim_baslik_edittw, cep_no_edittw, cadde_edittw, sokak_edittw, kapi_no_edittw, adres_edittw;
     Button kaydet_button;
     Spinner il_spinner, ilce_spinner;
-    String musteriMid, musteriDetayMid;
+    String musteriMid, musteriDetayMid, gelenCepNo;
     HaliYikamaDatabase db;
 
 
@@ -67,6 +70,8 @@ public class MusteriDetayKayitActivity extends AppCompatActivity {
         Intent intent = getIntent();
         musteriMid = intent.getStringExtra("musteriMid");
         musteriDetayMid = intent.getStringExtra("musteriDetayMid");
+        musteriMid = intent.getStringExtra("musteriMid");
+        gelenCepNo = intent.getStringExtra("cepNo");
 
         if (musteriDetayMid == null ){
             cep_no_edittw.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -85,6 +90,9 @@ public class MusteriDetayKayitActivity extends AppCompatActivity {
         if (musteriDetayMid != null)
             getEditMode(Long.valueOf(musteriDetayMid));
 
+        if(gelenCepNo != null)
+            cep_no_edittw.setText(gelenCepNo);
+
         List<String> list = new ArrayList<String>();
         list.add("İl Seçiniz..");
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
@@ -98,6 +106,25 @@ public class MusteriDetayKayitActivity extends AppCompatActivity {
                 android.R.layout.simple_spinner_item, list2);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ilce_spinner.setAdapter(dataAdapter2);
+
+        cep_no_edittw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String url = "https://api.whatsapp.com/send?phone=+9" + cep_no_edittw.getText().toString() + "&text=Merhabalar! ...";
+                try {
+                    PackageManager pm = getApplicationContext().getPackageManager();
+                    pm.getPackageInfo("com.whatsapp", PackageManager.GET_ACTIVITIES);
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(url));
+                    startActivity(i);
+                } catch (PackageManager.NameNotFoundException e) {
+                    Toast.makeText(MusteriDetayKayitActivity.this, "Lütfen cihazınıza Whatsapp uygulamasını yükleyiniz..", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+
+            }
+        });
 
 
     }
