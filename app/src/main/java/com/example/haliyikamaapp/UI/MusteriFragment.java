@@ -1,6 +1,8 @@
 package com.example.haliyikamaapp.UI;
 
-import android.content.ContentResolver;
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -8,11 +10,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -21,18 +21,27 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.haliyikamaapp.Adapter.MusteriAdapter;
 import com.example.haliyikamaapp.Adapter.SwipeToDeleteCallback;
-import com.example.haliyikamaapp.Adapter.SwipeToSenkronCallBack;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.Model.Entity.MusteriIletisim;
 import com.example.haliyikamaapp.R;
+import com.example.haliyikamaapp.ToolLayer.DefaultException;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.haliyikamaapp.ToolLayer.OrtakFunction;
+import com.example.haliyikamaapp.ToolLayer.RSOperator;
+import com.example.haliyikamaapp.ToolLayer.RefrofitRestApi;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MusteriFragment extends Fragment {
@@ -41,6 +50,8 @@ public class MusteriFragment extends Fragment {
     RecyclerView recyclerView;
     HaliYikamaDatabase db;
     Snackbar snackbar;
+    Activity mActivity;
+    Context mContext;
 
 
     @Nullable
@@ -53,7 +64,8 @@ public class MusteriFragment extends Fragment {
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         init_item(view);
-        get_list();
+        getMusteriListFromService();
+
 
 
     }
@@ -72,7 +84,8 @@ public class MusteriFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
-        SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(getContext()) {
+        adapter.notifyDataSetChanged();
+        SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(mContext) {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
                 final int position = viewHolder.getAdapterPosition();
@@ -117,12 +130,85 @@ public class MusteriFragment extends Fragment {
 
 
     }
+
     @Override
     public void onResume() {
         super.onResume();
         get_list();
     }
 
+    List<Musteri> gelenMusteriList;
+    List<Musteri> updateMusteriList;
+    void getMusteriListFromService() {
 
+        RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
+        final ProgressDialog progressDoalog;
+        progressDoalog = new ProgressDialog(getContext());
+        progressDoalog.setMessage("Lütfen bekleyiniz..");
+        progressDoalog.setTitle("SİSTEM");
+        progressDoalog.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
+        progressDoalog.show();
+        Call<List<Musteri>> call = refrofitRestApi.getMusteriList(OrtakFunction.authorization, OrtakFunction.tenantId);
+        call.enqueue(new Callback<List<Musteri>>() {
+            @Override
+            public void onResponse(Call<List<Musteri>> call, Response<List<Musteri>> response) {
+                if (!response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
+                    return;
+                }
+                if (response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    gelenMusteriList = response.body();
+                    if (gelenMusteriList != null && gelenMusteriList.size() > 0) {
+                        updateMusteriList = new ArrayList<Musteri>();
+                        final List<Musteri> musteriList = db.musteriDao().getMusteriAll();
+                        for (Musteri item : musteriList) {
+                            for (Musteri i : gelenMusteriList) {
+                                if (i.getId() == item.getId())
+                                    updateMusteriList.add(i);
+                            }
+                        }
+                        if (gelenMusteriList != null && gelenMusteriList.size() > 0)
+                            gelenMusteriList.removeAll(updateMusteriList);
+                        final List<Long> kayitList = db.musteriDao().setMusteriList(gelenMusteriList);
+                        db.musteriDao().updateMusteriList(updateMusteriList);
+                        mActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                if (gelenMusteriList.size() != kayitList.size())
+                                    MessageBox.showAlert(getContext(), "Müşteri listesi alınırken hata oluştu.", false);
+                                else
+                                    get_list();
+
+                            }
+                        });
+
+
+                    } else
+                        MessageBox.showAlert(getContext(), "Kayıt bulunamamıştır..", false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Musteri>> call, Throwable t) {
+                progressDoalog.dismiss();
+                MessageBox.showAlert(getContext(), "Hata Oluştu.. " + t.getMessage(), false);
+            }
+        });
+
+
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (context instanceof Activity) {
+            mActivity = (Activity) context;
+            mContext = (Context) context;
+        }
+    }
 
 }

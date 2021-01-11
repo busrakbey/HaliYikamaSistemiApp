@@ -5,9 +5,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-
-@Entity(tableName = "URUN_SUBE")
-public class UrunSube {
+@Entity(tableName = "SUBE")
+public class Sube {
 
     @NonNull
     @PrimaryKey(autoGenerate = true)
@@ -20,23 +19,20 @@ public class UrunSube {
     @ColumnInfo(name = "id")
     public Long id;
 
-    @ColumnInfo(name = "urunId")
-    public Long urunId;
+    @ColumnInfo(name = "subeAdi")
+    public String subeAdi;
 
-    @ColumnInfo(name = "subeId")
-    public Long subeId;
-
-    @ColumnInfo(name = "olcuBirimId")
-    public Long olcuBirimId;
+    @ColumnInfo(name = "durum")
+    public String durum;
 
     @ColumnInfo(name = "aciklama")
     public String  aciklama;
 
-    @ColumnInfo(name = "aktif")
-    public Boolean  aktif;
+    @ColumnInfo(name = "ilId")
+    public Long  ilId;
 
-    @ColumnInfo(name = "tenantId")
-    public Long tenantId;
+    @ColumnInfo(name = "ilceId")
+    public Long ilceId;
 
     @NonNull
     public Long getMid() {
@@ -63,28 +59,20 @@ public class UrunSube {
         this.id = id;
     }
 
-    public Long getUrunId() {
-        return urunId;
+    public String getSubeAdi() {
+        return subeAdi;
     }
 
-    public void setUrunId(Long urunId) {
-        this.urunId = urunId;
+    public void setSubeAdi(String subeAdi) {
+        this.subeAdi = subeAdi;
     }
 
-    public Long getSubeId() {
-        return subeId;
+    public String getDurum() {
+        return durum;
     }
 
-    public void setSubeId(Long subeId) {
-        this.subeId = subeId;
-    }
-
-    public Long getOlcuBirimId() {
-        return olcuBirimId;
-    }
-
-    public void setOlcuBirimId(Long olcuBirimId) {
-        this.olcuBirimId = olcuBirimId;
+    public void setDurum(String durum) {
+        this.durum = durum;
     }
 
     public String getAciklama() {
@@ -95,19 +83,19 @@ public class UrunSube {
         this.aciklama = aciklama;
     }
 
-    public Boolean getAktif() {
-        return aktif;
+    public Long getIlId() {
+        return ilId;
     }
 
-    public void setAktif(Boolean aktif) {
-        this.aktif = aktif;
+    public void setIlId(Long ilId) {
+        this.ilId = ilId;
     }
 
-    public Long getTenantId() {
-        return tenantId;
+    public Long getIlceId() {
+        return ilceId;
     }
 
-    public void setTenantId(Long tenantId) {
-        this.tenantId = tenantId;
+    public void setIlceId(Long ilceId) {
+        this.ilceId = ilceId;
     }
 }

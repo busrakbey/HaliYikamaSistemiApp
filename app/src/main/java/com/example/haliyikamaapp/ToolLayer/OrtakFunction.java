@@ -1,4 +1,4 @@
-package com.example.haliyikamaapp.UI;
+package com.example.haliyikamaapp.ToolLayer;
 
 import android.Manifest;
 import android.app.Activity;
@@ -30,18 +30,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class OrtakFunction {
     public static List<AuthToken> tokenList = null;
     public static String serviceUrl = "http://35.204.214.240:80/haliBackend/";
     public static HaliYikamaDatabase db = null;
-    public static String tokenName = null;
+    public static String authorization = null;
+    public static  String tenantId = "test";
 
     public static void tokenControl(Context context) {
         db = HaliYikamaDatabase.getInstance(context);
         tokenList = db.authToken().getAuthTokenAll();
         if (tokenList.size() > 0)
-            tokenName = tokenList.get(0).getAccess_token();
+            authorization =  "Bearer " +  tokenList.get(0).getAccess_token();
     }
 
     public static void getTtoken(final Context context) {
@@ -60,7 +66,7 @@ public class OrtakFunction {
                     AuthToken.setRefresh_token(jsonObject.getString("refresh_token"));
                     AuthToken.setScope(jsonObject.getString("scope"));
                     AuthToken.setToken_type(jsonObject.getString("token_type"));
-                    tokenName = jsonObject.getString("access_token");
+                    authorization = "Bearer " + jsonObject.getString("access_token");
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -72,7 +78,7 @@ public class OrtakFunction {
                                 @Override
                                 public void run() {
                                     if (Integer.valueOf(String.valueOf(finalyeniKayit)) > 0) {
-                                        Toast.makeText(context, "Sistem " + "Giriş başarılı..", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, " " + "Giriş başarılı..", Toast.LENGTH_SHORT).show();
 
                                     }
                                 }
@@ -150,6 +156,38 @@ public class OrtakFunction {
                             Manifest.permission.READ_PHONE_STATE,
                             Manifest.permission.SYSTEM_ALERT_WINDOW}, 1);
 
+
+    }
+
+    public static boolean isNumeric(String str) {
+        if (str == null) {
+            return false;
+        }
+        int sz = str.length();
+        for (int i = 0; i < sz; i++) {
+            if (Character.isDigit(str.charAt(i)) == false) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    public  static RefrofitRestApi refrofitRestApiSetting(){
+        String url = OrtakFunction.serviceUrl;
+        final OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(4, TimeUnit.MINUTES)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(url)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpClient)
+                .build();
+        RefrofitRestApi refrofitRestApi = retrofit.create(RefrofitRestApi.class);
+        return refrofitRestApi;
 
     }
 }

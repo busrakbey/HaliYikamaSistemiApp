@@ -21,6 +21,12 @@ public interface MusteriDao {
     @Insert
     long setMusteri(Musteri musteri);
 
+    @Insert
+    List<Long> setMusteriList(List<Musteri> musteri);
+
+    @Update
+    int updateMusteriList(List<Musteri> musteri);
+
     @Update
     int updateMusteri(Musteri musteri);
 
@@ -32,6 +38,9 @@ public interface MusteriDao {
 
     @Query("SELECT * FROM MUSTERI where mid = :mid")
     List<Musteri> getMusteriForMid(Long mid);
+
+    @Query("SELECT * FROM MUSTERI where id = :id")
+    List<Musteri> getMusteriForId(Long id);
 
 }
 

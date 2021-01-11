@@ -15,6 +15,7 @@ import com.example.haliyikamaapp.Model.Dao.OlcuBirimDao;
 import com.example.haliyikamaapp.Model.Dao.STenantDao;
 import com.example.haliyikamaapp.Model.Dao.SiparisDao;
 import com.example.haliyikamaapp.Model.Dao.SiparisDetayDao;
+import com.example.haliyikamaapp.Model.Dao.SubeDao;
 import com.example.haliyikamaapp.Model.Dao.UrunDao;
 import com.example.haliyikamaapp.Model.Dao.UrunFiyatDao;
 import com.example.haliyikamaapp.Model.Dao.UrunSubeDao;
@@ -25,13 +26,15 @@ import com.example.haliyikamaapp.Model.Entity.OlcuBirim;
 import com.example.haliyikamaapp.Model.Entity.STenant;
 import com.example.haliyikamaapp.Model.Entity.Siparis;
 import com.example.haliyikamaapp.Model.Entity.SiparisDetay;
+import com.example.haliyikamaapp.Model.Entity.Sube;
 import com.example.haliyikamaapp.Model.Entity.Urun;
 import com.example.haliyikamaapp.Model.Entity.UrunFiyat;
 import com.example.haliyikamaapp.Model.Entity.UrunSube;
 
 
-@Database(entities = {Musteri.class, Siparis.class, SiparisDetay.class, Urun.class, UrunSube.class, UrunFiyat.class, STenant.class, MusteriIletisim.class, OlcuBirim.class, AuthToken.class},
-        version = 5, exportSchema = false)
+@Database(entities = {Musteri.class, Siparis.class, SiparisDetay.class, Urun.class, UrunSube.class, UrunFiyat.class, STenant.class, MusteriIletisim.class, OlcuBirim.class,
+        AuthToken.class, Sube.class},
+        version = 2, exportSchema = false)
 public abstract class HaliYikamaDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "HALIYIKAMA_DB";
     private static HaliYikamaDatabase instance;
@@ -46,6 +49,7 @@ public abstract class HaliYikamaDatabase extends RoomDatabase {
     public abstract UrunFiyatDao urunFiyatDao();
     public abstract UrunSubeDao urunSubeDao();
     public abstract AuthTokenDao authToken();
+    public  abstract SubeDao subeDao();
 
 
 

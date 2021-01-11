@@ -20,6 +20,12 @@ public interface SiparisDao {
     @Update
     int updateSiparis(Siparis siparis);
 
+    @Insert
+    List<Long> setSiparisList(List<Siparis> siparis);
+
+    @Update
+    int updateSiparisList(List<Siparis> siparis);
+
     @Query("DELETE FROM SIPARIS")
     void deleteSiparisAll();
 
@@ -31,5 +37,9 @@ public interface SiparisDao {
 
     @Query("SELECT * FROM SIPARIS where musteriMid = :musteriMid")
     List<Siparis> getSiparisForMusteriMid(Long musteriMid);
+
+
+    @Query("SELECT * FROM SIPARIS where id = :id")
+    List<Siparis> getSiparisForSiparisId(Long id);
 
 }

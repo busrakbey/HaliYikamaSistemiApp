@@ -1,6 +1,7 @@
 package com.example.haliyikamaapp.UI;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -22,14 +23,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.haliyikamaapp.Adapter.SiparisDetayAdapter;
 import com.example.haliyikamaapp.Adapter.SwipeToDeleteCallback;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
+import com.example.haliyikamaapp.Model.Entity.Siparis;
 import com.example.haliyikamaapp.Model.Entity.SiparisDetay;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
+import com.example.haliyikamaapp.ToolLayer.OrtakFunction;
+import com.example.haliyikamaapp.ToolLayer.RefrofitRestApi;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SiparisDetayActivity extends AppCompatActivity {
     ConstraintLayout relativeLayout;
@@ -55,7 +64,8 @@ public class SiparisDetayActivity extends AppCompatActivity {
         setContentView(R.layout.siparis_detay_activity);
         initToolBar();
         init_item();
-        get_list();
+        getSiparisDetayListFromService();
+        //get_list();
 
     }
 
@@ -65,7 +75,6 @@ public class SiparisDetayActivity extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setSelectedItemId(R.id.nav_siparis);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
-
 
 
         yeni_siparis_detay_button = (FloatingActionButton) findViewById(R.id.btnAdd);
@@ -197,6 +206,83 @@ public class SiparisDetayActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         get_list();
+    }
+
+
+    List<SiparisDetay> gelenSiparisDetayList;
+    List<SiparisDetay> updateSiparisDetayList;
+
+    void getSiparisDetayListFromService() {
+        RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
+        final ProgressDialog progressDoalog;
+        progressDoalog = new ProgressDialog(SiparisDetayActivity.this);
+        progressDoalog.setMessage("Lütfen bekleyiniz..");
+        progressDoalog.setTitle("SİSTEM");
+        progressDoalog.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
+        progressDoalog.show();
+        Call<List<SiparisDetay>> call = refrofitRestApi.getSiparisDetayList("hy/siparis/siparisUrunler/" + siparisMid, OrtakFunction.authorization, OrtakFunction.tenantId);
+        call.enqueue(new Callback<List<SiparisDetay>>() {
+            @Override
+            public void onResponse(Call<List<SiparisDetay>> call, Response<List<SiparisDetay>> response) {
+                if (!response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    MessageBox.showAlert(SiparisDetayActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                    return;
+                }
+                if (response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    gelenSiparisDetayList = response.body();
+                    if (gelenSiparisDetayList != null && gelenSiparisDetayList.size() > 0) {
+                        updateSiparisDetayList = new ArrayList<SiparisDetay>();
+
+                        for (SiparisDetay item : gelenSiparisDetayList) {
+                            final List<Siparis> updateMustId = db.siparisDao().getSiparisForSiparisId(item.getSiparisId());
+                            if (updateMustId != null && updateMustId.size() > 0) {
+                                item.setSiparisMid(updateMustId.get(0).getMid());
+                                item.setMustId(updateMustId.get(0).getMid());
+                            }
+
+                        }
+
+                        final List<SiparisDetay> musteriList = db.siparisDetayDao().getSiparisDetayAll();
+                        for (SiparisDetay item : musteriList) {
+                            for (SiparisDetay i : gelenSiparisDetayList) {
+                                if (i.getId() == item.getId())
+                                    updateSiparisDetayList.add(i);
+                            }
+                        }
+                        if (gelenSiparisDetayList != null && gelenSiparisDetayList.size() > 0)
+                            gelenSiparisDetayList.removeAll(updateSiparisDetayList);
+
+
+                        final List<Long> kayitList = db.siparisDetayDao().setSiparisDetayList(gelenSiparisDetayList);
+                        db.siparisDetayDao().updateSiparisDetayList(updateSiparisDetayList);
+                        SiparisDetayActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                if (gelenSiparisDetayList.size() != kayitList.size())
+                                    MessageBox.showAlert(SiparisDetayActivity.this, "Sipariş listesi alınırken hata oluştu.", false);
+                                else
+                                    get_list();
+
+                            }
+                        });
+
+
+                    } else
+                        MessageBox.showAlert(SiparisDetayActivity.this, "Kayıt bulunamamıştır..", false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<SiparisDetay>> call, Throwable t) {
+                progressDoalog.dismiss();
+                MessageBox.showAlert(SiparisDetayActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+            }
+        });
+
+
     }
 
 }

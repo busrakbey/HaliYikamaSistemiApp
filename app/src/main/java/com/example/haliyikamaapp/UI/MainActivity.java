@@ -1,57 +1,46 @@
 package com.example.haliyikamaapp.UI;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 
-import android.util.Base64;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
-import com.example.haliyikamaapp.Model.Entity.AuthToken;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
+import com.example.haliyikamaapp.Model.Entity.Sube;
+import com.example.haliyikamaapp.Model.Entity.Urun;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
+import com.example.haliyikamaapp.ToolLayer.OrtakFunction;
+import com.example.haliyikamaapp.ToolLayer.RefrofitRestApi;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -92,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
         getAuth();
+        getUrunListFromService();
 
 
     }
@@ -341,7 +331,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
-    
+
     }
 
 
@@ -354,6 +344,91 @@ public class MainActivity extends AppCompatActivity {
         OrtakFunction.tokenControl(MainActivity.this);
         if (OrtakFunction.tokenList == null || OrtakFunction.tokenList.size() == 0)
             OrtakFunction.getTtoken(MainActivity.this);
+    }
+
+    List<Urun> gelenUrunList = null;
+    List<Sube> gelenSubeList = null;
+
+    void getUrunListFromService() {
+        final RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
+        final ProgressDialog progressDoalog;
+        progressDoalog = new ProgressDialog(MainActivity.this);
+        progressDoalog.setMessage("Lütfen bekleyiniz..");
+        progressDoalog.setTitle("SİSTEM");
+        progressDoalog.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
+        progressDoalog.show();
+        Call<List<Urun>> call = refrofitRestApi.getUrunList(OrtakFunction.authorization, OrtakFunction.tenantId);
+        call.enqueue(new Callback<List<Urun>>() {
+            @Override
+            public void onResponse(Call<List<Urun>> call, Response<List<Urun>> response) {
+                if (!response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                    return;
+                }
+                if (response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    gelenUrunList = response.body();
+                    if (gelenUrunList != null && gelenUrunList.size() > 0) {
+                        db.urunDao().deleteUrunAll();
+                        final List<Long> kayitList = db.urunDao().setUrunList(gelenUrunList);
+                        MainActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (kayitList.size() != gelenUrunList.size())
+                                    MessageBox.showAlert(MainActivity.this, "Ürün listesi alınırken hata oluştu.", false);
+                                else{
+
+                                    Call<List<Sube>> call = refrofitRestApi.getSubeList(OrtakFunction.authorization, OrtakFunction.tenantId);
+                                    call.enqueue(new Callback<List<Sube>>() {
+                                        @Override
+                                        public void onResponse(Call<List<Sube>> call, Response<List<Sube>> response) {
+                                            if (!response.isSuccessful()) {
+                                                progressDoalog.dismiss();
+                                                MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                                                return;
+                                            }
+                                            if (response.isSuccessful()) {
+                                                progressDoalog.dismiss();
+                                                gelenSubeList = response.body();
+                                                if (gelenSubeList != null && gelenSubeList.size() > 0) {
+                                                    db.subeDao().deleteSubeAll();
+                                                    final List<Long> kayitList = db.subeDao().setSubeList(gelenSubeList);
+                                                    MainActivity.this.runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            if (kayitList.size() != gelenSubeList.size())
+                                                                MessageBox.showAlert(MainActivity.this, "Şube listesi alınırken hata oluştu.", false);
+                                                            else{
+
+                                                            }
+                                                        }
+                                                    });
+                                                } else
+                                                    MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);
+                                            }
+                                        }
+                                        @Override
+                                        public void onFailure(Call<List<Sube>> call, Throwable t) {
+                                            progressDoalog.dismiss();
+                                            MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                                        }
+                                    });
+
+                                }
+                            }
+                        });
+                    } else
+                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);
+                }
+            }
+            @Override
+            public void onFailure(Call<List<Urun>> call, Throwable t) {
+                progressDoalog.dismiss();
+                MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+            }
+        });
+
     }
 
 
