@@ -211,7 +211,6 @@ public class SiparisDetayActivity extends AppCompatActivity {
 
     List<SiparisDetay> gelenSiparisDetayList;
     List<SiparisDetay> updateSiparisDetayList;
-
     void getSiparisDetayListFromService() {
         RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
         final ProgressDialog progressDoalog;

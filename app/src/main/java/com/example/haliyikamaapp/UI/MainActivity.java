@@ -4,52 +4,81 @@ import android.annotation.SuppressLint;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.app.SearchManager;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.haliyikamaapp.Adapter.MusteriAdapter;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
+import com.example.haliyikamaapp.Model.Entity.MusteriTuru;
+import com.example.haliyikamaapp.Model.Entity.Siparis;
+import com.example.haliyikamaapp.Model.Entity.SiparisDetay;
 import com.example.haliyikamaapp.Model.Entity.Sube;
 import com.example.haliyikamaapp.Model.Entity.Urun;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
 import com.example.haliyikamaapp.ToolLayer.OrtakFunction;
+import com.example.haliyikamaapp.ToolLayer.RSOperator;
 import com.example.haliyikamaapp.ToolLayer.RefrofitRestApi;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     Toolbar toolbar;
     FloatingActionButton ekleButon;
     BottomNavigationView bottomNavigationView;
     String gelenPage, telephoneNumber;
     HaliYikamaDatabase db;
     boolean phoneDialed = false;
+    RefrofitRestApi refrofitRestApi;
+    ProgressDialog progressDoalog;
+    MusteriAdapter adapter;
+
 
 
     @SuppressLint("RestrictedApi")
@@ -71,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         init_item();
         if (telephoneNumber != null)
             getCallLogs();
-        permissonControl();
+//        permissonControl();
 
         if (savedInstanceState == null && gelenPage == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
@@ -86,12 +115,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    Fragment selectedFragment = null;
     public BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @SuppressLint("RestrictedApi")
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    Fragment selectedFragment = null;
                     switch (item.getItemId()) {
                         case R.id.nav_home:
                             selectedFragment = new HomeFragment();
@@ -128,19 +157,17 @@ public class MainActivity extends AppCompatActivity {
             };
 
 
+    TextView toolbarTextView;
+
     public void initToolBar(final String tittle) {
         try {
 
             toolbar = (Toolbar) findViewById(R.id.toolbar);
 
             toolbar.setNavigationIcon(R.drawable.left);
-            //  setSupportActionBar(toolbar);
+            setSupportActionBar(toolbar);
 
-            /*getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(true);
-            getSupportActionBar().setHomeButtonEnabled(true);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
-            final TextView toolbarTextView = (TextView) findViewById(R.id.toolbar_title);
+            toolbarTextView = (TextView) findViewById(R.id.toolbar_title);
             toolbarTextView.setText(tittle);
 
 
@@ -184,6 +211,56 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        final MenuItem myActionMenuItem = menu.findItem(R.id.search);
+        if (toolbarTextView.getText().toString().equalsIgnoreCase("Müşteri") || toolbarTextView.getText().toString().equalsIgnoreCase("Sipariş")) {
+            final SearchView searchView = (SearchView) MenuItemCompat.getActionView(myActionMenuItem);
+            searchView.setMaxWidth(Integer.MAX_VALUE);
+            searchView.setOnQueryTextListener(this);
+            myActionMenuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+
+                @Override
+                public boolean onMenuItemActionExpand(MenuItem item) {
+
+                    return true;
+                }
+
+                @Override
+                public boolean onMenuItemActionCollapse(MenuItem item) {
+                    // Do something when collapsed
+                    // mImDbAdapter.setSearchResult(mListImDb);
+                    return true; // Return true to collapse action view
+
+                }
+
+
+            });
+
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String queryString) {
+
+                    MusteriFragment fragment = (MusteriFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                    fragment.adapter.getFilter().filter(queryString);
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String queryString) {
+                    MusteriFragment fragment = (MusteriFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                    fragment.adapter.getFilter().filter(queryString);
+                    return false;
+                }
+            });
+        } else {
+            myActionMenuItem.setVisible(false);
+        }
+        return true;
+
+    }
+
     void init_item() {
         ekleButon = (FloatingActionButton) findViewById(R.id.btnAdd);
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
@@ -192,7 +269,6 @@ public class MainActivity extends AppCompatActivity {
         db = HaliYikamaDatabase.getInstance(MainActivity.this);
 
         telephoneNumber = getIntent().getStringExtra("number");
-
         gelenPage = getIntent().getStringExtra("gelenPage");
         if (gelenPage != null) {
             if (gelenPage.equalsIgnoreCase("müşteri"))
@@ -207,7 +283,15 @@ public class MainActivity extends AppCompatActivity {
             if (gelenPage.equalsIgnoreCase("müşteri_görevlerim"))
                 bottomNavigationView.setSelectedItemId(R.id.nav_musterigorevlerim);
         }
+
+
+        refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
+        progressDoalog = new ProgressDialog(MainActivity.this);
+        progressDoalog.setMessage("Lütfen bekleyiniz..");
+        progressDoalog.setTitle("SİSTEM");
+        progressDoalog.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
     }
+
 
     void click_ekle_button(final String page) {
         //  ekleButon.setBackgroundTintList(new ColorStateList(states, colors));
@@ -348,15 +432,12 @@ public class MainActivity extends AppCompatActivity {
 
     List<Urun> gelenUrunList = null;
     List<Sube> gelenSubeList = null;
+    List<String> gelenMusteriTuruList = null;
 
     void getUrunListFromService() {
-        final RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
-        final ProgressDialog progressDoalog;
-        progressDoalog = new ProgressDialog(MainActivity.this);
-        progressDoalog.setMessage("Lütfen bekleyiniz..");
-        progressDoalog.setTitle("SİSTEM");
-        progressDoalog.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
         progressDoalog.show();
+
+        /////////ürün listesi alınıyor /////
         Call<List<Urun>> call = refrofitRestApi.getUrunList(OrtakFunction.authorization, OrtakFunction.tenantId);
         call.enqueue(new Callback<List<Urun>>() {
             @Override
@@ -377,8 +458,10 @@ public class MainActivity extends AppCompatActivity {
                             public void run() {
                                 if (kayitList.size() != gelenUrunList.size())
                                     MessageBox.showAlert(MainActivity.this, "Ürün listesi alınırken hata oluştu.", false);
-                                else{
+                                else {
 
+                                    /////şube listesi geliyor  //////
+                                    progressDoalog.show();
                                     Call<List<Sube>> call = refrofitRestApi.getSubeList(OrtakFunction.authorization, OrtakFunction.tenantId);
                                     call.enqueue(new Callback<List<Sube>>() {
                                         @Override
@@ -399,8 +482,53 @@ public class MainActivity extends AppCompatActivity {
                                                         public void run() {
                                                             if (kayitList.size() != gelenSubeList.size())
                                                                 MessageBox.showAlert(MainActivity.this, "Şube listesi alınırken hata oluştu.", false);
-                                                            else{
+                                                            else {
 
+
+                                                                //////// müşteri türü listesi geliyor //////////
+
+                                                                progressDoalog.show();
+                                                                Call<List<String>> call = refrofitRestApi.getMusteriTuruList(OrtakFunction.authorization, OrtakFunction.tenantId);
+                                                                call.enqueue(new Callback<List<String>>() {
+                                                                    @Override
+                                                                    public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+                                                                        if (!response.isSuccessful()) {
+                                                                            progressDoalog.dismiss();
+                                                                            MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                                                                            return;
+                                                                        }
+                                                                        if (response.isSuccessful()) {
+                                                                            progressDoalog.dismiss();
+                                                                            List<MusteriTuru> kayitOlunacakMusteriList = null;
+                                                                            gelenMusteriTuruList = response.body();
+                                                                            if (gelenMusteriTuruList != null && gelenMusteriTuruList.size() > 0) {
+                                                                                db.musteriTuruDao().deleteMusteriTuruAll();
+                                                                                for (String item : gelenMusteriTuruList) {
+                                                                                    MusteriTuru musteriTuru = new MusteriTuru();
+                                                                                    musteriTuru.setMusteriTuru(item);
+                                                                                    final long kayit = db.musteriTuruDao().setMusteriTuru(musteriTuru);
+
+                                                                                    MainActivity.this.runOnUiThread(new Runnable() {
+                                                                                        @Override
+                                                                                        public void run() {
+                                                                                            if (kayit < 0)
+                                                                                                MessageBox.showAlert(MainActivity.this, "Müşteri türü listesi alınırken hata oluştu.", false);
+                                                                                            else {
+                                                                                            }
+                                                                                        }
+                                                                                    });
+                                                                                }
+                                                                            } else
+                                                                                MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);
+                                                                        }
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onFailure(Call<List<String>> call, Throwable t) {
+                                                                        progressDoalog.dismiss();
+                                                                        MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                                                                    }
+                                                                });
                                                             }
                                                         }
                                                     });
@@ -408,6 +536,7 @@ public class MainActivity extends AppCompatActivity {
                                                     MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);
                                             }
                                         }
+
                                         @Override
                                         public void onFailure(Call<List<Sube>> call, Throwable t) {
                                             progressDoalog.dismiss();
@@ -422,6 +551,7 @@ public class MainActivity extends AppCompatActivity {
                         MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);
                 }
             }
+
             @Override
             public void onFailure(Call<List<Urun>> call, Throwable t) {
                 progressDoalog.dismiss();
@@ -432,4 +562,173 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    Musteri gelenMusteri;
+
+    public void postMusteriListFromService(final Musteri musteri) {
+        progressDoalog.show();
+        Call<Musteri> call = refrofitRestApi.postMusteriList(OrtakFunction.authorization, OrtakFunction.tenantId, musteri);
+        call.enqueue(new Callback<Musteri>() {
+            @Override
+            public void onResponse(Call<Musteri> call, Response<Musteri> response) {
+                if (!response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                    return;
+                }
+                if (response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    gelenMusteri = response.body();
+                    if (gelenMusteri != null) {
+
+                        db.musteriDao().updateMusteriQuery(musteri.getMid(), gelenMusteri.getId());
+                        MainActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                             /*   if (gelenMusteriList.size() != kayitList.size())
+                                    MessageBox.showAlert(MusteriKayitActivity.this, "Müşteri listesi senkron edilirken hata oluştu.", false);
+                                else
+                                    get_list();*/
+
+                            }
+                        });
+
+
+                    } else
+                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Musteri> call, Throwable t) {
+                progressDoalog.dismiss();
+                MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+            }
+        });
+    }
+
+
+    Siparis gelenSiparis;
+
+    public void postSiparisListFromService(final Siparis siparis, final Long siparisMid) {
+        progressDoalog.show();
+
+        Call<Siparis> call = refrofitRestApi.postSiparis(OrtakFunction.authorization, OrtakFunction.tenantId, siparis);
+        call.enqueue(new Callback<Siparis>() {
+            @Override
+            public void onResponse(Call<Siparis> call, Response<Siparis> response) {
+                if (!response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                    return;
+                }
+                if (response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    gelenSiparis = response.body();
+                    if (gelenSiparis != null) {
+
+                        db.siparisDao().updateSiparisQuery(siparisMid, gelenSiparis.getId());
+                        MainActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                // db.siparisDao().getSiparisAll()
+                                List<SiparisDetay> siparisdetayList = db.siparisDetayDao().getSiparisDetayForMustId(siparisMid);
+                                if (siparisdetayList != null && siparisdetayList.size() > 0) {
+                                    postSiparisDetayListFromService(siparisdetayList);
+                                }
+                               /* if (gelenMusteriList.size() != kayitList.size())
+                                    MessageBox.showAlert(MusteriKayitActivity.this, "Müşteri listesi senkron edilirken hata oluştu.", false);
+                                else
+                                    get_list();*/
+
+                            }
+                        });
+
+
+                    } else
+                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Siparis> call, Throwable t) {
+                progressDoalog.dismiss();
+                MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+            }
+        });
+    }
+
+
+    String gelenSiparisDetayList = null;
+
+    public void postSiparisDetayListFromService(List<SiparisDetay> siparisDetayList) {
+        progressDoalog.show();
+        RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
+        JsonArray datas = new JsonArray();
+        for (SiparisDetay item : siparisDetayList) {
+            JsonObject object = new JsonObject();
+            object.addProperty("id", item.getId());
+            object.addProperty("siparisId", item.getSiparisId());
+            object.addProperty("urunId", item.getUrunId());
+            object.addProperty("olcuBirimId", item.getOlcuBirimId());
+            object.addProperty("birimFiyat", item.getBirimFiyat());
+            object.addProperty("miktar", item.getMiktar());
+            //  object.addProperty("musteriNotu", "");
+            datas.add(object);
+        }
+
+        progressDoalog.show();
+        Call<String> call = refrofitRestApi.postSiparisDetay(OrtakFunction.authorization, OrtakFunction.tenantId, datas.toString());
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (!response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                    return;
+                }
+                if (response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    gelenSiparisDetayList = response.body();
+                    if (gelenSiparis != null) {
+
+                        db.siparisDao().updateSiparis(gelenSiparis);
+                        MainActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                             /*   if (gelenMusteriList.size() != kayitList.size())
+                                    MessageBox.showAlert(MusteriKayitActivity.this, "Müşteri listesi senkron edilirken hata oluştu.", false);
+                                else
+                                    get_list();*/
+
+                            }
+                        });
+
+
+                    } else
+                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                progressDoalog.dismiss();
+                MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+            }
+        });
+
+    }
+
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
+    }
 }

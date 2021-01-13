@@ -8,6 +8,8 @@ import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -18,20 +20,27 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.R;
+import com.example.haliyikamaapp.ToolLayer.OrtakFunction;
+import com.example.haliyikamaapp.UI.MainActivity;
 import com.example.haliyikamaapp.UI.MusteriDetayActivity;
 import com.example.haliyikamaapp.UI.MusteriKayitActivity;
 import com.example.haliyikamaapp.UI.SiparisKayitActivity;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHolder> {
+public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHolder>  implements Filterable {
 
     private List<Musteri> data;
+    private List<Musteri> itemsFiltered;
+
     private Context mContext;
 
 
     public MusteriAdapter(Context mContext, List<Musteri> data) {
         this.data = data;
+        this.itemsFiltered = data;
         this.mContext = mContext;
     }
 
@@ -44,8 +53,8 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final Musteri myListData = data.get(position);
-        holder.adiSoyadi_item.setText(data.get(position).getMusteriAdi() + " " + data.get(position).getMusteriSoyadi());
-        holder.telefonNo_item.setText(data.get(position).getTelefonNumarasi());
+        holder.adiSoyadi_item.setText(itemsFiltered.get(position).getMusteriAdi() + " " + itemsFiltered.get(position).getMusteriSoyadi());
+        holder.telefonNo_item.setText(itemsFiltered.get(position).getTelefonNumarasi());
 
 
         ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
@@ -123,11 +132,25 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
 
             }
         });
+
+        holder.senkron_et_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Musteri musteri = new Musteri();
+                musteri.tcKimlikNo = data.get(position).getTcKimlikNo();
+                musteri.vergiKimlikNo = data.get(position).getVergiKimlikNo();
+                musteri.telefonNumarasi = data.get(position).getTelefonNumarasi();
+                musteri.musteriTuru = data.get(position).getMusteriTuru();
+                musteri.musteriAdi = data.get(position).getMusteriAdi();
+                musteri.musteriSoyadi = data.get(position).getMusteriSoyadi();
+                ((MainActivity)mContext).postMusteriListFromService(musteri);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return itemsFiltered.size();
     }
 
 
@@ -142,14 +165,49 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
     }
 
     public List<Musteri> getData() {
-        return data;
+        return itemsFiltered;
+    }
+
+    @Override
+    public Filter getFilter() {
+
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String query = charSequence.toString();
+
+                List<Musteri> filtered = new ArrayList<>();
+
+                if (query.isEmpty()) {
+                    filtered = itemsFiltered;
+                } else {
+                    for (Musteri u : itemsFiltered) {
+                        if (u.getMusteriAdi().toLowerCase().contains(query.toLowerCase())) {
+                            filtered.add(u);
+                        }
+                    }
+                }
+
+                FilterResults results = new FilterResults();
+                results.count = filtered.size();
+                results.values = filtered;
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                itemsFiltered = (ArrayList<Musteri>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
+
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         RelativeLayout relativeLayout;
         public TextView adiSoyadi_item, tarih_item, telefonNo_item;
-        ImageView isimBasHarfi_item, edit_musteri, new_siparis_button, telefon_et_button;
+        ImageView isimBasHarfi_item, edit_musteri, new_siparis_button, telefon_et_button,senkron_et_button;
 
 
         public MyViewHolder(View itemView) {
@@ -160,6 +218,7 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
             this.edit_musteri = (ImageView) itemView.findViewById(R.id.edit_musteri);
             this.new_siparis_button = (ImageView) itemView.findViewById(R.id.new_siparis);
             this.telefon_et_button = (ImageView) itemView.findViewById(R.id.telefon_button);
+            this.senkron_et_button =  (ImageView) itemView.findViewById(R.id.senkron_musteri);
             relativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayout);
         }
     }

@@ -30,6 +30,9 @@ public interface MusteriDao {
     @Update
     int updateMusteri(Musteri musteri);
 
+    @Query("UPDATE MUSTERI SET id = :id WHERE mid = :mid")
+    int updateMusteriQuery(Long mid, Long id);
+
     @Query("DELETE FROM MUSTERI")
     void deleteMusteriAll();
 

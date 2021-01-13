@@ -29,6 +29,9 @@ public interface SiparisDao {
     @Query("DELETE FROM SIPARIS")
     void deleteSiparisAll();
 
+    @Query("UPDATE SIPARIS SET id = :id WHERE mid = :mid")
+   int updateSiparisQuery(Long mid, Long id);
+
     @Query("DELETE FROM SIPARIS where mid = :mid")
     int deletedSiparisForMid(Long mid );
 

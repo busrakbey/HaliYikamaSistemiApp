@@ -8,6 +8,9 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -46,12 +49,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MusteriFragment extends Fragment {
     ConstraintLayout relativeLayout;
-    MusteriAdapter adapter;
+   public  MusteriAdapter adapter;
     RecyclerView recyclerView;
     HaliYikamaDatabase db;
     Snackbar snackbar;
     Activity mActivity;
     Context mContext;
+    MenuItem searchMenuItem;
 
 
     @Nullable
@@ -65,7 +69,6 @@ public class MusteriFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         init_item(view);
         getMusteriListFromService();
-
 
 
     }
@@ -139,6 +142,7 @@ public class MusteriFragment extends Fragment {
 
     List<Musteri> gelenMusteriList;
     List<Musteri> updateMusteriList;
+
     void getMusteriListFromService() {
 
         RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
@@ -210,5 +214,6 @@ public class MusteriFragment extends Fragment {
             mContext = (Context) context;
         }
     }
+
 
 }

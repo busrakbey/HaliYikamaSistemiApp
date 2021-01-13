@@ -5,6 +5,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.List;
+
 
 @Entity(tableName = "SIPARIS_DETAY")
 public class SiparisDetay {
@@ -48,6 +50,7 @@ public class SiparisDetay {
 
     @ColumnInfo(name = "tenantId")
     public Long tenantId;
+
 
     @NonNull
     public Long getMid() {
@@ -153,4 +156,6 @@ public class SiparisDetay {
     public void setUrunMid(Long urunMid) {
         this.urunMid = urunMid;
     }
+
+
 }

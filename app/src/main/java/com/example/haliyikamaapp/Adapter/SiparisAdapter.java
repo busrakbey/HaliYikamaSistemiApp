@@ -15,6 +15,7 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.example.haliyikamaapp.Model.Entity.Siparis;
 import com.example.haliyikamaapp.R;
+import com.example.haliyikamaapp.UI.MainActivity;
 import com.example.haliyikamaapp.UI.SiparisDetayActivity;
 import com.example.haliyikamaapp.UI.SiparisKayitActivity;
 
@@ -78,6 +79,18 @@ public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHo
                 mContext.getApplicationContext().startActivity(musteri);
             }
         });
+
+        holder.senkron_siparis.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Siparis siparis = new Siparis();
+                siparis.musteriId = data.get(position).getMusteriId();
+                siparis.siparisTarihi= data.get(position).getSiparisTarihi();
+                siparis.subeId = data.get(position).getSubeId();
+                Long siparisMid = data.get(position).getMid();
+                ((MainActivity)mContext).postSiparisListFromService(siparis, siparisMid);
+            }
+        });
     }
 
     @Override
@@ -104,7 +117,7 @@ public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHo
 
         RelativeLayout relativeLayout;
         public TextView tarih_item, sipariş_durumu_item, siparis_tutari_item, sube_item;
-        ImageView edit_item;
+        ImageView edit_item, senkron_siparis;
 
 
         public MyViewHolder(View itemView) {
@@ -114,6 +127,7 @@ public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHo
             this.sipariş_durumu_item = (TextView) itemView.findViewById(R.id.siparis_durum_item);
             this.sube_item = (TextView) itemView.findViewById(R.id.siparis_sube_item);
             this.edit_item = (ImageView) itemView.findViewById(R.id.edit_imageview);
+            this.senkron_siparis = (ImageView) itemView.findViewById(R.id.senkron_siparis);
             relativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayout);
         }
     }

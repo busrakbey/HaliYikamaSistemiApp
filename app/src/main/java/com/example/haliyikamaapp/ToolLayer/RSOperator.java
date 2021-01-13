@@ -117,4 +117,58 @@ public class RSOperator {
             return entity;
         }
     }
+
+
+    public <T>  String convertJsonFromEntity(T entity)
+    {
+        String jSon=null;
+        try {
+            GsonBuilder builder = new GsonBuilder();
+            JsonSerializer<Date> ser = new JsonSerializer<Date>() {
+                @Override
+                public JsonElement serialize(Date src, Type typeOfSrc, JsonSerializationContext
+                        context) {
+                    return src == null ? null : new JsonPrimitive(src.getTime());
+                }
+            };
+
+            JsonDeserializer<Date> deser = new JsonDeserializer<Date>() {
+                @Override
+                public Date deserialize(JsonElement json, Type typeOfT,
+                                        JsonDeserializationContext context) throws JsonParseException {
+                    return json == null ? null : new Date(json.getAsLong());
+                }
+            };
+
+            Gson gson = new GsonBuilder()
+                    .registerTypeAdapter(Date.class, ser)
+                    .registerTypeAdapter(Date.class, deser).create();
+
+            jSon = gson.toJson(entity);
+
+        }
+
+        catch (JsonSyntaxException e)
+        {
+            e.printStackTrace();
+            throw new DefaultException(e.toString());
+        }
+        catch (com.google.gson.JsonParseException e)
+        {
+            e.printStackTrace();
+            throw new DefaultException(e.toString());
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            throw new DefaultException(e.toString());
+        }
+        catch (Throwable e)
+        {
+            e.printStackTrace();
+            throw new DefaultException(e.toString());
+        }
+        finally {
+            return jSon;
+        }
+    }
 }
