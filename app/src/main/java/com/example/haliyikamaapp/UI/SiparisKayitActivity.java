@@ -5,14 +5,17 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,26 +25,31 @@ import com.example.haliyikamaapp.AutoCompleteAdapter.MusteriAutoCompleteAdapter;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.Model.Entity.Siparis;
+import com.example.haliyikamaapp.Model.Entity.Sube;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 public class SiparisKayitActivity extends AppCompatActivity {
     Toolbar toolbar;
     FloatingActionButton ekleButon;
-    EditText sube_edittw, tarih_edittw, tutar_edittw, aciklama_edittw;
+    Spinner sube_spinner;
+    EditText tarih_edittw, tutar_edittw, aciklama_edittw;
     AutoCompleteTextView musteri_edittw;
     Button kayit_ilerle_button, kayit_tamamla_button;
     String gelenSiparisMid, gelenMusteriMid;
     HaliYikamaDatabase db;
     private DatePickerDialog datePickerDialog;
     MusteriAutoCompleteAdapter autoCompleteAdapter;
-    Long secilen_musteri_mid;
-    String secilen_musteri_adi;
     CheckBox teslim_alinacak_checkbox;
+    Musteri secilenMusteri;
+    public List<String> subeListString;
+    Sube secilenSube;
+
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -86,7 +94,7 @@ public class SiparisKayitActivity extends AppCompatActivity {
     void init_item() {
         db = HaliYikamaDatabase.getInstance(SiparisKayitActivity.this);
         musteri_edittw = (AutoCompleteTextView) findViewById(R.id.musteri_autocomplete);
-        sube_edittw = (EditText) findViewById(R.id.sube_adi);
+        sube_spinner = (Spinner) findViewById(R.id.sube_adi);
         tarih_edittw = (EditText) findViewById(R.id.siparis_tarihi);
         tutar_edittw = (EditText) findViewById(R.id.siparis_tutar);
         aciklama_edittw = (EditText) findViewById(R.id.siparis_aciklama);
@@ -133,19 +141,44 @@ public class SiparisKayitActivity extends AppCompatActivity {
         autoCompleteAdapter = new MusteriAutoCompleteAdapter(this, R.layout.activity_main, android.R.layout.simple_dropdown_item_1line, allMusteri);
         musteri_edittw.setThreshold(2);
         musteri_edittw.setAdapter(autoCompleteAdapter);
-
-
         musteri_edittw.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Musteri dty = (Musteri) parent.getAdapter().getItem(position);
 
                 if (dty != null) {
-                    secilen_musteri_mid = dty.getMid();
-                    secilen_musteri_adi = dty.getMusteriAdi() + " " + dty.getMusteriSoyadi();
+                    secilenMusteri = dty;
                 }
             }
         });
+
+        final List<Sube> subeList = db.subeDao().getSubeAll();
+        subeListString = new ArrayList<String>();
+        subeListString.add("Şube Seçiniz..");
+        for (Sube item : subeList)
+            subeListString.add(item.getSubeAdi());
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, subeListString);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sube_spinner.setAdapter(adapter);
+        sube_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position > 0) {
+                    Sube selected = subeList.get(position - 1);
+                    secilenSube = selected;
+
+                } else
+                    secilenSube = null;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        sube_spinner.setSelection(0);
+
 
     }
 
@@ -165,7 +198,7 @@ public class SiparisKayitActivity extends AppCompatActivity {
         //  else{
 
         final Siparis siparis = new Siparis();
-        siparis.setMusteriMid(gelenMusteriMid != null ? Long.valueOf(gelenMusteriMid) : secilen_musteri_mid);
+        siparis.setMusteriMid(gelenMusteriMid != null ? Long.valueOf(gelenMusteriMid) : secilenMusteri.getMid());
         siparis.setSubeId(1L);
         siparis.setSiparisTarihi(tarih_edittw.getText().toString());
      /*   if (!tutar_edittw.getText().toString().equalsIgnoreCase(""))
@@ -237,9 +270,9 @@ public class SiparisKayitActivity extends AppCompatActivity {
                 musteri_edittw.setText(allMusteri.get(0).getMusteriAdi() + " " + allMusteri.get(0).getMusteriSoyadi());
                 musteri_edittw.setEnabled(false);
             }
-            if (updateKayitList.get(0).getTeslimAlinacak() != null && updateKayitList.get(0).getTeslimAlinacak()== true)
+            if (updateKayitList.get(0).getTeslimAlinacak() != null && updateKayitList.get(0).getTeslimAlinacak() == true)
                 teslim_alinacak_checkbox.setChecked(true);
-            sube_edittw.setText("");
+            //    sube_edittw.setText("");
             tarih_edittw.setText(updateKayitList.get(0).getSiparisTarihi());
             //  tutar_edittw.setText(updateKayitList.get(0).getSiparisTutar() != null ? updateKayitList.get(0).getSiparisTutar().toString() : "");
             aciklama_edittw.setText(updateKayitList.get(0).getAciklama());

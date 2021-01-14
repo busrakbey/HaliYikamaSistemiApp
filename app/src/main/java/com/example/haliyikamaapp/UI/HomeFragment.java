@@ -99,9 +99,15 @@ public class HomeFragment extends Fragment {
         });
 
         ayarlar_button.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("RestrictedApi")
             @Override
             public void onClick(View view) {
+
+                Fragment selectedFragment = new AyarlarFragment();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        selectedFragment).commit();
                 ((MainActivity) getActivity()).initToolBar("Ayarlar");
+                ((MainActivity) getActivity()).ekleButon.setVisibility(View.GONE);
 
 
             }

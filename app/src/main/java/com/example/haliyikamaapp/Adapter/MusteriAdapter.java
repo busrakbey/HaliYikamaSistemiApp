@@ -181,7 +181,7 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
                 if (query.isEmpty()) {
                     filtered = itemsFiltered;
                 } else {
-                    for (Musteri u : itemsFiltered) {
+                    for (Musteri u : data) {
                         if (u.getMusteriAdi().toLowerCase().contains(query.toLowerCase())) {
                             filtered.add(u);
                         }

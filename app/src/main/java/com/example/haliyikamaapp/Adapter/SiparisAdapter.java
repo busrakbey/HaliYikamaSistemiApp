@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -19,16 +21,19 @@ import com.example.haliyikamaapp.UI.MainActivity;
 import com.example.haliyikamaapp.UI.SiparisDetayActivity;
 import com.example.haliyikamaapp.UI.SiparisKayitActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHolder> {
+public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHolder> implements Filterable {
 
     private List<Siparis> data;
+    private List<Siparis> itemsFiltered;
     private Context mContext;
 
 
     public SiparisAdapter(Context mContext, List<Siparis> data) {
         this.data = data;
+        this.itemsFiltered = data;
         this.mContext = mContext;
     }
 
@@ -95,7 +100,7 @@ public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHo
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return itemsFiltered.size();
     }
 
 
@@ -110,7 +115,41 @@ public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHo
     }
 
     public List<Siparis> getData() {
-        return data;
+        return itemsFiltered;
+    }
+
+    @Override
+    public Filter getFilter() {
+
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String query = charSequence.toString();
+
+                List<Siparis> filtered = new ArrayList<>();
+
+                if (query.isEmpty()) {
+                    filtered = itemsFiltered;
+                } else {
+                    for (Siparis u : data) {
+                      /*  if (u.g get.toLowerCase().contains(query.toLowerCase())) {
+                            filtered.add(u);
+                        }*/
+                    }
+                }
+
+                FilterResults results = new FilterResults();
+                results.count = filtered.size();
+                results.values = filtered;
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                itemsFiltered = (ArrayList<Siparis>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

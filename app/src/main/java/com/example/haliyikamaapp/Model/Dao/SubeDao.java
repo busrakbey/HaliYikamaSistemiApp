@@ -13,7 +13,7 @@ import java.util.List;
 public interface SubeDao {
 
     @Query("SELECT * FROM SUBE")
-    List<Sube> getSiparisAll();
+    List<Sube> getSubeAll();
 
     @Insert
     long setSube(Sube sube);

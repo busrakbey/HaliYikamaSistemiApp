@@ -8,7 +8,14 @@
 
     <dimen name="text_size_big">17sp</dimen>
 
-
+    <dimen name="topbar_icon_width">15dp</dimen>
+    <dimen name="topbar_icon_height">15dp</dimen>
+    <dimen name="topbar_textSize">10sp</dimen>
+    <dimen name="actionbar_logo_width">25dp</dimen>
+    <dimen name="actionbar_logo_height">30dp</dimen>
+    <dimen name="actionbar_button_width">60dp</dimen>
+    <dimen name="actionbar_button_height">25dp</dimen>
+    <dimen name="actionbar_button_textSize">10sp</dimen>
 
 
 </resources>

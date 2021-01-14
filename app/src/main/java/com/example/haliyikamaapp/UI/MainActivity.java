@@ -52,6 +52,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -79,8 +80,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     ProgressDialog progressDoalog;
     MusteriAdapter adapter;
 
-
-
     @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
         setContentView(R.layout.activity_main);
-
 
         init_item();
         if (telephoneNumber != null)
@@ -242,15 +240,23 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 @Override
                 public boolean onQueryTextSubmit(String queryString) {
 
-                    MusteriFragment fragment = (MusteriFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-                    fragment.adapter.getFilter().filter(queryString);
+                    if (toolbarTextView.getText().toString().equalsIgnoreCase("Müşteri")) {
+                        MusteriFragment fragment = (MusteriFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                        fragment.adapter.getFilter().filter(queryString);
+
+                    }
+
+
                     return false;
                 }
 
                 @Override
                 public boolean onQueryTextChange(String queryString) {
-                    MusteriFragment fragment = (MusteriFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-                    fragment.adapter.getFilter().filter(queryString);
+                    if (toolbarTextView.getText().toString().equalsIgnoreCase("Müşteri")) {
+                        MusteriFragment fragment = (MusteriFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                        fragment.adapter.getFilter().filter(queryString);
+
+                    }
                     return false;
                 }
             });
@@ -634,7 +640,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 // db.siparisDao().getSiparisAll()
                                 List<SiparisDetay> siparisdetayList = db.siparisDetayDao().getSiparisDetayForMustId(siparisMid);
                                 if (siparisdetayList != null && siparisdetayList.size() > 0) {
-                                    postSiparisDetayListFromService(siparisdetayList);
+                                    List<Siparis> gidecekSiparis = db.siparisDao().getSiparisForSiparisId(gelenSiparis.getId());
+                                    postSiparisDetayListFromService(siparisdetayList, gidecekSiparis);
                                 }
                                /* if (gelenMusteriList.size() != kayitList.size())
                                     MessageBox.showAlert(MusteriKayitActivity.this, "Müşteri listesi senkron edilirken hata oluştu.", false);
@@ -661,7 +668,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     String gelenSiparisDetayList = null;
 
-    public void postSiparisDetayListFromService(List<SiparisDetay> siparisDetayList) {
+    public void postSiparisDetayListFromService(List<SiparisDetay> siparisDetayList, final List<Siparis> gelenSiparis) {
         progressDoalog.show();
         RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
         JsonArray datas = new JsonArray();
@@ -691,9 +698,77 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 if (response.isSuccessful()) {
                     progressDoalog.dismiss();
                     gelenSiparisDetayList = response.body();
-                    if (gelenSiparis != null) {
+                    if (gelenSiparisDetayList != null) {
 
-                        db.siparisDao().updateSiparis(gelenSiparis);
+                        //  db.siparisDao().updateSiparis(gelenSiparisDetayList);
+                        MainActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                             /*   if (gelenMusteriList.size() != kayitList.size())
+                                    MessageBox.showAlert(MusteriKayitActivity.this, "Müşteri listesi senkron edilirken hata oluştu.", false);
+                                else
+                                    get_list();*/
+                                postSiparisSureciBaslatService(gelenSiparis);
+
+                            }
+                        });
+
+
+                    } else
+                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                progressDoalog.dismiss();
+                MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+            }
+        });
+
+    }
+
+
+    String gelenProcessId = null;
+
+    public void postSiparisSureciBaslatService(final List<Siparis> item) {
+        progressDoalog.show();
+        RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
+        JsonObject object = new JsonObject();
+        object.addProperty("subeId", item.get(0).getSubeId());
+        object.addProperty("musteriId", item.get(0).getMusteriId());
+        if (item.get(0).getTeslimAlinacak() != null)
+            object.addProperty("teslimAlinacak", item.get(0).getTeslimAlinacak() == true ? "Evet" : "Hayır");
+        else
+            object.addProperty("teslimAlinacak", "Hayır");
+        object.addProperty("siparisId", item.get(0).getId());
+
+
+        progressDoalog.show();
+        Call<String> call = refrofitRestApi.startSiparisSureci(OrtakFunction.authorization, OrtakFunction.tenantId, object.toString());
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (!response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                    return;
+                }
+                if (response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    gelenProcessId = response.body();
+                    if (!gelenProcessId.equalsIgnoreCase("")) {
+                        JSONObject gelenObject = null;
+                        try {
+                            gelenObject = new JSONObject(gelenProcessId);
+                            db.siparisDao().updateSiparisProcessId(Long.valueOf(gelenObject.getString("processInstanceId")), item.get(0).getId());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
                         MainActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -731,4 +806,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public boolean onQueryTextChange(String newText) {
         return false;
     }
+
+
 }

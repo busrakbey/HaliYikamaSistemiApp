@@ -106,4 +106,43 @@
 
     </style>
 
+
+    <style name="topbariconstyle" >
+        <item name="android:background">@color/transparent</item>
+        <item name="android:layout_width">@dimen/topbar_icon_width</item>
+        <item name="android:layout_height">@dimen/topbar_icon_height</item>
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:layout_margin">2dp</item>
+        <item name="android:src">@android:drawable/ic_menu_edit</item>
+
+    </style>
+    <style name="mf_ActionBar_button_parent">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:layout_marginRight">5dp</item>
+        <item name="android:layout_width">@dimen/actionbar_button_width</item>
+        <item name="android:layout_height">@dimen/actionbar_button_height</item>
+        <item name="android:layout_gravity">center_vertical|center_horizontal</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/actionbar_button_textSize</item>
+        <item name="android:text">Button</item>
+    </style>
+    <style name="mf_ActionBar_button_WhiteBorder_BackTransStyle" parent="mf_ActionBar_button_parent" >
+        <item name="android:textColor">@color/mr_haki</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+
+        <item name="android:background">@color/transparent</item>
+    </style>
+    <!-- 1 column form styles-->
+    <style name="myformContainerFor1Column">
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:background">@drawable/formborderstyle</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
 </resources>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/loginCard"
+    android:layout_gravity="center"
+    android:layout_marginTop="@dimen/loginViewsMargin"
+    android:layout_marginBottom="@dimen/loginViewsMargin"
+    android:background="@color/whiteCardColor"
+    android:elevation="5dp"
+    app:cardCornerRadius="@dimen/loginCardRadius">
+
+    <LinearLayout
+        style="@style/linearParent"
+        android:layout_gravity="center"
+        android:background="@drawable/shadow"
+        android:padding="@dimen/loginViewsMargin">
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/parent"
+            android:layout_marginTop="@dimen/signup_text_margin_top">
+
+            <EditText
+                android:id="@+id/server_url_text"
+                style="@style/modifiedEditText"
+                android:drawableLeft="@android:drawable/ic_menu_edit"
+                android:hint="Sistem İletişim Adresi"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/vazgec_button"
+                style="@style/tamamlaButton"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:layout_weight="0.5"
+                android:onClick="musteriTamamlaOnclik"
+                android:text="VAZGEÇ"
+                android:textColor="@color/text" />
+
+            <Button
+                android:id="@+id/kayit_button"
+                style="@style/loginButton"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:layout_weight="0.5"
+                android:onClick="musteriKayitOnclik"
+                android:text="KAYDET" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

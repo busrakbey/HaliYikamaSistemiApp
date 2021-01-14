@@ -176,7 +176,12 @@ public class MusteriFragment extends Fragment {
                         if (gelenMusteriList != null && gelenMusteriList.size() > 0)
                             gelenMusteriList.removeAll(updateMusteriList);
                         final List<Long> kayitList = db.musteriDao().setMusteriList(gelenMusteriList);
-                        db.musteriDao().updateMusteriList(updateMusteriList);
+
+                        for(Musteri item : updateMusteriList){
+                           int result = db.musteriDao().updateMusteriAllColumnQuery(item.getId(), item.getMusteriAdi(),item.getMusteriSoyadi(), item.getMusteriTuru(), item.getTelefonNumarasi(),
+                                    item.getVergiKimlikNo(), item.getTcKimlikNo());
+                        }
+                     //   db.musteriDao().updateMusteriList(updateMusteriList);
                         mActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

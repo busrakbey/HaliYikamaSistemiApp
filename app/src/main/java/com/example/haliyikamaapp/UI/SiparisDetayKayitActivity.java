@@ -40,9 +40,9 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
     String siparisMid, siparisDetayMid;
     HaliYikamaDatabase db;
     OlcuBirimAutoCompleteAdapter autoCompleteAdapter;
-    Long olcuBirimMid, secilen_urun_mid;
-    String olcuBirimAdi, secilen_urun_adi;
     UrunAutoCompleteAdapter urunAutoCompleteAdapter;
+    Urun secilenUrun = null;
+    OlcuBirim secilenOlcuBirim = null;
 
 
     @SuppressLint("RestrictedApi")
@@ -110,8 +110,7 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
                 OlcuBirim dty = (OlcuBirim) parent.getAdapter().getItem(position);
 
                 if (dty != null) {
-                    olcuBirimMid = dty.getMid();
-                    olcuBirimAdi = dty.getOlcuBirimi();
+                   secilenOlcuBirim = dty;
                 }
             }
         });
@@ -129,8 +128,7 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
                 Urun dty = (Urun) parent.getAdapter().getItem(position);
 
                 if (dty != null) {
-                    secilen_urun_mid = dty.getMid();
-                    secilen_urun_adi = dty.getUrunAdi();
+                    secilenUrun = dty;
                 }
             }
         });
@@ -169,11 +167,13 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
         final SiparisDetay siparisDetay = new SiparisDetay();
         if (!birim_fiyati_edittw.getText().toString().equalsIgnoreCase(""))
             siparisDetay.setBirimFiyat(Double.parseDouble(birim_fiyati_edittw.getText().toString()));
-        siparisDetay.setOlcuBirimMid(olcuBirimMid);
+        siparisDetay.setOlcuBirimMid(secilenOlcuBirim.getMid());
+        siparisDetay.setOlcuBirimId(secilenUrun.getId());
         if (!miktar_edittw.getText().toString().equalsIgnoreCase(""))
             siparisDetay.setMiktar(Double.parseDouble(miktar_edittw.getText().toString()));
         siparisDetay.setMustId(Long.valueOf(siparisMid));
-        siparisDetay.setUrunMid(secilen_urun_mid);
+        siparisDetay.setUrunMid(secilenUrun.getMid());
+        siparisDetay.setUrunId(secilenUrun.getId());
 
         new Thread(new Runnable() {
             @Override

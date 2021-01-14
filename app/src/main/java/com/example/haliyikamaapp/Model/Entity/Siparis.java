@@ -55,6 +55,9 @@ public class Siparis {
     @ColumnInfo(name = "teslimAlinacak")
     public Boolean teslimAlinacak;
 
+    @ColumnInfo(name = "processInstanceId")
+    public Long processInstanceId;
+
     @NonNull
     public Long getMid() {
         return mid;
@@ -174,5 +177,13 @@ public class Siparis {
 
     public void setTeslimAlinacak(Boolean teslimAlinacak) {
         this.teslimAlinacak = teslimAlinacak;
+    }
+
+    public Long getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(Long processInstanceId) {
+        this.processInstanceId = processInstanceId;
     }
 }

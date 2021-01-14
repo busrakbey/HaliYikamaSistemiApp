@@ -33,6 +33,10 @@ public interface MusteriDao {
     @Query("UPDATE MUSTERI SET id = :id WHERE mid = :mid")
     int updateMusteriQuery(Long mid, Long id);
 
+    @Query("UPDATE MUSTERI SET musteriAdi = :musteriAdi, musteriSoyadi = :musteriSoyadi, musteriTuru = :musteriTuru, telefonNumarasi = :telefonNumarasi, " +
+            "vergiKimlikNo =:vergiNo, tcKimlikNo = :tcNo  WHERE id = :id")
+    int updateMusteriAllColumnQuery(Long id, String musteriAdi, String musteriSoyadi, String musteriTuru , String telefonNumarasi, String tcNo, String vergiNo);
+
     @Query("DELETE FROM MUSTERI")
     void deleteMusteriAll();
 
