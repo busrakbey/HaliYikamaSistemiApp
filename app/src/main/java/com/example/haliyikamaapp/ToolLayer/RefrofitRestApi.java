@@ -62,6 +62,9 @@ public interface RefrofitRestApi {
 
     @POST("hy/siparis/startProcess")
     Call<String>  startSiparisSureci (@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body String siparisBilgileri);
+
+    @GET()  ////"hy/urun/subeyeGoreUrunAra/1/___"
+    Call<String>  getSubeyeGoreUrunFiyatListesi (@Url String url,@Header("Authorization") String auth, @Header("tenant-id") String tenantId);
 }
 
 

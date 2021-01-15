@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.telephony.PhoneNumberUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -187,7 +188,7 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
             final Musteri musteri = new Musteri();
             musteri.setMusteriAdi(adi_edittw.getText().toString());
             musteri.setMusteriSoyadi(soyadi_edittw.getText().toString());
-            musteri.setTelefonNumarasi(tel_no_edittw.getText().toString());
+            musteri.setTelefonNumarasi(PhoneNumberUtils.formatNumber(tel_no_edittw.getText().toString()));
             musteri.setTcKimlikNo(tc_no_edittw.getText().toString());
             musteri.setMusteriTuru(String.valueOf(musteri_turu_spinner.getSelectedItemPosition()));
             musteri.setVergiKimlikNo(vergi_no_edittw.getText().toString());

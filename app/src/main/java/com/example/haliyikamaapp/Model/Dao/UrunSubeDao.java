@@ -16,6 +16,9 @@ public interface UrunSubeDao {
     @Insert
     void setUrunSube(UrunSube musteri);
 
+    @Insert
+    void setUrunSubeList(List<UrunSube> subeList);
+
     @Query("DELETE FROM URUN_SUBE")
     void deleteUrunSubeAll();
 

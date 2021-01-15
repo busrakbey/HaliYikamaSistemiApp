@@ -16,7 +16,12 @@ public interface UrunFiyatDao {
     @Insert
     void setUrunFiyat(UrunFiyat musteri);
 
-    @Query("DELETE FROM URUN_FIYAT")
+
+ @Insert
+ void setUrunFiyatList(List<UrunFiyat> urunFiyatList);
+
+
+ @Query("DELETE FROM URUN_FIYAT")
     void deleteUrunFiyatAll();
 
     @Query("DELETE FROM URUN_FIYAT where mid = :mid")

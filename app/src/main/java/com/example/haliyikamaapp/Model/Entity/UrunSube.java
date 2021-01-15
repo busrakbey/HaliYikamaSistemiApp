@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import java.util.List;
 
 
 @Entity(tableName = "URUN_SUBE")
@@ -26,6 +27,9 @@ public class UrunSube {
     @ColumnInfo(name = "subeId")
     public Long subeId;
 
+    @ColumnInfo(name = "subeAdi")
+    public String subeAdi;
+
     @ColumnInfo(name = "olcuBirimId")
     public Long olcuBirimId;
 
@@ -37,6 +41,7 @@ public class UrunSube {
 
     @ColumnInfo(name = "tenantId")
     public Long tenantId;
+
 
     @NonNull
     public Long getMid() {
@@ -109,5 +114,13 @@ public class UrunSube {
 
     public void setTenantId(Long tenantId) {
         this.tenantId = tenantId;
+    }
+
+    public String getSubeAdi() {
+        return subeAdi;
+    }
+
+    public void setSubeAdi(String subeAdi) {
+        this.subeAdi = subeAdi;
     }
 }

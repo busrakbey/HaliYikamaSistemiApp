@@ -36,11 +36,15 @@ import com.example.haliyikamaapp.Adapter.MusteriAdapter;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.Model.Entity.MusteriTuru;
+import com.example.haliyikamaapp.Model.Entity.OlcuBirim;
 import com.example.haliyikamaapp.Model.Entity.Siparis;
 import com.example.haliyikamaapp.Model.Entity.SiparisDetay;
 import com.example.haliyikamaapp.Model.Entity.Sube;
 import com.example.haliyikamaapp.Model.Entity.Urun;
+import com.example.haliyikamaapp.Model.Entity.UrunFiyat;
+import com.example.haliyikamaapp.Model.Entity.UrunSube;
 import com.example.haliyikamaapp.R;
+import com.example.haliyikamaapp.ToolLayer.DefaultException;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
 import com.example.haliyikamaapp.ToolLayer.OrtakFunction;
 import com.example.haliyikamaapp.ToolLayer.RSOperator;
@@ -48,14 +52,18 @@ import com.example.haliyikamaapp.ToolLayer.RefrofitRestApi;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -334,6 +342,17 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
+    }
+
+
     private void getCallLogs() {
 
         ContentResolver cr = getBaseContext().getContentResolver();
@@ -490,7 +509,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                                                 MessageBox.showAlert(MainActivity.this, "Şube listesi alınırken hata oluştu.", false);
                                                             else {
 
-
+                                                                getUrunFiyatSubeAndOlcuBirimFromService(gelenSubeList);
                                                                 //////// müşteri türü listesi geliyor //////////
 
                                                                 progressDoalog.show();
@@ -797,14 +816,72 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
 
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
+    String gelenUrunFiyatJson = null;
 
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        return false;
+    public void getUrunFiyatSubeAndOlcuBirimFromService(final List<Sube> subeList) {
+        RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
+        progressDoalog.show();
+        final RSOperator rs = new RSOperator();
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setDateFormat("M/d/yy hh:mm a");
+        final Gson gson = gsonBuilder.create();
+        for (Sube item : subeList) {
+            Call<String> call = refrofitRestApi.getSubeyeGoreUrunFiyatListesi("hy/urun/subeyeGoreUrunAra/" + item.getId() + "/___", OrtakFunction.authorization, OrtakFunction.tenantId);
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    if (!response.isSuccessful()) {
+                        progressDoalog.dismiss();
+                        MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                        return;
+                    }
+                    if (response.isSuccessful()) {
+                        progressDoalog.dismiss();
+                        gelenUrunFiyatJson = response.body();
+                        if (!gelenUrunFiyatJson.equalsIgnoreCase("")) {
+                            JSONArray datas = null;
+                            try {
+                                datas = new JSONArray(gelenUrunFiyatJson);
+                                db.urunSubeDao().deleteUrunSubeAll();
+                                db.olcuBirimDao().deleteOlcuBirimAll();
+                                db.urunFiyatDao().deleteUrunFiyatAll();
+                                for (int i = 0; i < datas.length(); i++) {
+                                    JSONObject object = new JSONObject(datas.get(i).toString());
+                                    List<UrunSube> urunSubeList = Arrays.asList(gson.fromJson(object.toString(), UrunSube.class));
+                                    db.urunSubeDao().setUrunSubeList(urunSubeList);
+                                    if(db.olcuBirimDao().getOlcuBirimForId(object.getLong("olcuBirimId")).size() ==0){
+                                        OlcuBirim olcuBirim= new OlcuBirim();
+                                        olcuBirim.setOlcuBirimi(object.getString("olcuBirimi"));
+                                        olcuBirim.setId(object.getLong("olcuBirimId"));
+                                        olcuBirim.setAktif(object.getBoolean("aktif"));
+                                        db.olcuBirimDao().setOlcuBirim(olcuBirim);
+                                    }
+                                    JSONArray arrayFiyat = new JSONArray(object.getString("fiyatlar"));
+                                    for (int j = 0; j < arrayFiyat.length(); i++) {
+                                        JSONObject objectFiyat = new JSONObject(arrayFiyat.get(i).toString());
+                                        List<UrunFiyat> data = Arrays.asList(gson.fromJson(objectFiyat.toString(), UrunFiyat.class));
+                                        db.urunFiyatDao().setUrunFiyatList(data);
+                                    }
+                                }
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+
+                        } else
+                            MessageBox.showAlert(MainActivity.this, "Ürün-fiyat listesi bulunamamıştır..", false);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    progressDoalog.dismiss();
+                    MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                }
+            });
+        }
     }
 
 

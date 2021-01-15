@@ -3,6 +3,7 @@ package com.example.haliyikamaapp.ToolLayer;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Entity;
 import android.content.pm.PackageManager;
 import android.util.Base64;
 import android.util.Log;
@@ -22,11 +23,14 @@ import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Dao.AuthTokenDao;
 import com.example.haliyikamaapp.Model.Entity.AuthToken;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -213,4 +217,6 @@ public class OrtakFunction {
         return refrofitRestApi;
 
     }
+
+
 }

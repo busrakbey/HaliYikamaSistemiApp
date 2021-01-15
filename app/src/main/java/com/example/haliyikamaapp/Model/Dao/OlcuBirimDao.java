@@ -26,6 +26,9 @@ public interface OlcuBirimDao {
     @Query("SELECT * FROM OLCU_BIRIM where mid = :mid")
     List<OlcuBirim> getOlcuBirimForMid(Long mid);
 
+    @Query("SELECT * FROM OLCU_BIRIM where id = :id")
+    List<OlcuBirim> getOlcuBirimForId(Long id);
+
 }
 
 
