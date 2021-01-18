@@ -22,7 +22,6 @@ public class IncomingCallInterceptor extends BroadcastReceiver {
 
             // TODO This would be a good place to "Do something when the phone rings" ;-)
 
-
             if (incomingNumber != null) {
                 Intent intent1 = new Intent();
                 intent1.putExtra("number", incomingNumber);

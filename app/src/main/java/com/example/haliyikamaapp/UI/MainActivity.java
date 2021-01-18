@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                             break;
                         case R.id.nav_musterigorevlerim:
                             selectedFragment = new MusteriGorevlerimFragment();
-                            initToolBar("Müşteri ve Görevlerim");
+                            initToolBar("Görevlerim");
                             ekleButon.setVisibility(View.VISIBLE);
                             break;
                     }
@@ -508,7 +508,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                                             if (kayitList.size() != gelenSubeList.size())
                                                                 MessageBox.showAlert(MainActivity.this, "Şube listesi alınırken hata oluştu.", false);
                                                             else {
-
                                                                 getUrunFiyatSubeAndOlcuBirimFromService(gelenSubeList);
                                                                 //////// müşteri türü listesi geliyor //////////
 
@@ -750,7 +749,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
 
     String gelenProcessId = null;
-
     public void postSiparisSureciBaslatService(final List<Siparis> item) {
         progressDoalog.show();
         RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
@@ -817,15 +815,16 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
 
     String gelenUrunFiyatJson = null;
-
     public void getUrunFiyatSubeAndOlcuBirimFromService(final List<Sube> subeList) {
         RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
         progressDoalog.show();
-        final RSOperator rs = new RSOperator();
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setDateFormat("M/d/yy hh:mm a");
         final Gson gson = gsonBuilder.create();
         for (Sube item : subeList) {
+            db.urunSubeDao().deleteUrunSubeAll();
+            db.olcuBirimDao().deleteOlcuBirimAll();
+            db.urunFiyatDao().deleteUrunFiyatAll();
             Call<String> call = refrofitRestApi.getSubeyeGoreUrunFiyatListesi("hy/urun/subeyeGoreUrunAra/" + item.getId() + "/___", OrtakFunction.authorization, OrtakFunction.tenantId);
             call.enqueue(new Callback<String>() {
                 @Override
@@ -839,12 +838,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                         progressDoalog.dismiss();
                         gelenUrunFiyatJson = response.body();
                         if (!gelenUrunFiyatJson.equalsIgnoreCase("")) {
+
                             JSONArray datas = null;
                             try {
                                 datas = new JSONArray(gelenUrunFiyatJson);
-                                db.urunSubeDao().deleteUrunSubeAll();
-                                db.olcuBirimDao().deleteOlcuBirimAll();
-                                db.urunFiyatDao().deleteUrunFiyatAll();
+
                                 for (int i = 0; i < datas.length(); i++) {
                                     JSONObject object = new JSONObject(datas.get(i).toString());
                                     List<UrunSube> urunSubeList = Arrays.asList(gson.fromJson(object.toString(), UrunSube.class));

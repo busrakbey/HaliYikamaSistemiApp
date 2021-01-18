@@ -51,6 +51,8 @@
 
         <activity android:name=".UI.SiparisKayitActivity"></activity>
         <activity android:name=".UI.CallHelper"></activity>
+        <activity android:name=".UI.MusteriGorevlerimDetayActivity"></activity>
+
 
 
 

@@ -65,6 +65,16 @@ public interface RefrofitRestApi {
 
     @GET()  ////"hy/urun/subeyeGoreUrunAra/1/___"
     Call<String>  getSubeyeGoreUrunFiyatListesi (@Url String url,@Header("Authorization") String auth, @Header("tenant-id") String tenantId);
+
+    @POST()  ////hy/process/userTasks/999"
+    Call<String>  getKullaniciGorevList (@Url String url,@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body String gorevPageBilgileri);
+
+    @GET()  ////fw/process/taskFormData/15008"
+    Call<String>  getGorevTamamlamakIcinGerekliFormList (@Url String url,@Header("Authorization") String auth, @Header("tenant-id") String tenantId,
+                                                         @Header("Content-Type") String contentType, @Header("Accept") String accept  );
+
+    @POST()  ////fw/process/completeTask/10013
+    Call<String>  postGorevTamamla (@Url String url,@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body String gorevBilgileri);
 }
 
 

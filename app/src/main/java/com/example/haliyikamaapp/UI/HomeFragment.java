@@ -91,7 +91,7 @@ public class HomeFragment extends Fragment {
                 Fragment selectedFragment = new MusteriGorevlerimFragment();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         selectedFragment).commit();
-                ((MainActivity) getActivity()).initToolBar("Müşteri ve Görevlerim");
+                ((MainActivity) getActivity()).initToolBar("Görevlerim");
                 ((MainActivity) getActivity()).ekleButon.setVisibility(View.VISIBLE);
                 ((MainActivity) getActivity()).bottomNavigationView.setSelectedItemId(R.id.nav_musterigorevlerim);
 

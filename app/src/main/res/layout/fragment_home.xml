@@ -265,7 +265,7 @@
                             android:layout_marginTop="10dp"
                             android:fontFamily="@font/segoeuib"
                             android:gravity="center"
-                            android:text="Müşteri ve Görevlerim"
+                            android:text="Görevlerim"
                             android:textColor="@color/text"
                             android:textSize="@dimen/text_size_big"
                             android:textStyle="bold"

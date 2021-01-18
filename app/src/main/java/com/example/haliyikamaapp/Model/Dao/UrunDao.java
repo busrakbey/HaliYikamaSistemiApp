@@ -32,4 +32,8 @@ public interface UrunDao {
     @Query("SELECT * FROM URUN where mid = :mid")
     List<Urun> getUrunForMid(Long mid);
 
+
+    @Query("SELECT * FROM URUN where id = :id")
+    List<Urun> getUrunForId(Long id);
+
 }
