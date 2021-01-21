@@ -32,7 +32,7 @@
                 android:textColor="@color/text"
                 android:textSize="23sp"
                 android:textStyle="bold"
-                tools:text="Notlar" />
+                tools:text="Görev Tamamla" />
 
         </LinearLayout>
 

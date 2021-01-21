@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.UI.DialogConfigFragment;
+import com.example.haliyikamaapp.UI.TanimlamalarActivity;
 
 import java.util.List;
 
@@ -50,6 +51,19 @@ public class AyarlarAdapter extends RecyclerView.Adapter<AyarlarAdapter.MyViewHo
                     FragmentManager manager =((AppCompatActivity)mContext).getFragmentManager();
                     DialogConfigFragment kd = new DialogConfigFragment(mContext);
                     kd.show(manager,"");
+                }
+            }
+        });
+
+
+        holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(data.get(position).toString().equalsIgnoreCase("Tanımlamalar")){
+
+                   Intent i = new Intent(mContext, TanimlamalarActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.getApplicationContext().startActivity(i);
                 }
             }
         });

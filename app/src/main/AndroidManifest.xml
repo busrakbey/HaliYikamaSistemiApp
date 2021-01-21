@@ -53,6 +53,10 @@
         <activity android:name=".UI.CallHelper"></activity>
         <activity android:name=".UI.MusteriGorevlerimDetayActivity"></activity>
 
+        <activity android:name=".UI.TanimlamalarActivity"></activity>
+
+
+
 
 
 

@@ -63,7 +63,7 @@ public class AyarlarFragment extends Fragment {
     void get_list() {
 
         List<String> data = new ArrayList<>();
-        data.add("Şube Belirleme");
+        data.add("Tanımlamalar");
         data.add("Sistem Url Adresi");
         adapter = new AyarlarAdapter(getContext(), data);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

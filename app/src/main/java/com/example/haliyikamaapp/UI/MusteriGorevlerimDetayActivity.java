@@ -68,9 +68,13 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
     RefrofitRestApi refrofitRestApi;
     Boolean notGirilecekMi = false, notZorunluMu = false,
             urunListesiVarMi = false, urunZorunluMu = false;
+    Boolean teslimEdildiBilgisi = false, tesiimEdildiZorunluMu =false,
+            tahsilEdilecekTutarBilgisi = false , tahsilEdilecekTutarZorunluMu = false;
     String gorevNotu = "";
     JSONObject jsonObjectGorevTamamla;
     LinearLayout not_linear,spinenr_linerar;
+    GorevFomBilgileri not_item, urun_item, teslim_edildi_item, tahsil_edildi_item, tahasilatTutari_item,
+            teslim_alinacak_item, sube_item, musteri_item;
 
 
     @SuppressLint("RestrictedApi")
@@ -113,23 +117,40 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
 
         List<GorevFomBilgileri> formBilgiList = db.gorevFomBilgileriDao().getGorevId(Long.valueOf(gorevId));
         for (GorevFomBilgileri item : formBilgiList) {
-            if (item.getId().equalsIgnoreCase("notlar"))
+            if (item.getId().equalsIgnoreCase("notlar")) {
                 notGirilecekMi = true;
+                not_item = item;
+            }
+            if (item.getId().equalsIgnoreCase("urunListesi")){
+                urunListesiVarMi = true;
+                urun_item=item;
+            }
+            if (item.getId().equalsIgnoreCase("urunListesi")){
+                urunListesiVarMi = true;
+                urun_item=item;
+            }
+            if (item.getId().equalsIgnoreCase("teslimEdildi")){
+                teslim_edildi_item=item;
+            }
+            if (item.getId().equalsIgnoreCase("tahsilEdilecekTutar")){
+                tahsil_edildi_item=item;
+            }
+            if (item.getId().equalsIgnoreCase("tahasilatTutari")){
+                tahasilatTutari_item =item;
+            }
+            if (item.getId().equalsIgnoreCase("teslimAlinacak")){
+                teslim_alinacak_item =item;
+            }
+
+
+
             if (notGirilecekMi == true && item.getRequired() == true)
                 notZorunluMu = true;
 
-            if (item.getId().equalsIgnoreCase("urunListesi"))
-                urunListesiVarMi = true;
+
             if (urunListesiVarMi == true && item.getRequired() == true)
                 urunZorunluMu = true;
-            if(item.getFormValues() != null){
-                try {
-                    jsonObjectGorevTamamla = new JSONObject(item.getFormValues());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
 
-            }
 
         }
 
@@ -140,6 +161,7 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
         gorev_tamamla_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(MusteriGorevlerimDetayActivity.this);
                 View mView = getLayoutInflater().inflate(R.layout.not_popup_window, null);
                 final TextView call_message = (TextView) mView.findViewById(R.id.call_message);
@@ -149,6 +171,17 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
                 not_linear = (LinearLayout) mView.findViewById(R.id.gorev_not);
                 spinenr_linerar = (LinearLayout) mView.findViewById(R.id.gorev_spinner);
                 final Spinner spinner= (Spinner) mView.findViewById(R.id.gorev_tamamla_spinner);
+
+                if(teslim_edildi_item != null){
+                    spinenr_linerar.setVisibility(View.VISIBLE);
+                    if(teslim_edildi_item.getFormValues() != null){
+                        try {
+                            jsonObjectGorevTamamla = new JSONObject(teslim_edildi_item.getFormValues());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
 
                 if (urunListesiVarMi && urunZorunluMu && siparisDetayList.size() == 0) {
                     MessageBox.showAlert(MusteriGorevlerimDetayActivity.this, "Ürün listesi olmadan görev tamamlanamaz..", false);
@@ -179,7 +212,7 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
 
                 }
 
-                if (notGirilecekMi) {
+                if (not_item != null) {
                     not_linear.setVisibility(View.VISIBLE);
                     tittle.setText("Görevi Tamamla");
                     mBuilder.setView(mView);
