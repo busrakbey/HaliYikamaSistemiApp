@@ -1,10 +1,23 @@
 package com.example.haliyikamaapp.Model.Entity;
 
-public class S_ILCE {
-    public  Long id;
-    public Long ilId;
-    public String adi;
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
+@Entity(tableName = "S_ILCE")
+
+public class S_ILCE {
+    @NonNull
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "mid")
+    public Long mid;
+
+    @ColumnInfo(name = "id")
+    public Long id;
+
+    @ColumnInfo(name = "adi")
+    public String adi;
     public Long getId() {
         return id;
     }
@@ -13,19 +26,11 @@ public class S_ILCE {
         this.id = id;
     }
 
-    public Long getIlId() {
-        return ilId;
-    }
-
-    public void setIlId(Long ilId) {
-        this.ilId = ilId;
-    }
-
-    public String getAdi() {
+    public String getAd() {
         return adi;
     }
 
-    public void setAdi(String adi) {
-        this.adi = adi;
+    public void setAd(String ad) {
+        this.adi = ad;
     }
 }

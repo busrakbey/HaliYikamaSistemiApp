@@ -55,7 +55,7 @@
 
         <activity android:name=".UI.TanimlamalarActivity"></activity>
 
-
+        <activity android:name=".UI.SubeTanimlamaActivity"></activity>
 
 
 

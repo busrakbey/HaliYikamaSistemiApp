@@ -2,6 +2,7 @@ package com.example.haliyikamaapp.UI;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -79,6 +80,32 @@ public class TanimlamalarActivity extends AppCompatActivity {
         urunler_button = (CardView) findViewById(R.id.urun_cardview);
         subeler_button = (CardView) findViewById(R.id.sube_tanim_cardview);
         bolgeler_button = (CardView) findViewById(R.id.bolge_tanim_cardview);
+
+        urunler_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+            }
+        });
+
+        subeler_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent i = new Intent(TanimlamalarActivity.this,SubeTanimlamaActivity.class );
+                startActivity(i);
+            }
+        });
+
+        bolgeler_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+
 
 
 

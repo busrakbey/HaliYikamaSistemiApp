@@ -37,6 +37,8 @@ import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.Model.Entity.MusteriTuru;
 import com.example.haliyikamaapp.Model.Entity.OlcuBirim;
+import com.example.haliyikamaapp.Model.Entity.S_IL;
+import com.example.haliyikamaapp.Model.Entity.S_ILCE;
 import com.example.haliyikamaapp.Model.Entity.Siparis;
 import com.example.haliyikamaapp.Model.Entity.SiparisDetay;
 import com.example.haliyikamaapp.Model.Entity.Sube;
@@ -117,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
         getAuth();
         getUrunListFromService();
+        getIlAndIlceFromService();
 
 
     }
@@ -749,6 +752,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
 
     String gelenProcessId = null;
+
     public void postSiparisSureciBaslatService(final List<Siparis> item) {
         progressDoalog.show();
         RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
@@ -815,6 +819,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
 
     String gelenUrunFiyatJson = null;
+
     public void getUrunFiyatSubeAndOlcuBirimFromService(final List<Sube> subeList) {
         RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
         progressDoalog.show();
@@ -847,8 +852,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                     JSONObject object = new JSONObject(datas.get(i).toString());
                                     List<UrunSube> urunSubeList = Arrays.asList(gson.fromJson(object.toString(), UrunSube.class));
                                     db.urunSubeDao().setUrunSubeList(urunSubeList);
-                                    if(db.olcuBirimDao().getOlcuBirimForId(object.getLong("olcuBirimId")).size() ==0){
-                                        OlcuBirim olcuBirim= new OlcuBirim();
+                                    if (db.olcuBirimDao().getOlcuBirimForId(object.getLong("olcuBirimId")).size() == 0) {
+                                        OlcuBirim olcuBirim = new OlcuBirim();
                                         olcuBirim.setOlcuBirimi(object.getString("olcuBirimi"));
                                         olcuBirim.setId(object.getLong("olcuBirimId"));
                                         olcuBirim.setAktif(object.getBoolean("aktif"));
@@ -882,5 +887,101 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
     }
 
+    void getIlAndIlceFromService() {
+
+        final String all_il_query = "{\"tableName\": \"S_IL\", \"valueField\": \"ID\", \"textField\": \"AD\", \"whereSql\": \" where 1=1 order by AD\"}";
+        final RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
+        progressDoalog.show();
+        Call<String> call = refrofitRestApi.getSelectService(OrtakFunction.authorization, OrtakFunction.tenantId, all_il_query);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (!response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                    return;
+                }
+                if (response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    gelenUrunFiyatJson = response.body();
+                    if (!gelenUrunFiyatJson.equalsIgnoreCase("")) {
+                        db.sIlDao().deleteIlAll();
+                        db.sIlceDao().deleteIlceAll();
+
+                        JSONArray datas = null;
+                        try {
+                            datas = new JSONArray(gelenUrunFiyatJson);
+
+                            for (int i = 0; i < datas.length(); i++) {
+                                JSONArray object = new JSONArray(datas.get(i).toString());
+                                S_IL il = new S_IL();
+                                il.setId(Long.valueOf(object.get(0).toString()));
+                                il.setAd(object.get(1).toString());
+                                db.sIlDao().setIl(il);
+
+                                String all_ilce_query = "{\"tableName\": \"S_ILCE\", \"valueField\": \"ID\", \"textField\": \"ADI\", \"whereSql\": \" where il_id= '" + object.get(0).toString()+"' order by ADI\"}";
+
+                                Call<String> call2 = refrofitRestApi.getSelectService(OrtakFunction.authorization, OrtakFunction.tenantId, all_ilce_query);
+                                call2.enqueue(new Callback<String>() {
+                                    @Override
+                                    public void onResponse(Call<String> call, Response<String> response) {
+                                        if (!response.isSuccessful()) {
+                                            progressDoalog.dismiss();
+                                            MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                                            return;
+                                        }
+                                        if (response.isSuccessful()) {
+                                            progressDoalog.dismiss();
+                                            gelenUrunFiyatJson = response.body();
+                                            if (!gelenUrunFiyatJson.equalsIgnoreCase("")) {
+
+                                                JSONArray datas = null;
+                                                try {
+                                                    datas = new JSONArray(gelenUrunFiyatJson);
+
+                                                    for (int i = 0; i < datas.length(); i++) {
+                                                        JSONArray object = new JSONArray(datas.get(i).toString());
+                                                        S_ILCE ilce = new S_ILCE();
+                                                        ilce.setId(Long.valueOf(object.get(0).toString()));
+                                                        ilce.setAd(object.get(1).toString());
+                                                        db.sIlceDao().setIlce(ilce);
+                                                    }
+
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+
+
+                                            } else
+                                                MessageBox.showAlert(MainActivity.this, "Ürün-fiyat listesi bulunamamıştır..", false);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<String> call, Throwable t) {
+                                        progressDoalog.dismiss();
+                                        MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                                    }
+                                });
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    } else
+                        MessageBox.showAlert(MainActivity.this, "Ürün-fiyat listesi bulunamamıştır..", false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                progressDoalog.dismiss();
+                MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+            }
+        });
+
+    }
 
 }

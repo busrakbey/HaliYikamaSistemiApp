@@ -15,6 +15,8 @@ import com.example.haliyikamaapp.Model.Dao.MusteriDao;
 import com.example.haliyikamaapp.Model.Dao.MusteriIletisimDao;
 import com.example.haliyikamaapp.Model.Dao.MusteriTuruDao;
 import com.example.haliyikamaapp.Model.Dao.OlcuBirimDao;
+import com.example.haliyikamaapp.Model.Dao.SIlDao;
+import com.example.haliyikamaapp.Model.Dao.SIlceDao;
 import com.example.haliyikamaapp.Model.Dao.STenantDao;
 import com.example.haliyikamaapp.Model.Dao.SiparisDao;
 import com.example.haliyikamaapp.Model.Dao.SiparisDetayDao;
@@ -30,6 +32,8 @@ import com.example.haliyikamaapp.Model.Entity.MusteriIletisim;
 import com.example.haliyikamaapp.Model.Entity.MusteriTuru;
 import com.example.haliyikamaapp.Model.Entity.OlcuBirim;
 import com.example.haliyikamaapp.Model.Entity.STenant;
+import com.example.haliyikamaapp.Model.Entity.S_IL;
+import com.example.haliyikamaapp.Model.Entity.S_ILCE;
 import com.example.haliyikamaapp.Model.Entity.Siparis;
 import com.example.haliyikamaapp.Model.Entity.SiparisDetay;
 import com.example.haliyikamaapp.Model.Entity.Sube;
@@ -39,8 +43,8 @@ import com.example.haliyikamaapp.Model.Entity.UrunSube;
 
 
 @Database(entities = {Musteri.class, Siparis.class, SiparisDetay.class, Urun.class, UrunSube.class, UrunFiyat.class, STenant.class,
-        MusteriIletisim.class, OlcuBirim.class, AuthToken.class, Sube.class, MusteriTuru.class, Gorevler.class, GorevFomBilgileri.class},
-        version = 8, exportSchema = false)
+        MusteriIletisim.class, OlcuBirim.class, AuthToken.class, Sube.class, MusteriTuru.class, Gorevler.class, GorevFomBilgileri.class, S_IL.class, S_ILCE.class},
+        version = 1, exportSchema = false)
 public abstract class HaliYikamaDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "HALIYIKAMA_DB";
     private static HaliYikamaDatabase instance;
@@ -58,6 +62,10 @@ public abstract class HaliYikamaDatabase extends RoomDatabase {
     public abstract SubeDao subeDao();
     public abstract MusteriTuruDao musteriTuruDao();
     public abstract GorevlerDao gorevlerDao();
+    public abstract SIlDao sIlDao();
+    public abstract SIlceDao sIlceDao();
+
+
     public  abstract GorevFormBilgileriDao gorevFomBilgileriDao();
 
 

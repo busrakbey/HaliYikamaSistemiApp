@@ -75,6 +75,12 @@ public interface RefrofitRestApi {
 
     @POST()  ////fw/process/completeTask/10013
     Call<String>  postGorevTamamla (@Url String url,@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body String gorevBilgileri);
+
+    @POST("fw/select")
+    Call<String>  getSelectService (@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body String selectSorgu);
+
+    @POST("hy/sube")
+    Call<Sube> postSube (@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body String sube);
 }
 
 
