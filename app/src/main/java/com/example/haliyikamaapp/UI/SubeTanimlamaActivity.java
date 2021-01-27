@@ -8,6 +8,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -28,6 +30,8 @@ import com.example.haliyikamaapp.Adapter.MusteriDetayAdapter;
 import com.example.haliyikamaapp.Adapter.SubeAdapter;
 import com.example.haliyikamaapp.Adapter.SwipeToDeleteCallback;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
+import com.example.haliyikamaapp.Model.Entity.S_IL;
+import com.example.haliyikamaapp.Model.Entity.S_ILCE;
 import com.example.haliyikamaapp.Model.Entity.Sube;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
@@ -41,6 +45,7 @@ import com.google.gson.JsonArray;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -61,6 +66,13 @@ public class SubeTanimlamaActivity extends AppCompatActivity {
     ProgressDialog progressDoalog;
     RefrofitRestApi refrofitRestApi;
 
+    List<S_IL> iller;
+    List<S_ILCE> ilceler, all_ilce;
+    List<String> ilStringList;
+    List<String> ilceStringList;
+    int selected_il_index = 0, selected_ilce_index = 0;
+    Long secili_il_id, secili_ilce_id;
+
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -75,6 +87,8 @@ public class SubeTanimlamaActivity extends AppCompatActivity {
         setContentView(R.layout.sube_tanimlama_activity);
         init_item();
         initToolBar();
+        ilIlceSpinnerList();
+
         get_list();
 
     }
@@ -85,7 +99,7 @@ public class SubeTanimlamaActivity extends AppCompatActivity {
             toolbar = (Toolbar) findViewById(R.id.toolbar);
             toolbar.setNavigationIcon(R.drawable.left);
             TextView toolbarTextView = (TextView) findViewById(R.id.toolbar_title);
-            toolbarTextView.setText("Sipariş Bilgileri");
+            toolbarTextView.setText("Şube Tanımlama");
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -118,6 +132,12 @@ public class SubeTanimlamaActivity extends AppCompatActivity {
         progressDoalog.setMessage("Lütfen bekleyiniz..");
         progressDoalog.setTitle("SİSTEM");
         progressDoalog.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
+
+        ilStringList = new ArrayList<String>();
+        ilceStringList = new ArrayList<String>();
+        iller = new ArrayList<S_IL>();
+        all_ilce = new ArrayList<S_ILCE>();
+        ilceler = new ArrayList<S_ILCE>();
 
 
     }
@@ -170,12 +190,23 @@ public class SubeTanimlamaActivity extends AppCompatActivity {
 
     public void getEditMode(Long subeMid) {
         subeMid_ = subeMid;
+        ilIlceSpinnerList();
         List<Sube> updateKayitList = db.subeDao().getSubeForMid(subeMid);
-        if (updateKayitList != null && updateKayitList.size() > 0 && updateKayitList.get(0).getMid() == subeMid) {
+        if (updateKayitList != null && updateKayitList.size() > 0 && updateKayitList.get(0).getMid().equals(subeMid)) {
             subeAdi.setText(updateKayitList.get(0).getSubeAdi().toString());
             durum.setText(updateKayitList.get(0).getDurum());
-            //    ilce_spinner.setSelection(updateKayitList.get(0).getIlId());
-            //  il_spinner.setSelection(updateKayitList.get(0).getIlId().toString());
+            aciklama.setText(updateKayitList.get(0).getAciklama());
+
+            for (S_IL item : iller) {
+                if (item.getId() != null && updateKayitList.get(0).getIlId() != null && item.getId() == updateKayitList.get(0).getIlId())
+                il_spinner.setSelection(ilStringList.indexOf(item.getAd()));
+            }
+
+            for (S_ILCE item : ilceler) {
+                if (item != null && item.getId() != null && updateKayitList.get(0).getIlceId() != null && item.getId() == updateKayitList.get(0).getIlceId())
+                ilce_spinner.setSelection(ilceStringList.indexOf(item.getAd()));
+            }
+
         }
     }
 
@@ -188,8 +219,8 @@ public class SubeTanimlamaActivity extends AppCompatActivity {
             final Sube sube = new Sube();
             sube.setAciklama(aciklama.getText().toString());
             sube.setDurum(durum.getText().toString());
-         //   sube.setIlId(il_spinner.getSelectedItemId());
-          //  sube.setIlceId(ilce_spinner.getSelectedItemId());
+            sube.setIlId(secili_il_id);
+            sube.setIlceId(secili_ilce_id);
             sube.setSubeAdi(subeAdi.getText().toString());
             new Thread(new Runnable() {
                 @Override
@@ -234,17 +265,21 @@ public class SubeTanimlamaActivity extends AppCompatActivity {
     }
 
     Sube gelenSube;
+
     public void postSubeService(final Sube sube) throws Exception {
         progressDoalog.show();
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setDateFormat("M/d/yy hh:mm a");
         final Gson gson = gsonBuilder.create();
+        final Long subeMid = sube.getMid();
         sube.setMid(null);
+        sube.setMustId(null);
+        sube.setId(null);
         String jsonStr = gson.toJson(sube);
-        Call<Sube> call = refrofitRestApi.postSube(OrtakFunction.authorization, OrtakFunction.tenantId, jsonStr);
+        Call<Sube> call = refrofitRestApi.postSube(OrtakFunction.authorization, OrtakFunction.tenantId, sube);
         call.enqueue(new Callback<Sube>() {
             @Override
-            public void onResponse(Call<Sube>call, Response<Sube> response) {
+            public void onResponse(Call<Sube> call, Response<Sube> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
                     MessageBox.showAlert(SubeTanimlamaActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
@@ -254,7 +289,7 @@ public class SubeTanimlamaActivity extends AppCompatActivity {
                     progressDoalog.dismiss();
                     gelenSube = response.body();
                     if (gelenSube != null) {
-                        db.subeDao().updateSubeQuery(sube.getMid(), gelenSube.getId());
+                        db.subeDao().updateSubeQuery(subeMid, gelenSube.getId());
                         SubeTanimlamaActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -278,6 +313,97 @@ public class SubeTanimlamaActivity extends AppCompatActivity {
 
     }
 
+
+    void ilIlceSpinnerList() {
+        all_ilce.add(null);
+        iller = db.sIlDao().getIlAll();
+        all_ilce = db.sIlceDao().getIlceAll();
+        ilStringList.add("İl Seçiniz..");
+        for (S_IL item : iller) {
+            ilStringList.add(item.getAd());
+        }
+
+        ArrayAdapter<String> dataAdapter_il = new ArrayAdapter<String>(SubeTanimlamaActivity.this, android.R.layout.simple_spinner_item, ilStringList);
+        dataAdapter_il.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        il_spinner.setAdapter(dataAdapter_il);
+        il_spinner.setSelection(0);
+
+        il_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position > 0) {
+                    String valInfo = ilStringList.get(position);
+                    if (valInfo != null) {
+                        selected_il_index = position;
+
+                        Long il_id = iller.get(selected_il_index - 1).getId();
+                        secili_il_id = il_id;
+                        secili_ilce_id = -1L;
+
+                        ilceStringList.clear();
+                        ilceler.clear();
+
+                        ilceler.add(null);
+                        ilceStringList.add("İlçe Seçiniz..");
+
+                        for (S_ILCE item : all_ilce) {
+                            if (item == null)
+                                continue;
+                            if (String.valueOf(item.getIlId()).equals(String.valueOf(il_id))) {
+                                ilceStringList.add(item.getAdi());
+                                ilceler.add(item);
+                            }
+                        }
+
+
+                        ArrayAdapter<String> dataAdapter_ilce = new ArrayAdapter<String>(SubeTanimlamaActivity.this, android.R.layout.simple_spinner_item, ilceStringList);
+                        dataAdapter_ilce.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+                        ilce_spinner.setAdapter(dataAdapter_ilce);
+                        ilce_spinner.setSelection(0);
+
+                    }
+                } else {
+                    secili_il_id = -1L;
+                    secili_ilce_id = -1L;
+
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        ArrayAdapter<String> dataAdapter_ilce = new ArrayAdapter<String>(SubeTanimlamaActivity.this, android.R.layout.simple_spinner_item, ilceStringList);
+        dataAdapter_ilce.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        ilce_spinner.setAdapter(dataAdapter_ilce);
+        ilce_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position > 0) {
+                    String valInfo = ilceStringList.get(position);
+                    if (valInfo != null) {
+                        selected_ilce_index = position;
+                        Long mud_id = ilceler.get(selected_ilce_index).getId();
+                        secili_ilce_id = mud_id;
+                    } else {
+
+                    }
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+    }
 
 }
 

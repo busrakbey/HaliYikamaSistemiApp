@@ -58,7 +58,7 @@ public class TanimlamalarActivity extends AppCompatActivity {
             toolbar = (Toolbar) findViewById(R.id.toolbar);
             toolbar.setNavigationIcon(R.drawable.left);
             TextView toolbarTextView = (TextView) findViewById(R.id.toolbar_title);
-            toolbarTextView.setText("Sipariş Bilgileri");
+            toolbarTextView.setText("Tanımlamalar");
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -84,8 +84,9 @@ public class TanimlamalarActivity extends AppCompatActivity {
         urunler_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
+                Intent i = new Intent(TanimlamalarActivity.this,UrunTanimlamaActivity.class );
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
             }
         });
 
@@ -94,6 +95,7 @@ public class TanimlamalarActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 Intent i = new Intent(TanimlamalarActivity.this,SubeTanimlamaActivity.class );
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
             }
         });

@@ -80,7 +80,16 @@ public interface RefrofitRestApi {
     Call<String>  getSelectService (@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body String selectSorgu);
 
     @POST("hy/sube")
-    Call<Sube> postSube (@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body String sube);
+    Call<Sube> postSube (@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body Sube sube);
+
+    @POST("hy/urun")
+    Call<Urun> postUrun (@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body Urun urun);
+
+
+    @GET() //hy/urun/urunSubeler/1
+    Call<UrunSube> getUrunSube (@Url String url,@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body Urun urun);
+
+
 }
 
 

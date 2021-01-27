@@ -15,7 +15,11 @@ public interface UrunDao {
     List<Urun> getUrunAll();
 
     @Insert
-    void setUrun(Urun musteri);
+    long setUrun(Urun musteri);
+
+
+    @Update
+    int updateUrun(Urun urun);
 
     @Insert
     List<Long> setUrunList(List<Urun> urun);
@@ -27,13 +31,15 @@ public interface UrunDao {
     void deleteUrunAll();
 
     @Query("DELETE FROM URUN where mid = :mid")
-    void deletedUrunForMid(Long mid);
+    int deletedUrunForMid(Long mid);
 
     @Query("SELECT * FROM URUN where mid = :mid")
     List<Urun> getUrunForMid(Long mid);
 
-
     @Query("SELECT * FROM URUN where id = :id")
     List<Urun> getUrunForId(Long id);
+
+    @Query("UPDATE URUN SET id = :id WHERE mid = :mid")
+    int updateUrunQuery(Long mid, Long id);
 
 }

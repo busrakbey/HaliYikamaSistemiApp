@@ -902,6 +902,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     return;
                 }
                 if (response.isSuccessful()) {
+                    Long ilId;
                     progressDoalog.dismiss();
                     gelenUrunFiyatJson = response.body();
                     if (!gelenUrunFiyatJson.equalsIgnoreCase("")) {
@@ -918,10 +919,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 il.setId(Long.valueOf(object.get(0).toString()));
                                 il.setAd(object.get(1).toString());
                                 db.sIlDao().setIl(il);
-
-                                String all_ilce_query = "{\"tableName\": \"S_ILCE\", \"valueField\": \"ID\", \"textField\": \"ADI\", \"whereSql\": \" where il_id= '" + object.get(0).toString()+"' order by ADI\"}";
+                                ilId = Long.valueOf(object.get(0).toString());
+                                String all_ilce_query = "{\"tableName\": \"S_ILCE\", \"valueField\": \"ID\", \"textField\": \"ADI\", \"whereSql\": \" where il_id= '" + object.get(0).toString() + "' order by ADI\"}";
 
                                 Call<String> call2 = refrofitRestApi.getSelectService(OrtakFunction.authorization, OrtakFunction.tenantId, all_ilce_query);
+                                final Long finalIlId = ilId;
                                 call2.enqueue(new Callback<String>() {
                                     @Override
                                     public void onResponse(Call<String> call, Response<String> response) {
@@ -944,6 +946,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                                         S_ILCE ilce = new S_ILCE();
                                                         ilce.setId(Long.valueOf(object.get(0).toString()));
                                                         ilce.setAd(object.get(1).toString());
+                                                        ilce.setIlId(finalIlId);
                                                         db.sIlceDao().setIlce(ilce);
                                                     }
 

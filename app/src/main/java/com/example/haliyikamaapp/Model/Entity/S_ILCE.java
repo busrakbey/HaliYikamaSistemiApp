@@ -18,6 +18,9 @@ public class S_ILCE {
 
     @ColumnInfo(name = "adi")
     public String adi;
+
+    @ColumnInfo(name = "ilId")
+    public Long ilId;
     public Long getId() {
         return id;
     }
@@ -32,5 +35,30 @@ public class S_ILCE {
 
     public void setAd(String ad) {
         this.adi = ad;
+    }
+
+    @NonNull
+    public Long getMid() {
+        return mid;
+    }
+
+    public void setMid(@NonNull Long mid) {
+        this.mid = mid;
+    }
+
+    public String getAdi() {
+        return adi;
+    }
+
+    public void setAdi(String adi) {
+        this.adi = adi;
+    }
+
+    public Long getIlId() {
+        return ilId;
+    }
+
+    public void setIlId(Long ilId) {
+        this.ilId = ilId;
     }
 }
