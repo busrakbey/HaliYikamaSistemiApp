@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/ic_bg_top"
+    android:clipChildren="true"
+
+    android:fitsSystemWindows="true"
+
+    tools:context="com.example.haliyikamaapp.UI.MainActivity">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="@color/whiteCardColor"
+        android:elevation="4dp"
+        app:contentInsetEnd="0dp"
+        app:contentInsetStart="5dp"
+        app:layout_collapseMode="pin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center"
+                android:layout_weight="1"
+                android:fontFamily="@font/museosans"
+                android:text="Fiyat Bilgisi"
+                android:textColor="@color/text"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:fontFamily="@font/segoeuib" />
+
+        </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+
+    <ScrollView
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/ic_bg_top"
+
+        tools:ignore="MissingConstraints">
+
+
+        <RelativeLayout style="@style/parent">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="60dp"
+                android:layout_marginRight="8dp"
+                android:orientation="vertical">
+
+                <androidx.cardview.widget.CardView
+                    style="@style/loginCard"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/loginViewsMargin"
+                    android:layout_marginBottom="@dimen/loginViewsMargin"
+                    android:background="@color/whiteCardColor"
+                    android:elevation="5dp"
+                    app:cardCornerRadius="@dimen/loginCardRadius">
+
+                    <LinearLayout
+                        style="@style/linearParent"
+                        android:layout_gravity="center"
+                        android:padding="@dimen/loginViewsMargin">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/parent"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginTop="@dimen/signup_text_margin_top">
+
+                            <CheckBox
+                                android:id="@+id/urune_ait_sube_aktif_mi"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:gravity="right|center"
+                                android:hint="Aktif"
+                                android:inputType="text" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/parent"
+                            android:layout_marginTop="@dimen/signup_text_margin_top">
+
+                            <EditText
+                                android:id="@+id/urun_fiyat_bas_tarih"
+                                style="@style/modifiedEditText"
+                                android:clickable="true"
+                                android:hint="Fiyat Başlangıç Tarihi"
+                                android:inputType="text" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/parent"
+                            android:layout_marginTop="@dimen/signup_text_margin_top">
+
+                            <EditText
+                                android:id="@+id/urun_fiyat_bit_tarih"
+                                style="@style/modifiedEditText"
+                                android:clickable="true"
+                                android:hint="Fiyat Bitiş Tarihi"
+                                android:inputType="text" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/parent"
+                            android:layout_marginTop="@dimen/signup_text_margin_top">
+
+                            <EditText
+                                android:id="@+id/urune_ait_fiyat"
+                                style="@style/modifiedEditText"
+                                android:hint="Birim Fiyat"
+                                android:inputType="phone" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/parent"
+                            android:layout_marginTop="@dimen/signup_text_margin_top">
+
+                            <EditText
+                                android:id="@+id/urune_ait_aciklama"
+                                style="@style/modifiedEditText"
+                                android:hint="Açıklama" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <Button
+                                android:id="@+id/fiyat_guncelle_button"
+                                style="@style/tamamlaButton"
+                                android:layout_width="wrap_content"
+                                android:layout_marginTop="@dimen/signup_text_margin_top"
+                                android:layout_weight="0.5"
+                                android:onClick="uruneAitFiyatGuncelleOnClick"
+                                android:paddingLeft="10dp"
+                                android:text="GÜNCELLE"
+                                android:textColor="@color/text"
+                                tools:ignore="OnClick" />
+
+                            <Button
+                                android:id="@+id/fiyat_kayit_button"
+                                style="@style/loginButton"
+                                android:layout_width="wrap_content"
+                                android:layout_marginLeft="100dp"
+                                android:layout_marginTop="@dimen/signup_text_margin_top"
+                                android:layout_weight="0.5"
+                                android:onClick="uruneAitFiyatKayitOnClick"
+                                android:paddingRight="10dp"
+                                android:text="KAYIT"
+                                tools:ignore="OnClick" />
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+
+
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -85,9 +85,13 @@ public interface RefrofitRestApi {
     @POST("hy/urun")
     Call<Urun> postUrun (@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body Urun urun);
 
-
     @GET() //hy/urun/urunSubeler/1
-    Call<UrunSube> getUrunSube (@Url String url,@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body Urun urun);
+    Call<List<UrunSube>> getUrunSube (@Url String url,@Header("Authorization") String auth, @Header("tenant-id") String tenantId);
+
+    @POST("hy/urun/subeyeUrunEkle")
+    Call<UrunSube> postUruneSubeEkle (@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body UrunSube urunSube);
+
+
 
 
 }

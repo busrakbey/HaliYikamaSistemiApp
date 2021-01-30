@@ -47,7 +47,9 @@
         <activity android:name=".UI.SiparisDetayKayitActivity"></activity>
 
         <activity android:name=".UI.SiparisKayitActivity"></activity>
+
         <activity android:name=".UI.CallHelper"></activity>
+
         <activity android:name=".UI.MusteriGorevlerimDetayActivity"></activity>
 
         <activity android:name=".UI.TanimlamalarActivity"></activity>
@@ -55,6 +57,13 @@
         <activity android:name=".UI.SubeTanimlamaActivity"></activity>
 
         <activity android:name=".UI.UrunTanimlamaActivity"></activity>
+
+        <activity android:name=".UI.UruneSubeTanimlamaActivity"></activity>
+
+        <activity android:name=".UI.UruneFiyatTanimlamaActivity"></activity>
+
+
+
 
 
 

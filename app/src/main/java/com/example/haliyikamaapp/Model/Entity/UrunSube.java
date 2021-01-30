@@ -24,6 +24,9 @@ public class UrunSube {
     @ColumnInfo(name = "urunId")
     public Long urunId;
 
+    @ColumnInfo(name = "urunMid")
+    public Long urunMid;
+
     @ColumnInfo(name = "subeId")
     public Long subeId;
 
@@ -122,5 +125,13 @@ public class UrunSube {
 
     public void setSubeAdi(String subeAdi) {
         this.subeAdi = subeAdi;
+    }
+
+    public Long getUrunMid() {
+        return urunMid;
+    }
+
+    public void setUrunMid(Long urunMid) {
+        this.urunMid = urunMid;
     }
 }

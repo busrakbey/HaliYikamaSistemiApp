@@ -1,6 +1,7 @@
 package com.example.haliyikamaapp.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.Urun;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.UI.UrunTanimlamaActivity;
+import com.example.haliyikamaapp.UI.UruneSubeTanimlamaActivity;
 
 import java.util.List;
 
@@ -43,7 +45,7 @@ public class UrunAdapter extends RecyclerView.Adapter<UrunAdapter.MyViewHolder> 
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((UrunTanimlamaActivity)mContext).getEditMode(data.get(position).getMid());
+                ((UrunTanimlamaActivity) mContext).getEditMode(data.get(position).getMid());
             }
         });
 
@@ -51,11 +53,23 @@ public class UrunAdapter extends RecyclerView.Adapter<UrunAdapter.MyViewHolder> 
             @Override
             public void onClick(View view) {
                 try {
-                    ((UrunTanimlamaActivity)mContext).postUrunService(data.get(position));
+                    ((UrunTanimlamaActivity) mContext).postUrunService(data.get(position));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
+            }
+        });
+
+        holder.urune_sube_ekle_button.setVisibility(View.VISIBLE);
+        holder.urune_sube_ekle_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(mContext, UruneSubeTanimlamaActivity.class);
+                i.putExtra("urunId", String.valueOf(data.get(position).getId()));
+                i.putExtra("urunMid", String.valueOf(data.get(position).getMid()));
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.getApplicationContext().startActivity(i);
             }
         });
     }
@@ -84,13 +98,14 @@ public class UrunAdapter extends RecyclerView.Adapter<UrunAdapter.MyViewHolder> 
 
         RelativeLayout relativeLayout;
         public TextView urun_adi_item;
-         ImageView sube_senkron_et;
+        ImageView sube_senkron_et, urune_sube_ekle_button;
 
 
         public MyViewHolder(View itemView) {
             super(itemView);
             this.urun_adi_item = (TextView) itemView.findViewById(R.id.sube_tanim_ad);
             this.sube_senkron_et = (ImageView) itemView.findViewById(R.id.sube_senkron_et);
+            this.urune_sube_ekle_button = (ImageView) itemView.findViewById(R.id.urun_detay);
 
             relativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayout);
         }
