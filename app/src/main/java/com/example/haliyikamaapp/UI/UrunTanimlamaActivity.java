@@ -29,6 +29,8 @@ import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.S_IL;
 import com.example.haliyikamaapp.Model.Entity.S_ILCE;
 import com.example.haliyikamaapp.Model.Entity.Urun;
+import com.example.haliyikamaapp.Model.Entity.UrunFiyat;
+import com.example.haliyikamaapp.Model.Entity.UrunSube;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
 import com.example.haliyikamaapp.ToolLayer.OrtakFunction;
@@ -47,7 +49,7 @@ import retrofit2.Response;
 public class UrunTanimlamaActivity extends AppCompatActivity {
     Toolbar toolbar;
     HaliYikamaDatabase db;
-    EditText urunAdi,  aciklama;
+    EditText urunAdi, aciklama;
     CheckBox aktifMi;
     Spinner il_spinner, ilce_spinner;
     RecyclerView urun_listview;
@@ -122,7 +124,6 @@ public class UrunTanimlamaActivity extends AppCompatActivity {
         progressDoalog.setMessage("Lütfen bekleyiniz..");
         progressDoalog.setTitle("SİSTEM");
         progressDoalog.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
-
 
 
     }
@@ -238,16 +239,14 @@ public class UrunTanimlamaActivity extends AppCompatActivity {
     }
 
     Urun gelenUrun;
+
     public void postUrunService(final Urun urun) throws Exception {
         progressDoalog.show();
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.setDateFormat("M/d/yy hh:mm a");
-        final Gson gson = gsonBuilder.create();
         final Long urunMid = urun.getMid();
+        final Long urunId = urun.getId();
         urun.setMid(null);
         urun.setMustId(null);
-        urun.setId(null);
-        String jsonStr = gson.toJson(urun);
+        // urun.setId(null);
         Call<Urun> call = refrofitRestApi.postUrun(OrtakFunction.authorization, OrtakFunction.tenantId, urun);
         call.enqueue(new Callback<Urun>() {
             @Override
@@ -262,6 +261,20 @@ public class UrunTanimlamaActivity extends AppCompatActivity {
                     gelenUrun = response.body();
                     if (gelenUrun != null) {
                         db.urunDao().updateUrunQuery(urunMid, gelenUrun.getId());
+                        db.urunSubeDao().updateUrunSubeQueryForUrunMid(urunMid, gelenUrun.getId());
+                        try {
+                            if (gelenUrun.getId() != null) {
+                                for (UrunSube item : db.urunSubeDao().getUrunSubeForUrunId(gelenUrun.getId()))
+                                    postUrunSubeService(item);
+                            } else {
+                                for (UrunSube item : db.urunSubeDao().getUrunSubeForUrunMid(urunMid))
+                                    postUrunSubeService(item);
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+
+                        }
                         UrunTanimlamaActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -285,6 +298,123 @@ public class UrunTanimlamaActivity extends AppCompatActivity {
 
     }
 
+
+    UrunSube gelenUrunSube;
+
+    public void postUrunSubeService(final UrunSube item) throws Exception {
+        progressDoalog.show();
+        final Long urunSubeMid = item.getMid();
+        item.setMid(null);
+        item.setMustId(null);
+        item.setUrunMid(null);
+        item.setSubeAdi(null);
+        //item.setId(null);
+        Call<UrunSube> call = refrofitRestApi.postUruneSubeEkle(OrtakFunction.authorization, OrtakFunction.tenantId, item);
+        call.enqueue(new Callback<UrunSube>() {
+            @Override
+            public void onResponse(Call<UrunSube> call, Response<UrunSube> response) {
+                if (!response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    MessageBox.showAlert(UrunTanimlamaActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                    return;
+                }
+                if (response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    gelenUrunSube = response.body();
+                    if (gelenUrunSube != null) {
+                        db.urunSubeDao().updateUrunSubeQuery(urunSubeMid, gelenUrunSube.getId());
+                        db.urunFiyatDao().updateUrunFiyatQueryForUrunMid(urunSubeMid, gelenUrunSube.getId());
+
+                        try {
+                            if (gelenUrunSube.getId() != null) {
+                                for (UrunFiyat item : db.urunFiyatDao().getForUrunSubeId(gelenUrunSube.getId()))
+                                    postUrunFiyatService(item);
+                            } else {
+                                for (UrunFiyat item : db.urunFiyatDao().getForUrunSubeMid(urunSubeMid))
+                                    postUrunFiyatService(item);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+
+
+
+                        UrunTanimlamaActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                            }
+                        });
+
+
+                    } else
+                        MessageBox.showAlert(UrunTanimlamaActivity.this, "Kayıt bulunamamıştır..", false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UrunSube> call, Throwable t) {
+                progressDoalog.dismiss();
+                MessageBox.showAlert(UrunTanimlamaActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+            }
+        });
+
+
+    }
+
+
+    UrunFiyat gelenUrunFiyat;
+    public void postUrunFiyatService(final UrunFiyat item) throws Exception {
+        progressDoalog.show();
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setDateFormat("M/d/yy hh:mm a");
+        final Gson gson = gsonBuilder.create();
+       // refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
+
+        final Long urunFiyatMid = item.getMid();
+        item.setMid(null);
+        item.setMustId(null);
+        item.setUrunSubeMid(null);
+        // item.setId(null);
+        String jsonStr = gson.toJson(item);
+        Call<UrunFiyat> call = refrofitRestApi.postUruneFiyatEkle(OrtakFunction.authorization, OrtakFunction.tenantId, item);
+        call.enqueue(new Callback<UrunFiyat>() {
+            @Override
+            public void onResponse(Call<UrunFiyat> call, Response<UrunFiyat> response) {
+                if (!response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    MessageBox.showAlert(UrunTanimlamaActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                    return;
+                }
+                if (response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    gelenUrunFiyat = response.body();
+                    if (gelenUrunSube != null) {
+                        db.urunFiyatDao().updateUrunFiyatQuery(urunFiyatMid, gelenUrunFiyat.getId());
+                        UrunTanimlamaActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+
+                            }
+                        });
+
+
+                    } else
+                        MessageBox.showAlert(UrunTanimlamaActivity.this, "Kayıt bulunamamıştır..", false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UrunFiyat> call, Throwable t) {
+                progressDoalog.dismiss();
+                MessageBox.showAlert(UrunTanimlamaActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+            }
+        });
+
+
+    }
 
 
 }

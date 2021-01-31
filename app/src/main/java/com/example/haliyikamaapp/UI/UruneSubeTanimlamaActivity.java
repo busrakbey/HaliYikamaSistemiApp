@@ -264,54 +264,6 @@ public class UruneSubeTanimlamaActivity extends AppCompatActivity {
 
     UrunSube gelenUrunSube;
 
-    public void postUrunSubeService(final UrunSube urun) throws Exception {
-        progressDoalog.show();
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.setDateFormat("M/d/yy hh:mm a");
-        final Gson gson = gsonBuilder.create();
-        final Long urunMid = urun.getMid();
-        urun.setMid(null);
-        urun.setMustId(null);
-        urun.setId(null);
-        String jsonStr = gson.toJson(urun);
-        Call<UrunSube> call = refrofitRestApi.postUruneSubeEkle(OrtakFunction.authorization, OrtakFunction.tenantId, urun);
-        call.enqueue(new Callback<UrunSube>() {
-            @Override
-            public void onResponse(Call<UrunSube> call, Response<UrunSube> response) {
-                if (!response.isSuccessful()) {
-                    progressDoalog.dismiss();
-                    MessageBox.showAlert(UruneSubeTanimlamaActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
-                    return;
-                }
-                if (response.isSuccessful()) {
-                    progressDoalog.dismiss();
-                    gelenUrunSube = response.body();
-                    if (gelenUrunSube != null) {
-                        db.urunDao().updateUrunQuery(urunMid, gelenUrunSube.getId());
-                        UruneSubeTanimlamaActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-
-                            }
-                        });
-
-
-                    } else
-                        MessageBox.showAlert(UruneSubeTanimlamaActivity.this, "Kayıt bulunamamıştır..", false);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<UrunSube> call, Throwable t) {
-                progressDoalog.dismiss();
-                MessageBox.showAlert(UruneSubeTanimlamaActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
-            }
-        });
-
-    }
-
-
     void subeOlcuSpinnerList() {
         subeList = new ArrayList<Sube>();
         subeList.add(null);

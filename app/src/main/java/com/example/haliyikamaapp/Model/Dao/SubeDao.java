@@ -39,5 +39,8 @@ public interface SubeDao {
     @Query("UPDATE SUBE SET id = :id WHERE mid = :mid")
     int updateSubeQuery(Long mid, Long id);
 
+    @Query("SELECT * FROM SUBE where id = :id")
+    List<Sube> getSubeForId(Long id);
+
 
 }

@@ -7,6 +7,7 @@ import com.example.haliyikamaapp.Model.Entity.Siparis;
 import com.example.haliyikamaapp.Model.Entity.SiparisDetay;
 import com.example.haliyikamaapp.Model.Entity.Sube;
 import com.example.haliyikamaapp.Model.Entity.Urun;
+import com.example.haliyikamaapp.Model.Entity.UrunFiyat;
 import com.example.haliyikamaapp.Model.Entity.UrunSube;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -28,6 +29,7 @@ import retrofit2.http.HeaderMap;
 import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.PartMap;
 import retrofit2.http.Url;
 
@@ -91,7 +93,9 @@ public interface RefrofitRestApi {
     @POST("hy/urun/subeyeUrunEkle")
     Call<UrunSube> postUruneSubeEkle (@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body UrunSube urunSube);
 
-
+    @Headers({"Content-Type: application/json"})
+    @PUT("hy/urun/urunFiyatKaydet")
+    Call<UrunFiyat> postUruneFiyatEkle (@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body UrunFiyat urunFiyat);
 
 
 }

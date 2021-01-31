@@ -47,7 +47,7 @@ public class UruneSubeAdapter extends RecyclerView.Adapter<UruneSubeAdapter.MyVi
         holder.urun_adi_item.setText(data.get(position).getSubeAdi());
 
         holder.urun_birim_item.setText(db.olcuBirimDao().getOlcuBirimForId(data.get(position).getOlcuBirimId()).get(0).getOlcuBirimi());
-       /* holder.urun_fiyat_item.setText(db.urunFiyatDao().getForUrunSubeId(data.get(position).getId()).get(0).getBirimFiyat() != null ?
+      /*  holder.urun_fiyat_item.setText(db.urunFiyatDao().getForUrunSubeId(data.get(position).getId()).get(0).getBirimFiyat() != null ?
                 db.urunFiyatDao().getForUrunSubeId(data.get(position).getId()).get(0).getBirimFiyat().toString() : null);*/
 
 

@@ -3,6 +3,7 @@ package com.example.haliyikamaapp.Model.Dao;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.example.haliyikamaapp.Model.Entity.OlcuBirim;
 
@@ -16,6 +17,9 @@ public interface OlcuBirimDao {
 
     @Insert
     void setOlcuBirim(OlcuBirim musteri);
+
+    @Update
+    int updateOlcuBirim(OlcuBirim musteri);
 
     @Query("DELETE FROM OLCU_BIRIM")
     void deleteOlcuBirimAll();

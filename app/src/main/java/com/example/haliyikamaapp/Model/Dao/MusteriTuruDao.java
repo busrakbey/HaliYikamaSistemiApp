@@ -28,16 +28,16 @@ public interface MusteriTuruDao {
     @Update
     int updateMusteriTuru(MusteriTuru musteriTuru);
 
-    @Query("DELETE FROM MUSTERI")
+    @Query("DELETE FROM MUSTERI_TURU")
     void deleteMusteriTuruAll();
 
-    @Query("DELETE FROM MUSTERI where mid = :mid")
+    @Query("DELETE FROM MUSTERI_TURU where mid = :mid")
     int deletedMusteriTuruForMid(Long mid);
 
-    @Query("SELECT * FROM MUSTERI where mid = :mid")
+    @Query("SELECT * FROM MUSTERI_TURU where mid = :mid")
     List<MusteriTuru> getMusteriTuruForMid(Long mid);
 
-    @Query("SELECT * FROM MUSTERI where id = :id")
+    @Query("SELECT * FROM MUSTERI_TURU where id = :id")
     List<MusteriTuru> getMusteriTuruForId(Long id);
 
 }
