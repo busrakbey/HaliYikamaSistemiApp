@@ -2,6 +2,7 @@ package com.example.haliyikamaapp.UI;
 
 import android.annotation.SuppressLint;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
@@ -9,6 +10,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -34,6 +36,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.haliyikamaapp.Adapter.MusteriAdapter;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
+import com.example.haliyikamaapp.Model.Entity.Bolge;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.Model.Entity.MusteriTuru;
 import com.example.haliyikamaapp.Model.Entity.OlcuBirim;
@@ -63,6 +66,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -120,8 +124,26 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         getAuth();
         getUrunListFromService();
         getIlAndIlceFromService();
+        getBolgeList();
+        try {
+            OrtakFunction.GetLocation(MainActivity.this, getApplicationContext());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
+    }
+
+
+    public boolean InternetKontrol() {
+        ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (manager.getActiveNetworkInfo() != null
+                && manager.getActiveNetworkInfo().isAvailable()
+                && manager.getActiveNetworkInfo().isConnected()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     Fragment selectedFragment = null;
@@ -454,8 +476,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     void getAuth() {
         OrtakFunction.tokenControl(MainActivity.this);
-        if (OrtakFunction.tokenList == null || OrtakFunction.tokenList.size() == 0)
-            OrtakFunction.getTtoken(MainActivity.this);
+        // if (OrtakFunction.tokenList == null || OrtakFunction.tokenList.size() == 0)
+       // OrtakFunction.getTtoken(MainActivity.this);
     }
 
     List<Urun> gelenUrunList = null;
@@ -903,7 +925,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                     for (int j = 0; j < arrayFiyat.length(); j++) {
                                         JSONObject objectFiyat = new JSONObject(arrayFiyat.get(j).toString());
                                         List<UrunFiyat> data = Arrays.asList(gson.fromJson(objectFiyat.toString(), UrunFiyat.class));
-                                       // db.urunFiyatDao().setUrunFiyatList(data);
+                                        // db.urunFiyatDao().setUrunFiyatList(data);
 
                                         for (UrunFiyat item2 : data) {
                                             List<UrunFiyat> urunFiyatVarMi = db.urunFiyatDao().getForId(item2.getId());
@@ -1073,5 +1095,52 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         });
 
     }
+
+    List<String> gelenBolgeList;
+
+    void getBolgeList() {
+        Call<List<String>> call = refrofitRestApi.getBolgeList(OrtakFunction.authorization, OrtakFunction.tenantId);
+        call.enqueue(new Callback<List<String>>() {
+            @Override
+            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+                if (!response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                    return;
+                }
+                if (response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    gelenBolgeList = response.body();
+                    if (gelenBolgeList != null && gelenBolgeList.size() > 0) {
+                        db.bolgeDao().deleteBolgeAll();
+                        for (String item : gelenBolgeList) {
+                            Bolge bolge = new Bolge();
+                            bolge.setBolge(item);
+                            final long kayit = db.bolgeDao().setBolge(bolge);
+
+
+                            MainActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (kayit < 0)
+                                        MessageBox.showAlert(MainActivity.this, "Bölge listesi alınırken hata oluştu.", false);
+                                    else {
+                                    }
+                                }
+                            });
+                        }
+                    } else
+                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<String>> call, Throwable t) {
+                progressDoalog.dismiss();
+                MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+            }
+        });
+    }
+
 
 }

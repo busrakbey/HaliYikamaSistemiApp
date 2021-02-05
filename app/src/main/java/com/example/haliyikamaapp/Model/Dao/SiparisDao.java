@@ -47,4 +47,7 @@ public interface SiparisDao {
     @Query("SELECT * FROM SIPARIS where id = :id")
     List<Siparis> getSiparisForSiparisId(Long id);
 
+    @Query("UPDATE SIPARIS SET barkod = :barkod WHERE mid = :mid")
+    int updateSiparisBarkod(String barkod, Long mid);
+
 }

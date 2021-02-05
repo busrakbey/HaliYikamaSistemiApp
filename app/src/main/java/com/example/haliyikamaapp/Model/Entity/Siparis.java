@@ -1,5 +1,7 @@
 package com.example.haliyikamaapp.Model.Entity;
 
+import android.graphics.Bitmap;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -57,6 +59,20 @@ public class Siparis {
 
     @ColumnInfo(name = "processInstanceId")
     public Long processInstanceId;
+
+    @ColumnInfo(name = "barkod")
+    public String barkod;
+
+    @ColumnInfo(name = "senkronEdildi")
+    public Boolean senkronEdildi;
+
+    public Boolean getSenkronEdildi() {
+        return senkronEdildi;
+    }
+
+    public void setSenkronEdildi(Boolean senkronEdildi) {
+        this.senkronEdildi = senkronEdildi;
+    }
 
     @NonNull
     public Long getMid() {
@@ -186,4 +202,6 @@ public class Siparis {
     public void setProcessInstanceId(Long processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
+
+
 }

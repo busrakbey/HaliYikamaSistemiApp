@@ -72,6 +72,8 @@ public class SubeTanimlamaActivity extends AppCompatActivity {
     List<String> ilceStringList;
     int selected_il_index = 0, selected_ilce_index = 0;
     Long secili_il_id, secili_ilce_id;
+    Long subeMid_ = null;
+
 
 
     @SuppressLint("RestrictedApi")
@@ -88,8 +90,8 @@ public class SubeTanimlamaActivity extends AppCompatActivity {
         init_item();
         initToolBar();
         ilIlceSpinnerList();
-
         get_list();
+        senkronEdilmeyenKayitlariGonder();
 
     }
 
@@ -140,6 +142,8 @@ public class SubeTanimlamaActivity extends AppCompatActivity {
         ilceler = new ArrayList<S_ILCE>();
 
 
+
+
     }
 
     public void get_list() {
@@ -186,7 +190,6 @@ public class SubeTanimlamaActivity extends AppCompatActivity {
             siparis_kayit(subeMid_);
     }
 
-    Long subeMid_ = null;
 
     public void getEditMode(Long subeMid) {
         subeMid_ = subeMid;
@@ -222,6 +225,7 @@ public class SubeTanimlamaActivity extends AppCompatActivity {
             sube.setIlId(secili_il_id);
             sube.setIlceId(secili_ilce_id);
             sube.setSubeAdi(subeAdi.getText().toString());
+            sube.setSenkronEdildi(false);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -246,7 +250,7 @@ public class SubeTanimlamaActivity extends AppCompatActivity {
                                 // Intent i = new Intent(SubeTanimlamaActivity.this, SiparisKayitActivity.class);
                             }
                             if (gelenSubeMid != null && finalSiparisMid == 1) {
-                                MessageBox.showAlert(SubeTanimlamaActivity.this, "İşlem Başarılı..\n", false);
+                                MessageBox.showAlert(SubeTanimlamaActivity.this, "Güncelleme Başarılı..\n", false);
                                 get_list();
                                 subeAdapter.notifyDataSetChanged();
 
@@ -264,8 +268,17 @@ public class SubeTanimlamaActivity extends AppCompatActivity {
 
     }
 
-    Sube gelenSube;
+    void senkronEdilmeyenKayitlariGonder() {
+        for(Sube item :  db.subeDao().getSenkronEdilmeyenSubeAll()) {
+            try {
+                postSubeService(item);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
+    Sube gelenSube;
     public void postSubeService(final Sube sube) throws Exception {
         progressDoalog.show();
         GsonBuilder gsonBuilder = new GsonBuilder();
@@ -274,7 +287,12 @@ public class SubeTanimlamaActivity extends AppCompatActivity {
         final Long subeMid = sube.getMid();
         sube.setMid(null);
         sube.setMustId(null);
-        sube.setId(null);
+       // sube.setId(null);
+        sube.setSenkronEdildi(null);
+        if(sube.getIlceId() != null && sube.getIlceId().toString().equalsIgnoreCase("-1"))
+        sube.setIlceId(null);
+        if(sube.getIlId() != null && sube.getIlId().toString().equalsIgnoreCase("-1"))
+            sube.setIlId(null);
         String jsonStr = gson.toJson(sube);
         Call<Sube> call = refrofitRestApi.postSube(OrtakFunction.authorization, OrtakFunction.tenantId, sube);
         call.enqueue(new Callback<Sube>() {
@@ -289,7 +307,7 @@ public class SubeTanimlamaActivity extends AppCompatActivity {
                     progressDoalog.dismiss();
                     gelenSube = response.body();
                     if (gelenSube != null) {
-                        db.subeDao().updateSubeQuery(subeMid, gelenSube.getId());
+                        db.subeDao().updateSubeQuery(subeMid, gelenSube.getId(), true);
                         SubeTanimlamaActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -338,7 +356,7 @@ public class SubeTanimlamaActivity extends AppCompatActivity {
 
                         Long il_id = iller.get(selected_il_index - 1).getId();
                         secili_il_id = il_id;
-                        secili_ilce_id = -1L;
+                        secili_ilce_id = null;
 
                         ilceStringList.clear();
                         ilceler.clear();

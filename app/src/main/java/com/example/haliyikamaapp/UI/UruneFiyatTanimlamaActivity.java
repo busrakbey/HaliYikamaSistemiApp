@@ -166,6 +166,7 @@ public class UruneFiyatTanimlamaActivity extends AppCompatActivity {
             urun.setBitisTarihi(bitisTarihi.getText().toString());
             urun.setBirimFiyat(birimFiyat.getText() != null ? Double.valueOf(birimFiyat.getText().toString()) : null);
             urun.setUrunSubeMid(Long.valueOf(gelenUrunSubeMid));
+            urun.setSenkronEdildi(false);
 
             new Thread(new Runnable() {
                 @Override

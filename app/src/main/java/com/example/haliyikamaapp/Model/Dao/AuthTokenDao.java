@@ -19,6 +19,11 @@ public interface AuthTokenDao {
 
 
 
+    @Query("DELETE FROM AUTH_TOKEN")
+    void deleteTokenAll();
+
+
+
 }
 
 

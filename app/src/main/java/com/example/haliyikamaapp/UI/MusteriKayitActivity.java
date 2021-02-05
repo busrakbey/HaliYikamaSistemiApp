@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,13 +29,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
+import com.example.haliyikamaapp.Model.Entity.Bolge;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.Model.Entity.Siparis;
 import com.example.haliyikamaapp.Model.Entity.SiparisDetay;
+import com.example.haliyikamaapp.Model.Entity.Sube;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
 import com.example.haliyikamaapp.ToolLayer.OrtakFunction;
 import com.example.haliyikamaapp.ToolLayer.RefrofitRestApi;
+import com.github.reinaldoarrosi.maskededittext.MaskedEditText;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
@@ -49,18 +54,23 @@ import retrofit2.Response;
 public class MusteriKayitActivity extends AppCompatActivity implements ExpandableLayout.OnExpansionUpdateListener {
     Toolbar toolbar;
     FloatingActionButton ekleButon;
-    EditText tc_no_edittw, adi_edittw, soyadi_edittw, tel_no_edittw, vergi_no_edittw;
-    Spinner musteri_turu_spinner;
+    EditText tc_no_edittw, adi_edittw, soyadi_edittw, vergi_no_edittw, adres_edittw;
+    MaskedEditText tel_no_edittw;
+    Spinner musteri_turu_spinner, sube_spinner, bolge_spinner;
     Button kayit_button;
-    String gelenMusteriMid, gelenTelefonNumarasi;
+    String gelenMusteriMid, gelenTelefonNumarasi, secili_bolge_adi;
     HaliYikamaDatabase db;
-
     private ExpandableLayout expandableLayout;
     private ImageView expandButton;
     TextView deneme, deneme2, deneme7;
     LinearLayout toplamalan;
-    Button adresGirButton, siparisOlusturButton, siparislerimButton,adresListeleButton;
+    Button adresGirButton, siparisOlusturButton, siparislerimButton, adresListeleButton, barkodYazdirButton;
     Long yeniKayitMusteriMid;
+    List<Sube> subeList;
+    List<Bolge> bolgeList;
+    List<String> subeListString;
+    List<String> bolgeListString;
+    Long secili_sube_id;
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -75,6 +85,7 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
         setContentView(R.layout.musteri_kayit_activity);
         init_item();
         initToolBar();
+        subeAndBolgeSpinner();
 
 
     }
@@ -106,34 +117,39 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
         tc_no_edittw = (EditText) findViewById(R.id.tc_no);
         soyadi_edittw = (EditText) findViewById(R.id.musteri_soyadi);
         adi_edittw = (EditText) findViewById(R.id.musteri_adi);
-        tel_no_edittw = (EditText) findViewById(R.id.telefon_no);
+        tel_no_edittw = (MaskedEditText) findViewById(R.id.telefon_no);
         musteri_turu_spinner = (Spinner) findViewById(R.id.musteri_turu);
+        bolge_spinner = (Spinner) findViewById(R.id.musteri_bolge);
+        sube_spinner = (Spinner) findViewById(R.id.musteri_sube);
         vergi_no_edittw = (EditText) findViewById(R.id.vergş_no);
+        adres_edittw = (EditText) findViewById(R.id.adres);
         kayit_button = (Button) findViewById(R.id.musteri_kayit_button);
+        barkodYazdirButton = (Button) findViewById(R.id.siparis_yazdir_button);
         if (gelenMusteriMid == null) {
             tel_no_edittw.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
-                    tel_no_edittw.setHint("Lütfen ilk hanesini sıfır giriniz");
+
+                    //tel_no_edittw.setHint("Lütfen ilk hanesini sıfır giriniz");
                     if (!hasFocus)
                         tel_no_edittw.setHint(tel_no_edittw.getText().toString());
                 }
             });
-
-
         }
+
+
         adresGirButton = findViewById(R.id.adres_gir_button);
         siparisOlusturButton = findViewById(R.id.siparis_olustur_button);
         siparislerimButton = findViewById(R.id.siparis_listele_button);
-        adresListeleButton= findViewById(R.id.adres_listele_button);
+        adresListeleButton = findViewById(R.id.adres_listele_button);
 
 
-        gelenMusteriMid = getIntent().getStringExtra("musteriMid");
-        if (gelenMusteriMid != null)
-            getEditMode(Long.valueOf(gelenMusteriMid));
-        gelenTelefonNumarasi = getIntent().getStringExtra("number");
-        if (gelenTelefonNumarasi != null)
-            tel_no_edittw.setText(gelenTelefonNumarasi);
+
+
+        bolgeListString = new ArrayList<String>();
+        subeListString = new ArrayList<String>();
+        subeList = new ArrayList<Sube>();
+        bolgeList = new ArrayList<Bolge>();
 
         List<String> list = new ArrayList<String>();
         list.add("Müşteri türü seçiniz..");
@@ -179,6 +195,10 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
         yeni_musteri_kayit();
     }
 
+    public void barkodYazdirOnClick(View v) {
+        barkodYazdir();
+    }
+
     void yeni_musteri_kayit() {
         if (adi_edittw.getText().toString().trim().equalsIgnoreCase("")
                 || soyadi_edittw.getText().toString().trim().equalsIgnoreCase("") /*|| tel_no_edittw.getText().toString().length() != 11*/) {
@@ -189,9 +209,12 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
             musteri.setMusteriAdi(adi_edittw.getText().toString());
             musteri.setMusteriSoyadi(soyadi_edittw.getText().toString());
             musteri.setTelefonNumarasi(PhoneNumberUtils.formatNumber(tel_no_edittw.getText().toString()));
-            musteri.setTcKimlikNo(tc_no_edittw.getText().toString());
+            //musteri.setTcKimlikNo(tc_no_edittw.getText().toString());
             musteri.setMusteriTuru(String.valueOf(musteri_turu_spinner.getSelectedItemPosition()));
             musteri.setVergiKimlikNo(vergi_no_edittw.getText().toString());
+            musteri.setAdres(adres_edittw.getText().toString());
+            musteri.setSubeId(secili_sube_id);
+            musteri.setBolge(secili_bolge_adi);
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -213,12 +236,12 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
                                 MessageBox.showAlert(MusteriKayitActivity.this, "Kayıt Başarılı..\n", false);
                                 // Intent i = new Intent(MusteriKayitActivity.this, SiparisKayitActivity.class);
 
-                                Intent i = new Intent(MusteriKayitActivity.this, MusteriDetayKayitActivity.class);
+                             /*   Intent i = new Intent(MusteriKayitActivity.this, MusteriDetayKayitActivity.class);
                                 i.putExtra("musteriMid", String.valueOf(finalMusteriMid));
-                                i.putExtra("cepNo" , String.valueOf(tel_no_edittw.getText().toString()));
+                                i.putExtra("cepNo", String.valueOf(tel_no_edittw.getText().toString()));
                                 yeniKayitMusteriMid = finalMusteriMid;
                                 finish();
-                                startActivity(i);
+                                startActivity(i);*/
                             }
                             if (gelenMusteriMid != null && finalMusteriMid == 1) {
                                 MessageBox.showAlert(MusteriKayitActivity.this, "İşlem Başarılı..\n", false);
@@ -242,9 +265,21 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
             adi_edittw.setText(updateKayitList.get(0).getMusteriAdi().toString());
             soyadi_edittw.setText(updateKayitList.get(0).getMusteriSoyadi().toString());
             tel_no_edittw.setText(updateKayitList.get(0).getTelefonNumarasi().toString());
-            tc_no_edittw.setText(updateKayitList.get(0).getTcKimlikNo().toString());
+            //tc_no_edittw.setText(updateKayitList.get(0).getTcKimlikNo().toString());
             // musteri_turu_spinner.setText(updateKayitList.get(0).getAciklama().toString());
             vergi_no_edittw.setText(updateKayitList.get(0).getVergiKimlikNo());
+            adres_edittw.setText(updateKayitList.get(0).getAdres());
+
+
+            for (Sube item : db.subeDao().getSubeAll()) {
+                if (item != null && item.getId() != null && updateKayitList.get(0).getSubeId()!= null && item.getId().toString().equalsIgnoreCase(updateKayitList.get(0).getSubeId().toString()))
+                    sube_spinner.setSelection(subeListString.indexOf(item.getSubeAdi()));
+            }
+
+            for (Bolge item : db.bolgeDao().getBolgeAll()) {
+                if (item != null && item.getBolge() != null && updateKayitList.get(0).getBolge()!= null && item.getBolge().equalsIgnoreCase(updateKayitList.get(0).getBolge()))
+                    bolge_spinner.setSelection(bolgeListString.indexOf(item.getBolge()));
+            }
 
 
         }
@@ -294,8 +329,7 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
             Intent i = new Intent(MusteriKayitActivity.this, SiparisDetayActivity.class);
             i.putExtra("siparisMid", siparisList.get(0).getMid().toString());
             startActivity(i);
-        }
-        else{
+        } else {
             MessageBox.showAlert(MusteriKayitActivity.this, "Mevcut sipariş bulunamamıştır..\n", false);
         }
     }
@@ -322,6 +356,86 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
         startActivity(i);
     }
 
+
+    void subeAndBolgeSpinner() {
+        subeList.add(null);
+        subeList = db.subeDao().getSubeAll();
+        subeListString.add("Şube Seçiniz..");
+        for (Sube item : subeList) {
+            subeListString.add(item.getSubeAdi());
+        }
+
+        ArrayAdapter<String> dataAdapter_il = new ArrayAdapter<String>(MusteriKayitActivity.this, android.R.layout.simple_spinner_item, subeListString);
+        dataAdapter_il.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        sube_spinner.setAdapter(dataAdapter_il);
+        sube_spinner.setSelection(0);
+
+        sube_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position > 0) {
+                    String valInfo = subeListString.get(position);
+                    if (valInfo != null) {
+                        secili_sube_id = subeList.get(position - 1).getId();
+                    }
+                } else {
+
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        bolgeList.add(null);
+        bolgeList = db.bolgeDao().getBolgeAll();
+        bolgeListString.add("Bölge Seçiniz..");
+        for (Bolge item : bolgeList) {
+            bolgeListString.add(item.getBolge());
+        }
+
+        ArrayAdapter<String> dataAdapter_ilce = new ArrayAdapter<String>(MusteriKayitActivity.this, android.R.layout.simple_spinner_item, bolgeListString);
+        dataAdapter_ilce.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        bolge_spinner.setAdapter(dataAdapter_ilce);
+        bolge_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position > 0) {
+                    String valInfo = bolgeListString.get(position);
+                    if (valInfo != null) {
+                        secili_bolge_adi = bolgeList.get(position - 1).getBolge();
+                    } else {
+
+                    }
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        gelenMusteriMid = getIntent().getStringExtra("musteriMid");
+        if (gelenMusteriMid != null)
+            getEditMode(Long.valueOf(gelenMusteriMid));
+        gelenTelefonNumarasi = getIntent().getStringExtra("number");
+        if (gelenTelefonNumarasi != null)
+            tel_no_edittw.setText(gelenTelefonNumarasi);
+
+
+    }
+
+    void barkodYazdir(){
+        Intent bluetooth = new Intent(MusteriKayitActivity.this,BluetoothActivity.class);
+       // bluetooth.putExtra()
+        startActivity(bluetooth);
+    }
 
 
 

@@ -45,6 +45,17 @@ public class UrunFiyat {
     @ColumnInfo(name = "tenantId")
     public Long tenantId;
 
+    @ColumnInfo(name = "senkronEdildi")
+    public Boolean senkronEdildi;
+
+    public Boolean getSenkronEdildi() {
+        return senkronEdildi;
+    }
+
+    public void setSenkronEdildi(Boolean senkronEdildi) {
+        this.senkronEdildi = senkronEdildi;
+    }
+
     @NonNull
     public Long getMid() {
         return mid;

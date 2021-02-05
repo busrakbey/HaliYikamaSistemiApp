@@ -41,8 +41,8 @@ public interface UrunFiyatDao {
     @Query("SELECT * FROM URUN_FIYAT where urunSubeId = :urunSubeId")
     List<UrunFiyat> getForUrunSubeId(Long urunSubeId);
 
-    @Query("UPDATE URUN_FIYAT SET id = :id WHERE mid = :mid")
-    int updateUrunFiyatQuery(Long mid, Long id);
+    @Query("UPDATE URUN_FIYAT SET id = :id , senkronEdildi = :senkronEdildiMi WHERE mid = :mid")
+    int updateUrunFiyatQuery(Long mid, Long id, Boolean senkronEdildiMi);
 
     @Query("UPDATE URUN_FIYAT SET urunSubeId = :urunSubeId WHERE urunSubeMid = :urunSubeMid")
     int updateUrunFiyatQueryForUrunMid(Long urunSubeMid, Long urunSubeId);

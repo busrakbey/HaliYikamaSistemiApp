@@ -35,6 +35,9 @@ import retrofit2.http.Url;
 
 public interface RefrofitRestApi {
 
+    @GET("fw/user/currentUser")
+    Call<List<Musteri>> getMusteriList (@Header("Authorization") String auth, @Header("tenant-id") String tenantId);
+
     @GET("hy/musteri")
     Call<List<Musteri>> getMusteriList (@Header("Authorization") String auth, @Header("tenant-id") String tenantId);
 
@@ -96,6 +99,10 @@ public interface RefrofitRestApi {
     @Headers({"Content-Type: application/json"})
     @PUT("hy/urun/urunFiyatKaydet")
     Call<UrunFiyat> postUruneFiyatEkle (@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body UrunFiyat urunFiyat);
+
+    @GET("hy/musteri/musteriBolgeler")
+    Call<List<String>> getBolgeList (@Header("Authorization") String auth, @Header("tenant-id") String tenantId);
+
 
 
 }

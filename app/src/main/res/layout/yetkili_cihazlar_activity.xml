@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/ic_bg_top"
+    android:clipChildren="true"
+
+    android:fitsSystemWindows="true"
+
+    tools:context="com.example.haliyikamaapp.UI.MainActivity">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="@color/whiteCardColor"
+        android:elevation="4dp"
+        app:contentInsetEnd="0dp"
+        app:contentInsetStart="5dp"
+        app:layout_collapseMode="pin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center"
+                android:layout_weight="1"
+                android:fontFamily="@font/museosans"
+                android:text="Yetki Tanımlama"
+                android:textColor="@color/text"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:fontFamily="@font/segoeuib" />
+
+        </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+
+    <ScrollView
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/ic_bg_top"
+
+        tools:ignore="MissingConstraints">
+
+
+        <RelativeLayout style="@style/parent">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="60dp"
+                android:layout_marginRight="8dp"
+                android:orientation="vertical">
+
+                <androidx.cardview.widget.CardView
+                    style="@style/loginCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="@dimen/loginMargin"
+                    android:background="@color/whiteCardColor"
+                    android:elevation="5dp"
+                    app:cardCornerRadius="@dimen/loginCardRadius">
+
+                    <LinearLayout
+                        style="@style/linearParent"
+                        android:layout_gravity="center"
+                        android:padding="@dimen/loginViewsMargin">
+
+                        <com.google.android.material.textfield.TextInputLayout style="@style/parent">
+
+
+                            <TextView
+                                style="@style/modifiedEditText"
+                                android:clickable="true"
+                                android:hint="Kayıtlı Cihazlarınız"
+                                android:inputType="text" />
+
+                            <Spinner
+                                android:id="@+id/kayitli_cihaz_spinner"
+                                style="@style/modifiedEditText"
+                                android:clickable="true"
+                                android:hint="Kayıtlı Cihazlarınız"
+                                android:inputType="text" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    style="@style/loginCard"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/loginMargin"
+                    android:background="@color/whiteCardColor"
+                    android:elevation="5dp"
+                    app:cardCornerRadius="@dimen/loginCardRadius">
+
+                    <LinearLayout
+                        style="@style/linearParent"
+                        android:layout_gravity="center"
+                        android:padding="@dimen/loginViewsMargin">
+
+
+                        <com.google.android.material.textfield.TextInputLayout style="@style/parent">
+
+
+                            <EditText
+                                android:id="@+id/yetki_adi_soyadi"
+                                style="@style/modifiedEditText"
+                                android:clickable="true"
+                                android:hint="Adı - Soyadı"
+                                android:inputType="text" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/parent"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="@dimen/signup_text_margin_top">
+
+
+                            <TextView
+                                style="@style/modifiedEditText"
+                                android:clickable="true"
+                                android:hint="Sorumlu Araç Seçimi"
+                                android:inputType="text" />
+
+                            <Spinner
+                                android:id="@+id/sorumlu_ara_spinner"
+                                style="@style/modifiedEditText"
+                                android:clickable="true"
+                                android:inputType="text" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    style="@style/loginCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/loginViewsMargin"
+                    android:background="@color/whiteCardColor"
+                    android:elevation="5dp"
+                    app:cardCornerRadius="@dimen/loginCardRadius">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:clickable="true"
+                        android:gravity="center"
+                        android:hint="Cihaz Yetkileri"
+                        android:inputType="text"
+                        android:textColorHint="#000000"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        style="@style/linearParent"
+                        android:layout_gravity="center_vertical"
+                        android:padding="@dimen/loginViewsMargin">
+
+
+
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/parent"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="@dimen/signup_text_margin_top"
+                            android:orientation="horizontal">
+
+                            <Switch
+                                android:id="@+id/switch_yonetici_olsunmu"
+                                style="@style/modifiedEditText"
+                                android:clickable="true"
+                                android:text="Yönetici Olsun Mu?" />
+
+                            <Switch
+                                android:id="@+id/switch_teslim_alacaklar"
+                                style="@style/modifiedEditText"
+                                android:clickable="true"
+                                android:text="Teslim Alınacaklar" />
+
+
+                            <Switch
+                                android:id="@+id/switch_teslim_edilecekler"
+                                style="@style/modifiedEditText"
+                                android:clickable="true"
+                                android:text="Teslim Edilecekler" />
+
+                            <Switch
+                                android:id="@+id/switch_tum_operasyonlar"
+                                style="@style/modifiedEditText"
+                                android:clickable="true"
+                                android:text="Tüm Operasyonlar" />
+
+                            <Switch
+                                android:id="@+id/switch_yikamada_olanlar"
+                                style="@style/modifiedEditText"
+                                android:clickable="true"
+                                android:inputType="text"
+                                android:text="Teslim Alınacaklar" />
+
+                            <Switch
+                                android:id="@+id/switch_teslime_hazirla"
+                                style="@style/modifiedEditText"
+                                android:clickable="true"
+                                android:text="Teslime Hazırla" />
+
+                            <Switch
+                                android:id="@+id/switch_tum_musteriler"
+                                style="@style/modifiedEditText"
+                                android:clickable="true"
+                                android:text="Tüm Müşteriler" />
+
+
+                            <Switch
+                                android:id="@+id/switch_musteri_arama"
+                                style="@style/modifiedEditText"
+                                android:clickable="true"
+                                android:text="Müşteri Arama" />
+
+                            <Switch
+                                android:id="@+id/switch_yeni_musteri_kaydi"
+                                style="@style/modifiedEditText"
+                                android:clickable="true"
+                                android:text="Müşteri Kaydı" />
+
+                            <Switch
+                                android:id="@+id/switch_musteri_bilgileri_guncelleme"
+                                style="@style/modifiedEditText"
+                                android:clickable="true"
+                                android:text="Müşteri Bilgileri Güncelleme" />
+
+
+                            <Switch
+                                android:id="@+id/switch_yeni_siparis"
+                                style="@style/modifiedEditText"
+                                android:clickable="true"
+                                android:text="Yeni Sipariş Oluşturma" />
+
+                            <Switch
+                                android:id="@+id/switch_siparis_icerik_degistirme"
+                                style="@style/modifiedEditText"
+                                android:clickable="true"
+                                android:text="Sipariş İçeriğini Değiştirme" />
+
+
+                            <Switch
+                                android:id="@+id/switch_siparis_araci_degistirme"
+                                style="@style/modifiedEditText"
+                                android:clickable="true"
+                                android:text="Sipariş Aracını Değiştirme" />
+
+
+                            <Switch
+                                android:id="@+id/switch_siparis_tarihi_Degistirme"
+                                style="@style/modifiedEditText"
+                                android:clickable="true"
+                                android:text="Sipariş Tarihi Değiştirme" />
+
+                            <Switch
+                                android:id="@+id/switch_siparis_aciklama_degistirme"
+                                style="@style/modifiedEditText"
+                                android:clickable="true"
+                                android:text="Sipariş Açıklamasını Değiştirme" />
+
+
+                            <Switch
+                                android:id="@+id/switch_cihaz_aktif"
+                                style="@style/modifiedEditText"
+                                android:clickable="true"
+                                android:text="Cihaz Aktif" />
+
+
+                            <com.google.android.material.textfield.TextInputLayout style="@style/parent">
+
+
+                                <EditText
+                                    android:id="@+id/aktivasyon_kodu_edittext"
+                                    style="@style/modifiedEditText"
+                                    android:clickable="true"
+                                    android:hint="Aktivasyon Kodu"
+                                    android:enabled="false"
+                                    android:inputType="text" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <Button
+                                    android:id="@+id/yetki_kaydet_button"
+                                    android:layout_width="wrap_content"
+                                    style="@style/loginButton"
+                                    android:layout_gravity="center"
+                                    android:layout_marginTop="@dimen/signup_text_margin_top"
+                                    android:layout_weight="0.5"
+                                    android:onClick="yetkiKaydetGuncelleOnclik"
+                                    android:text="KAYDET"
+                                    />
+
+                                <Button
+                                    android:id="@+id/yetki_cihaz_sil_button"
+                                    style="@style/tamamlaButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:textColor="@color/text"
+                                    android:layout_marginTop="@dimen/signup_text_margin_top"
+                                    android:layout_weight="0.5"
+                                    android:onClick="yetkiCihazSilOnclik"
+                                    android:text="CİHAZI SİL" />
+
+                            </LinearLayout>
+
+
+
+
+
+
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+
+
+        </RelativeLayout>
+
+
+
+
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

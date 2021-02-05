@@ -81,8 +81,8 @@ public class UrunTanimlamaActivity extends AppCompatActivity {
         setContentView(R.layout.urun_tanimlama_activity);
         init_item();
         initToolBar();
-
         get_list();
+        senkronEdilmeyenKayitlariGonder();
 
     }
 
@@ -195,6 +195,7 @@ public class UrunTanimlamaActivity extends AppCompatActivity {
             urun.setAciklama(aciklama.getText().toString());
             urun.setUrunAdi(urunAdi.getText().toString());
             urun.setAktif(aktifMi.isChecked() ? true : false);
+            urun.setSenkronEdildi(false);
 
             new Thread(new Runnable() {
                 @Override
@@ -238,6 +239,16 @@ public class UrunTanimlamaActivity extends AppCompatActivity {
 
     }
 
+    void senkronEdilmeyenKayitlariGonder() {
+        for (Urun item : db.urunDao().getSenkronEdilmeyenUrunAll()) {
+            try {
+                postUrunService(item);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     Urun gelenUrun;
 
     public void postUrunService(final Urun urun) throws Exception {
@@ -246,6 +257,8 @@ public class UrunTanimlamaActivity extends AppCompatActivity {
         final Long urunId = urun.getId();
         urun.setMid(null);
         urun.setMustId(null);
+        urun.setSenkronEdildi(null);
+
         // urun.setId(null);
         Call<Urun> call = refrofitRestApi.postUrun(OrtakFunction.authorization, OrtakFunction.tenantId, urun);
         call.enqueue(new Callback<Urun>() {
@@ -260,15 +273,17 @@ public class UrunTanimlamaActivity extends AppCompatActivity {
                     progressDoalog.dismiss();
                     gelenUrun = response.body();
                     if (gelenUrun != null) {
-                        db.urunDao().updateUrunQuery(urunMid, gelenUrun.getId());
+                        db.urunDao().updateUrunQuery(urunMid, gelenUrun.getId(), true);
                         db.urunSubeDao().updateUrunSubeQueryForUrunMid(urunMid, gelenUrun.getId());
                         try {
                             if (gelenUrun.getId() != null) {
                                 for (UrunSube item : db.urunSubeDao().getUrunSubeForUrunId(gelenUrun.getId()))
-                                    postUrunSubeService(item);
+                                    if (item.getSenkronEdildi() == false)
+                                        postUrunSubeService(item);
                             } else {
                                 for (UrunSube item : db.urunSubeDao().getUrunSubeForUrunMid(urunMid))
-                                    postUrunSubeService(item);
+                                    if (item.getSenkronEdildi() == false)
+                                        postUrunSubeService(item);
                             }
 
                         } catch (Exception e) {
@@ -308,6 +323,8 @@ public class UrunTanimlamaActivity extends AppCompatActivity {
         item.setMustId(null);
         item.setUrunMid(null);
         item.setSubeAdi(null);
+        item.setSenkronEdildi(null);
+
         //item.setId(null);
         Call<UrunSube> call = refrofitRestApi.postUruneSubeEkle(OrtakFunction.authorization, OrtakFunction.tenantId, item);
         call.enqueue(new Callback<UrunSube>() {
@@ -322,22 +339,22 @@ public class UrunTanimlamaActivity extends AppCompatActivity {
                     progressDoalog.dismiss();
                     gelenUrunSube = response.body();
                     if (gelenUrunSube != null) {
-                        db.urunSubeDao().updateUrunSubeQuery(urunSubeMid, gelenUrunSube.getId());
+                        db.urunSubeDao().updateUrunSubeQuery(urunSubeMid, gelenUrunSube.getId(), true);
                         db.urunFiyatDao().updateUrunFiyatQueryForUrunMid(urunSubeMid, gelenUrunSube.getId());
 
                         try {
                             if (gelenUrunSube.getId() != null) {
                                 for (UrunFiyat item : db.urunFiyatDao().getForUrunSubeId(gelenUrunSube.getId()))
-                                    postUrunFiyatService(item);
+                                    if (item.getSenkronEdildi() == false)
+                                        postUrunFiyatService(item);
                             } else {
                                 for (UrunFiyat item : db.urunFiyatDao().getForUrunSubeMid(urunSubeMid))
-                                    postUrunFiyatService(item);
+                                    if (item.getSenkronEdildi() == false)
+                                        postUrunFiyatService(item);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
-
 
 
                         UrunTanimlamaActivity.this.runOnUiThread(new Runnable() {
@@ -365,17 +382,20 @@ public class UrunTanimlamaActivity extends AppCompatActivity {
 
 
     UrunFiyat gelenUrunFiyat;
+
     public void postUrunFiyatService(final UrunFiyat item) throws Exception {
         progressDoalog.show();
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setDateFormat("M/d/yy hh:mm a");
         final Gson gson = gsonBuilder.create();
-       // refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
+        // refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
 
         final Long urunFiyatMid = item.getMid();
         item.setMid(null);
         item.setMustId(null);
         item.setUrunSubeMid(null);
+        item.setSenkronEdildi(null);
+
         // item.setId(null);
         String jsonStr = gson.toJson(item);
         Call<UrunFiyat> call = refrofitRestApi.postUruneFiyatEkle(OrtakFunction.authorization, OrtakFunction.tenantId, item);
@@ -391,7 +411,7 @@ public class UrunTanimlamaActivity extends AppCompatActivity {
                     progressDoalog.dismiss();
                     gelenUrunFiyat = response.body();
                     if (gelenUrunSube != null) {
-                        db.urunFiyatDao().updateUrunFiyatQuery(urunFiyatMid, gelenUrunFiyat.getId());
+                        db.urunFiyatDao().updateUrunFiyatQuery(urunFiyatMid, gelenUrunFiyat.getId(), true);
                         UrunTanimlamaActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

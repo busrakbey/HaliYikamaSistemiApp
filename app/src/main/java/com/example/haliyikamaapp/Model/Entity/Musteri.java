@@ -21,6 +21,9 @@ public class Musteri {
     @ColumnInfo(name = "musteriAdi")
     public String musteriAdi;
 
+    @ColumnInfo(name = "adres")
+    public String adres;
+
     @ColumnInfo(name = "musteriSoyadi")
     public String musteriSoyadi;
 
@@ -39,14 +42,28 @@ public class Musteri {
     @ColumnInfo(name = "tenantId")
     public  String tenantId;
 
+    @ColumnInfo(name = "xKoor")
+    public String xKoor;
 
+    @ColumnInfo(name = "yKoor")
+    public String yKoor;
 
+    @ColumnInfo(name = "bolge")
+    public String bolge;
 
-  /*  @NonNull
-    @Override
-    public String toString() {
-        return ad + " " + soyad + " " + gsm + " " + kisiId;
-    }*/
+    @ColumnInfo(name = "subeId")
+    public Long subeId;
+
+    @ColumnInfo(name = "senkronEdildi")
+    public Boolean senkronEdildi;
+
+    public Boolean getSenkronEdildi() {
+        return senkronEdildi;
+    }
+
+    public void setSenkronEdildi(Boolean senkronEdildi) {
+        this.senkronEdildi = senkronEdildi;
+    }
 
     public Long getId() {
         return id;
@@ -127,5 +144,45 @@ public class Musteri {
 
     public void setMustId(Long mustId) {
         this.mustId = mustId;
+    }
+
+    public String getAdres() {
+        return adres;
+    }
+
+    public void setAdres(String adres) {
+        this.adres = adres;
+    }
+
+    public String getxKoor() {
+        return xKoor;
+    }
+
+    public void setxKoor(String xKoor) {
+        this.xKoor = xKoor;
+    }
+
+    public String getyKoor() {
+        return yKoor;
+    }
+
+    public void setyKoor(String yKoor) {
+        this.yKoor = yKoor;
+    }
+
+    public Long getSubeId() {
+        return subeId;
+    }
+
+    public void setSubeId(Long subeId) {
+        this.subeId = subeId;
+    }
+
+    public String getBolge() {
+        return bolge;
+    }
+
+    public void setBolge(String bolge) {
+        this.bolge = bolge;
     }
 }

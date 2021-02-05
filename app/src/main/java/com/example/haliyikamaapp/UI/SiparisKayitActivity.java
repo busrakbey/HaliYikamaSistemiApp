@@ -3,8 +3,10 @@ package com.example.haliyikamaapp.UI;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -29,7 +31,13 @@ import com.example.haliyikamaapp.Model.Entity.Sube;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -224,6 +232,7 @@ public class SiparisKayitActivity extends AppCompatActivity {
                     public void run() {
                         if (gelenSiparisMid == null && Integer.valueOf(String.valueOf(finalYeniKayitSiparisMid)) > 0) {
                             if (tamamla) {
+                                db.siparisDao().updateSiparisBarkod(createBarkocImage(String.valueOf("00000" + finalYeniKayitSiparisMid)) , finalYeniKayitSiparisMid);
                                 MessageBox.showAlert(SiparisKayitActivity.this, "Kayıt Başarılı..\n", false);
                                 Intent i = new Intent(SiparisKayitActivity.this, MainActivity.class);
                                 i.putExtra("gelenPage", "sipariş");
@@ -279,7 +288,31 @@ public class SiparisKayitActivity extends AppCompatActivity {
 
 
         }
+
     }
+
+    public String createBarkocImage(String siparisNo){
+
+        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+        try {
+            BitMatrix bitMatrix = multiFormatWriter.encode(siparisNo, BarcodeFormat.QR_CODE,200,200);
+            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+            Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
+            // imageView.setImageBitmap(bitmap);
+
+
+            ByteArrayOutputStream baos=new  ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
+            byte [] b=baos.toByteArray();
+            String barkodDegerString= Base64.encodeToString(b, Base64.DEFAULT);
+            return barkodDegerString;
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 
 }
 

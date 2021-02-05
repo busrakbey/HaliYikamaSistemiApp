@@ -15,6 +15,9 @@ public interface SubeDao {
     @Query("SELECT * FROM SUBE")
     List<Sube> getSubeAll();
 
+    @Query("SELECT * FROM SUBE where senkronEdildi = 0")
+    List<Sube> getSenkronEdilmeyenSubeAll();
+
     @Insert
     long setSube(Sube sube);
 
@@ -36,8 +39,8 @@ public interface SubeDao {
     @Query("SELECT * FROM SUBE where mid = :mid")
     List<Sube> getSubeForMid(Long mid);
 
-    @Query("UPDATE SUBE SET id = :id WHERE mid = :mid")
-    int updateSubeQuery(Long mid, Long id);
+    @Query("UPDATE SUBE SET id = :id , senkronEdildi = :senkronEdildiMi  WHERE mid = :mid")
+    int updateSubeQuery(Long mid, Long id, Boolean senkronEdildiMi);
 
     @Query("SELECT * FROM SUBE where id = :id")
     List<Sube> getSubeForId(Long id);

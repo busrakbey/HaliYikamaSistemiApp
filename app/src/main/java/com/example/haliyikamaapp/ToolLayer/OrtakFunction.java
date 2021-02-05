@@ -4,7 +4,15 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Entity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
@@ -23,16 +31,19 @@ import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Dao.AuthTokenDao;
 import com.example.haliyikamaapp.Model.Entity.AuthToken;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
+import com.example.haliyikamaapp.UI.MainActivity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -40,6 +51,8 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
+
+import static android.content.Context.LOCATION_SERVICE;
 
 public class OrtakFunction {
     public static List<AuthToken> tokenList = null;
@@ -55,7 +68,8 @@ public class OrtakFunction {
             authorization =  "Bearer " +  tokenList.get(0).getAccess_token();
     }
 
-    public static void getTtoken(final Context context) {
+    public static void getTtoken(final Context context, final String username, final String password) {
+        db = HaliYikamaDatabase.getInstance(context);
         String url = serviceUrl + "oauth/token";
         RequestQueue mQueue = Volley.newRequestQueue(context);
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -76,6 +90,7 @@ public class OrtakFunction {
                         @Override
                         public void run() {
                             long yeniKayit = -1;
+                            db.authToken().deleteTokenAll();
                             yeniKayit = db.authToken().setAuthToken(AuthToken);
 
                             final long finalyeniKayit = yeniKayit;
@@ -84,6 +99,8 @@ public class OrtakFunction {
                                 public void run() {
                                     if (Integer.valueOf(String.valueOf(finalyeniKayit)) > 0) {
                                         Toast.makeText(context, " " + "Giriş başarılı..", Toast.LENGTH_SHORT).show();
+                                        Intent i = new Intent(context, MainActivity.class);
+                                        context.startActivity(i);
 
                                     }
                                 }
@@ -101,11 +118,15 @@ public class OrtakFunction {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         if (error instanceof AuthFailureError) {
-                            Toast.makeText(context, "Auth ERROR: " + error, Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(context, "Kullanıcı adı veya parola hatalı ! " , Toast.LENGTH_SHORT).show();
+                            MessageBox.showAlert(context, "Kullanıcı adı veya parola hatalı !", false);
+
                             Log.e("TAG", error.getMessage(), error);
 
                         } else {
-                            Toast.makeText(context, "ERROR: " + error, Toast.LENGTH_SHORT).show();
+                           // Toast.makeText(context, "Kullanıcı adı veya parola hatalı ! " , Toast.LENGTH_SHORT).show();
+                            MessageBox.showAlert(context, "Kullanıcı adı veya parola hatalı !", false);
+
                             Log.e("TAG", error.getMessage(), error);
                         }
                     }
@@ -131,8 +152,8 @@ public class OrtakFunction {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("grant_type", "password");
-                params.put("username", "Admin");
-                params.put("password", "123456");
+                params.put("username", username);
+                params.put("password", password);
                 return params;
             }
 
@@ -216,6 +237,79 @@ public class OrtakFunction {
         RefrofitRestApi refrofitRestApi = retrofit.create(RefrofitRestApi.class);
         return refrofitRestApi;
 
+    }
+
+
+    public static void GetLocation(Activity activity, Context context) throws IOException {
+
+        LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                || (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
+            }, 200);
+
+            return;
+        } else {
+
+
+
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 0, new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    Log.d("", "onLocationChanged: " + location.getLongitude() + " , " + location.getLatitude());
+
+                }
+
+                @Override
+                public void onStatusChanged(String s, int i, Bundle bundle) {
+                    Log.d("", "onStatusChanged: " + s);
+
+                }
+
+                @Override
+                public void onProviderEnabled(String s) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String s) {
+
+                }
+            });
+            Criteria criteria = new Criteria();
+            String bestProvider = locationManager.getBestProvider(criteria, true);
+            if(locationManager != null) {
+                Location location = locationManager.getLastKnownLocation(bestProvider);
+
+                if (location == null) {
+                    Toast.makeText(context, "GPS signal not found",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (location != null) {
+                    Log.e("location", "location--" + location);
+                    Log.e("latitude at beginning",
+                            "@@@@@@@@@@@@@@@" + location.getLatitude());
+                    // onLocationChanged(location);
+                }
+
+
+                Geocoder geocoder;
+                List<Address> addresses;
+                geocoder = new Geocoder(context, Locale.getDefault());
+                addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+                String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                String city = addresses.get(0).getLocality();
+                String state = addresses.get(0).getAdminArea();
+                String country = addresses.get(0).getCountryName();
+                String postalCode = addresses.get(0).getPostalCode();
+                String knownName = addresses.get(0).getFeatureName();
+
+                Log.d("", "GetLocation: address " + address + " city " + city + " state " + state + " country " + country + " postalCode " + postalCode + " knownName " + knownName);
+            }
+        }
     }
 
 

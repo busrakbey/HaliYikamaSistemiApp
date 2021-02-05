@@ -4,6 +4,7 @@
     <dimen name="newsMoreTextSize">12sp</dimen>
     <dimen name="loginCardRadius">11dp</dimen>
     <dimen name="loginViewsMargin">20dp</dimen>
+    <dimen name="loginMargin">12dp</dimen>
 
     <dimen name="signup_text_margin_top">20dp</dimen>
     <dimen name="mr_dialog_title_text">17sp</dimen>
@@ -12,6 +13,9 @@
     <dimen name="text_size_medium">16sp</dimen>
 
     <dimen name="text_size_big">20sp</dimen>
+
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
 
 
 </resources>

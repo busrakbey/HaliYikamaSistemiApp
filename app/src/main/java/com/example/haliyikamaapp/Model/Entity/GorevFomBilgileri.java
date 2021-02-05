@@ -43,6 +43,17 @@ public class GorevFomBilgileri {
     @ColumnInfo(name = "formValues")
     public String formValues;
 
+    @ColumnInfo(name = "senkronEdildi")
+    public Boolean senkronEdildi;
+
+    public Boolean getSenkronEdildi() {
+        return senkronEdildi;
+    }
+
+    public void setSenkronEdildi(Boolean senkronEdildi) {
+        this.senkronEdildi = senkronEdildi;
+    }
+
 
 
     @NonNull

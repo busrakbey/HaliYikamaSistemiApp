@@ -93,6 +93,17 @@ public class Gorevler {
     @ColumnInfo(name = "projectName")
     public String projectName;
 
+    @ColumnInfo(name = "senkronEdildi")
+    public Boolean senkronEdildi;
+
+    public Boolean getSenkronEdildi() {
+        return senkronEdildi;
+    }
+
+    public void setSenkronEdildi(Boolean senkronEdildi) {
+        this.senkronEdildi = senkronEdildi;
+    }
+
     @NonNull
     public Long getMid() {
         return mid;
@@ -317,5 +328,7 @@ public class Gorevler {
     public void setProjectName(String projectName) {
         this.projectName = projectName;
     }
+
+
 }
 

@@ -5,8 +5,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "MUSTERI_TURU")
-public class MusteriTuru {
+@Entity(tableName = "BOLGE")
+public class Bolge {
 
     @NonNull
     @PrimaryKey(autoGenerate = true)
@@ -19,8 +19,8 @@ public class MusteriTuru {
     @ColumnInfo(name = "id")
     public Long id;
 
-    @ColumnInfo(name = "musteriTuru")
-    public String musteriTuru;
+    @ColumnInfo(name = "bolge")
+    public String bolge;
 
     @ColumnInfo(name = "senkronEdildi")
     public Boolean senkronEdildi;
@@ -58,11 +58,11 @@ public class MusteriTuru {
         this.id = id;
     }
 
-    public String getMusteriTuru() {
-        return musteriTuru;
+    public String getBolge() {
+        return bolge;
     }
 
-    public void setMusteriTuru(String musteriTuru) {
-        this.musteriTuru = musteriTuru;
+    public void setBolge(String bolge) {
+        this.bolge = bolge;
     }
 }

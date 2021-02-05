@@ -14,6 +14,9 @@ public interface UrunDao {
     @Query("SELECT * FROM URUN")
     List<Urun> getUrunAll();
 
+    @Query("SELECT * FROM URUN where senkronEdildi = 0")
+    List<Urun> getSenkronEdilmeyenUrunAll();
+
     @Insert
     long setUrun(Urun musteri);
 
@@ -39,7 +42,7 @@ public interface UrunDao {
     @Query("SELECT * FROM URUN where id = :id")
     List<Urun> getUrunForId(Long id);
 
-    @Query("UPDATE URUN SET id = :id WHERE mid = :mid")
-    int updateUrunQuery(Long mid, Long id);
+    @Query("UPDATE URUN SET id = :id , senkronEdildi = :senkronEdildiMi WHERE mid = :mid")
+    int updateUrunQuery(Long mid, Long id, Boolean senkronEdildiMi);
 
 }

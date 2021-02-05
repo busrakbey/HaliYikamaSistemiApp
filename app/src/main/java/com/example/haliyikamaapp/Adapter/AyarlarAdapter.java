@@ -16,14 +16,14 @@ import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.UI.DialogConfigFragment;
 import com.example.haliyikamaapp.UI.TanimlamalarActivity;
+import com.example.haliyikamaapp.UI.YetkiliCihazlarActivity;
 
 import java.util.List;
 
-public class AyarlarAdapter extends RecyclerView.Adapter<AyarlarAdapter.MyViewHolder>  {
+public class AyarlarAdapter extends RecyclerView.Adapter<AyarlarAdapter.MyViewHolder> {
 
     private List<String> data;
     private Context mContext;
-
 
 
     public AyarlarAdapter(Context mContext, List<String> data) {
@@ -43,30 +43,48 @@ public class AyarlarAdapter extends RecyclerView.Adapter<AyarlarAdapter.MyViewHo
         HaliYikamaDatabase db = HaliYikamaDatabase.getInstance(mContext);
         holder.ayarlar_item.setText(data.get(position));
 
-        holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+
+        /*holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(data.get(position).toString().equalsIgnoreCase("Sistem Url Adresi")){
+                if(data.get(position).equalsIgnoreCase("Sistem Url Adresi")){
 
                     FragmentManager manager =((AppCompatActivity)mContext).getFragmentManager();
                     DialogConfigFragment kd = new DialogConfigFragment(mContext);
                     kd.show(manager,"");
                 }
             }
-        });
+        });*/
+
+
+       /* holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (data.get(position).equalsIgnoreCase("Tanımlamalar")) {
+                    Intent i = new Intent(mContext, TanimlamalarActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.getApplicationContext().startActivity(i);
+                }
+
+            }
+        });*/
 
 
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(data.get(position).toString().equalsIgnoreCase("Tanımlamalar")){
-
-                   Intent i = new Intent(mContext, TanimlamalarActivity.class);
+               /*if (data.get(position).equalsIgnoreCase("Yetkili Cihazlar")) {
+                    Intent i = new Intent(mContext, YetkiliCihazlarActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.getApplicationContext().startActivity(i);
-                }
+               }*/
+
+                Intent i = new Intent(mContext, TanimlamalarActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.getApplicationContext().startActivity(i);
             }
         });
+
     }
 
     @Override
