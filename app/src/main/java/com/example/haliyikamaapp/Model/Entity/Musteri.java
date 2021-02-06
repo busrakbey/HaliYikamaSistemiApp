@@ -33,6 +33,9 @@ public class Musteri {
     @ColumnInfo(name = "telefonNumarasi")
     public String telefonNumarasi;
 
+    @ColumnInfo(name = "tel2")
+    public String tel2;
+
     @ColumnInfo(name = "vergiKimlikNo")
     public String vergiKimlikNo;
 
@@ -56,6 +59,22 @@ public class Musteri {
 
     @ColumnInfo(name = "senkronEdildi")
     public Boolean senkronEdildi;
+
+    @ColumnInfo(name = "cadde")
+    public String cadde;
+
+    @ColumnInfo(name = "sokak")
+    public String sokak;
+
+    @ColumnInfo(name = "kapiNo")
+    public String kapiNo;
+
+    @ColumnInfo(name = "ilId")
+    public Long ilId;
+
+    @ColumnInfo(name = "ilceId")
+    public Long ilceId;
+
 
     public Boolean getSenkronEdildi() {
         return senkronEdildi;
@@ -184,5 +203,53 @@ public class Musteri {
 
     public void setBolge(String bolge) {
         this.bolge = bolge;
+    }
+
+    public String getCadde() {
+        return cadde;
+    }
+
+    public void setCadde(String cadde) {
+        this.cadde = cadde;
+    }
+
+    public String getSokak() {
+        return sokak;
+    }
+
+    public void setSokak(String sokak) {
+        this.sokak = sokak;
+    }
+
+    public String getKapiNo() {
+        return kapiNo;
+    }
+
+    public void setKapiNo(String kapiNo) {
+        this.kapiNo = kapiNo;
+    }
+
+    public Long getIlId() {
+        return ilId;
+    }
+
+    public void setIlId(Long ilId) {
+        this.ilId = ilId;
+    }
+
+    public Long getIlceId() {
+        return ilceId;
+    }
+
+    public void setIlceId(Long ilceId) {
+        this.ilceId = ilceId;
+    }
+
+    public String getTel2() {
+        return tel2;
+    }
+
+    public void setTel2(String tel2) {
+        this.tel2 = tel2;
     }
 }

@@ -62,28 +62,35 @@
                 android:inputType="number" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
         <com.google.android.material.textfield.TextInputLayout
             style="@style/parent"
-            android:layout_marginTop="@dimen/signup_text_margin_top">
+            android:layout_marginTop="@dimen/signup_text_margin_top"
+            android:layout_weight="0.5">
 
             <EditText
                 android:id="@+id/musteri_adi"
                 style="@style/modifiedEditText"
-                android:hint="Adı"
+                android:hint="Adı(*)"
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/parent"
-            android:layout_marginTop="@dimen/signup_text_margin_top">
+            android:layout_marginTop="@dimen/signup_text_margin_top"
+            android:layout_weight="0.5">
 
             <EditText
                 android:id="@+id/musteri_soyadi"
                 style="@style/modifiedEditText"
-                android:hint="Soyadı"
+                android:hint="Soyadı(*)"
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
-
+    </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -120,6 +127,79 @@
         </com.google.android.material.textfield.TextInputLayout>
 
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:layout_weight="0.2">
+
+                <Spinner
+                    android:id="@+id/il"
+                    style="@style/modifiedEditText"
+                    android:hint="İl" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+
+                android:layout_weight="0.2">
+
+                <Spinner
+                    android:id="@+id/ilce"
+                    style="@style/modifiedEditText"
+                    android:layout_weight="0.5"
+                    android:hint="İlçe" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:layout_weight="0.2">
+
+                <EditText
+                    android:id="@+id/cadde"
+                    style="@style/modifiedEditText"
+                    android:hint="Cadde"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:layout_weight="0.2">
+
+                <EditText
+                    android:id="@+id/sokak"
+                    style="@style/modifiedEditText"
+                    android:hint="Sokak" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:layout_weight="0.2">
+
+                <EditText
+                    android:id="@+id/kapi_no"
+                    style="@style/modifiedEditText"
+                    android:hint="Kapı No"
+                    android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+        </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/parent"
@@ -130,7 +210,7 @@
             <EditText
                 android:id="@+id/adres"
                 style="@style/modifiedEditText"
-                android:hint="Adres(*)" />
+                android:hint="Adres" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button

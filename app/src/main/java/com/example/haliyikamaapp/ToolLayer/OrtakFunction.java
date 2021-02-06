@@ -31,6 +31,7 @@ import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Dao.AuthTokenDao;
 import com.example.haliyikamaapp.Model.Entity.AuthToken;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
+import com.example.haliyikamaapp.UI.LoginActivity;
 import com.example.haliyikamaapp.UI.MainActivity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -98,9 +99,10 @@ public class OrtakFunction {
                                 @Override
                                 public void run() {
                                     if (Integer.valueOf(String.valueOf(finalyeniKayit)) > 0) {
-                                        Toast.makeText(context, " " + "Giriş başarılı..", Toast.LENGTH_SHORT).show();
-                                        Intent i = new Intent(context, MainActivity.class);
-                                        context.startActivity(i);
+                                        tokenControl(context);
+                                        if (authorization != null)
+                                            ((LoginActivity)context).getCurrentUserFromService();
+
 
                                     }
                                 }

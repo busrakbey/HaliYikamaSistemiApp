@@ -9,6 +9,7 @@ import com.example.haliyikamaapp.Model.Entity.Sube;
 import com.example.haliyikamaapp.Model.Entity.Urun;
 import com.example.haliyikamaapp.Model.Entity.UrunFiyat;
 import com.example.haliyikamaapp.Model.Entity.UrunSube;
+import com.example.haliyikamaapp.Model.Entity.User;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -36,13 +37,16 @@ import retrofit2.http.Url;
 public interface RefrofitRestApi {
 
     @GET("fw/user/currentUser")
-    Call<List<Musteri>> getMusteriList (@Header("Authorization") String auth, @Header("tenant-id") String tenantId);
+    Call<String> getCurrentUserList (@Header("Authorization") String auth, @Header("tenant-id") String tenantId);
 
     @GET("hy/musteri")
     Call<List<Musteri>> getMusteriList (@Header("Authorization") String auth, @Header("tenant-id") String tenantId);
 
     @POST("hy/musteri")
     Call<Musteri> postMusteriList (@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body Musteri musteri);
+
+    @PUT()
+    Call<Musteri> putMusteriList (@Url String url,@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body Musteri musteri);
 
     @GET("hy/urun")
     Call<List<Urun>> getUrunList (@Header("Authorization") String auth, @Header("tenant-id") String tenantId);

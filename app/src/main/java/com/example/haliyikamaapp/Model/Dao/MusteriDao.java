@@ -18,6 +18,9 @@ public interface MusteriDao {
     @Query("SELECT * FROM MUSTERI")
     List<Musteri> getMusteriAll();
 
+    @Query("SELECT * FROM MUSTERI where senkronEdildi = 0")
+    List<Musteri> getSenkronEdilmeyenMusteriAll();
+
     @Insert
     long setMusteri(Musteri musteri);
 
@@ -30,8 +33,8 @@ public interface MusteriDao {
     @Update
     int updateMusteri(Musteri musteri);
 
-    @Query("UPDATE MUSTERI SET id = :id WHERE mid = :mid")
-    int updateMusteriQuery(Long mid, Long id);
+    @Query("UPDATE MUSTERI SET id = :id , senkronEdildi = :senkronEdildiMi  WHERE mid = :mid")
+    int updateMusteriQuery(Long mid, Long id, Boolean senkronEdildiMi);
 
     @Query("UPDATE MUSTERI SET musteriAdi = :musteriAdi, musteriSoyadi = :musteriSoyadi, musteriTuru = :musteriTuru, telefonNumarasi = :telefonNumarasi, " +
             "vergiKimlikNo =:vergiNo, tcKimlikNo = :tcNo  WHERE id = :id")

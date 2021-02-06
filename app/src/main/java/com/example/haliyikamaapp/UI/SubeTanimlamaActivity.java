@@ -71,7 +71,7 @@ public class SubeTanimlamaActivity extends AppCompatActivity {
     List<String> ilStringList;
     List<String> ilceStringList;
     int selected_il_index = 0, selected_ilce_index = 0;
-    Long secili_il_id, secili_ilce_id;
+    Long secili_il_id = null, secili_ilce_id=null;
     Long subeMid_ = null;
 
 
@@ -381,8 +381,8 @@ public class SubeTanimlamaActivity extends AppCompatActivity {
 
                     }
                 } else {
-                    secili_il_id = -1L;
-                    secili_ilce_id = -1L;
+                    secili_il_id = null;
+                    secili_ilce_id = null;
 
                 }
 

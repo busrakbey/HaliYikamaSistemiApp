@@ -49,14 +49,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MusteriFragment extends Fragment {
     ConstraintLayout relativeLayout;
-   public  MusteriAdapter adapter;
+    public MusteriAdapter adapter;
     RecyclerView recyclerView;
     HaliYikamaDatabase db;
     Snackbar snackbar;
     Activity mActivity;
     Context mContext;
     MenuItem searchMenuItem;
-
+    ProgressDialog progressDoalog;
+    RefrofitRestApi refrofitRestApi;
 
     @Nullable
     @Override
@@ -71,6 +72,7 @@ public class MusteriFragment extends Fragment {
         getMusteriListFromService();
 
 
+
     }
 
     void init_item(View view) {
@@ -78,7 +80,29 @@ public class MusteriFragment extends Fragment {
         db = HaliYikamaDatabase.getInstance(getContext());
         recyclerView = (RecyclerView) view.findViewById(R.id.musteri_recyclerview);
 
+        refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
+        progressDoalog = new ProgressDialog(getContext());
+        progressDoalog.setMessage("Lütfen bekleyiniz..");
+        progressDoalog.setTitle("SİSTEM");
+        progressDoalog.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
 
+
+    }
+
+    void senkronEdilmeyenKayitlariGonder() {
+        for (Musteri item : db.musteriDao().getSenkronEdilmeyenMusteriAll()) {
+            try {
+
+                item.setMustId(null);
+                item.setxKoor(null);
+                item.setyKoor(null);
+                item.setSenkronEdildi(null);
+                item.setSubeId(null);
+                postMusteriListFromService(item);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     void get_list() {
@@ -177,11 +201,11 @@ public class MusteriFragment extends Fragment {
                             gelenMusteriList.removeAll(updateMusteriList);
                         final List<Long> kayitList = db.musteriDao().setMusteriList(gelenMusteriList);
 
-                        for(Musteri item : updateMusteriList){
-                           int result = db.musteriDao().updateMusteriAllColumnQuery(item.getId(), item.getMusteriAdi(),item.getMusteriSoyadi(), item.getMusteriTuru(), item.getTelefonNumarasi(),
+                        for (Musteri item : updateMusteriList) {
+                            int result = db.musteriDao().updateMusteriAllColumnQuery(item.getId(), item.getMusteriAdi(), item.getMusteriSoyadi(), item.getMusteriTuru(), item.getTelefonNumarasi(),
                                     item.getVergiKimlikNo(), item.getTcKimlikNo());
                         }
-                     //   db.musteriDao().updateMusteriList(updateMusteriList);
+                        //   db.musteriDao().updateMusteriList(updateMusteriList);
                         mActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -190,6 +214,8 @@ public class MusteriFragment extends Fragment {
                                     MessageBox.showAlert(getContext(), "Müşteri listesi alınırken hata oluştu.", false);
                                 else
                                     get_list();
+                                senkronEdilmeyenKayitlariGonder();
+
 
                             }
                         });
@@ -218,6 +244,58 @@ public class MusteriFragment extends Fragment {
             mActivity = (Activity) context;
             mContext = (Context) context;
         }
+    }
+
+    Musteri gelenMusteri;
+
+    public void postMusteriListFromService(final Musteri musteri) {
+        progressDoalog.show();
+        Call<Musteri> call;
+        final Long musteriMid =  musteri.getMid();
+        musteri.setMid(null);
+        if (musteri.getId() != null)
+            call = refrofitRestApi.putMusteriList("hy/musteri/" + musteri.getId().toString(), OrtakFunction.authorization, OrtakFunction.tenantId, musteri);
+        else
+            call = refrofitRestApi.postMusteriList( OrtakFunction.authorization, OrtakFunction.tenantId, musteri);
+
+        call.enqueue(new Callback<Musteri>() {
+            @Override
+            public void onResponse(Call<Musteri> call, Response<Musteri> response) {
+                if (!response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
+                    return;
+                }
+                if (response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    gelenMusteri = response.body();
+                    if (gelenMusteri != null) {
+
+                        db.musteriDao().updateMusteriQuery(musteriMid, gelenMusteri.getId(),true);
+                        mActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                             /*   if (gelenMusteriList.size() != kayitList.size())
+                                    MessageBox.showAlert(MusteriKayitActivity.this, "Müşteri listesi senkron edilirken hata oluştu.", false);
+                                else
+                                    get_list();*/
+
+                            }
+                        });
+
+
+                    } else
+                        MessageBox.showAlert(getContext(), "Kayıt bulunamamıştır..", false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Musteri> call, Throwable t) {
+                progressDoalog.dismiss();
+                MessageBox.showAlert(getContext(), "Hata Oluştu.. " + t.getMessage(), false);
+            }
+        });
     }
 
 

@@ -29,6 +29,9 @@ public class AuthToken {
     @ColumnInfo(name = "scope")
     public String scope;
 
+    @ColumnInfo(name = "tag")
+    public String tag;
+
     @NonNull
     public Long getMid() {
         return mid;

@@ -121,17 +121,18 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             ekleButon.setVisibility(View.INVISIBLE);
 
         }
-        getAuth();
-        getUrunListFromService();
-        getIlAndIlceFromService();
-        getBolgeList();
-        try {
-            OrtakFunction.GetLocation(MainActivity.this, getApplicationContext());
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(InternetKontrol()) {
+            getAuth();
+            getUrunListFromService();
+            getIlAndIlceFromService();
+            getBolgeList();
+            try {
+                OrtakFunction.GetLocation(MainActivity.this, getApplicationContext());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
-
-
     }
 
 
@@ -635,51 +636,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     }
 
-
-    Musteri gelenMusteri;
-
-    public void postMusteriListFromService(final Musteri musteri) {
-        progressDoalog.show();
-        Call<Musteri> call = refrofitRestApi.postMusteriList(OrtakFunction.authorization, OrtakFunction.tenantId, musteri);
-        call.enqueue(new Callback<Musteri>() {
-            @Override
-            public void onResponse(Call<Musteri> call, Response<Musteri> response) {
-                if (!response.isSuccessful()) {
-                    progressDoalog.dismiss();
-                    MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
-                    return;
-                }
-                if (response.isSuccessful()) {
-                    progressDoalog.dismiss();
-                    gelenMusteri = response.body();
-                    if (gelenMusteri != null) {
-
-                        db.musteriDao().updateMusteriQuery(musteri.getMid(), gelenMusteri.getId());
-                        MainActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                             /*   if (gelenMusteriList.size() != kayitList.size())
-                                    MessageBox.showAlert(MusteriKayitActivity.this, "Müşteri listesi senkron edilirken hata oluştu.", false);
-                                else
-                                    get_list();*/
-
-                            }
-                        });
-
-
-                    } else
-                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Musteri> call, Throwable t) {
-                progressDoalog.dismiss();
-                MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
-            }
-        });
-    }
 
 
     Siparis gelenSiparis;

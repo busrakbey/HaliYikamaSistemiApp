@@ -31,6 +31,8 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.Bolge;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
+import com.example.haliyikamaapp.Model.Entity.S_IL;
+import com.example.haliyikamaapp.Model.Entity.S_ILCE;
 import com.example.haliyikamaapp.Model.Entity.Siparis;
 import com.example.haliyikamaapp.Model.Entity.SiparisDetay;
 import com.example.haliyikamaapp.Model.Entity.Sube;
@@ -54,9 +56,9 @@ import retrofit2.Response;
 public class MusteriKayitActivity extends AppCompatActivity implements ExpandableLayout.OnExpansionUpdateListener {
     Toolbar toolbar;
     FloatingActionButton ekleButon;
-    EditText tc_no_edittw, adi_edittw, soyadi_edittw, vergi_no_edittw, adres_edittw;
+    EditText tc_no_edittw, adi_edittw, soyadi_edittw, vergi_no_edittw, adres_edittw,cadde_edittw, sokak_edittw, kapi_no_edittw;
     MaskedEditText tel_no_edittw;
-    Spinner musteri_turu_spinner, sube_spinner, bolge_spinner;
+    Spinner musteri_turu_spinner, sube_spinner, bolge_spinner, il_spinner, ilce_spinner;
     Button kayit_button;
     String gelenMusteriMid, gelenTelefonNumarasi, secili_bolge_adi;
     HaliYikamaDatabase db;
@@ -70,7 +72,13 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
     List<Bolge> bolgeList;
     List<String> subeListString;
     List<String> bolgeListString;
-    Long secili_sube_id;
+    Long secili_sube_id,musteriId = null;
+    List<S_IL> iller;
+    List<S_ILCE> ilceler, all_ilce;
+    List<String> ilStringList;
+    List<String> ilceStringList;
+    int selected_il_index = 0, selected_ilce_index = 0;
+    Long secili_il_id=null, secili_ilce_id=null;
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -86,6 +94,7 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
         init_item();
         initToolBar();
         subeAndBolgeSpinner();
+        ilIlceSpinnerList();
 
 
     }
@@ -125,6 +134,11 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
         adres_edittw = (EditText) findViewById(R.id.adres);
         kayit_button = (Button) findViewById(R.id.musteri_kayit_button);
         barkodYazdirButton = (Button) findViewById(R.id.siparis_yazdir_button);
+        cadde_edittw = (EditText) findViewById(R.id.cadde);
+        sokak_edittw = (EditText) findViewById(R.id.sokak);
+        kapi_no_edittw = (EditText) findViewById(R.id.kapi_no);
+        il_spinner = (Spinner) findViewById(R.id.il);
+        ilce_spinner = (Spinner) findViewById(R.id.ilce);
         if (gelenMusteriMid == null) {
             tel_no_edittw.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
@@ -150,6 +164,11 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
         subeListString = new ArrayList<String>();
         subeList = new ArrayList<Sube>();
         bolgeList = new ArrayList<Bolge>();
+        ilStringList = new ArrayList<String>();
+        ilceStringList = new ArrayList<String>();
+        iller = new ArrayList<S_IL>();
+        all_ilce = new ArrayList<S_ILCE>();
+        ilceler = new ArrayList<S_ILCE>();
 
         List<String> list = new ArrayList<String>();
         list.add("Müşteri türü seçiniz..");
@@ -171,7 +190,7 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
         tel_no_edittw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String url = "https://api.whatsapp.com/send?phone=+9" + tel_no_edittw.getText().toString() + "&text=Merhabalar! ...";
+                String url = "https://api.whatsapp.com/send?phone=+90" + tel_no_edittw.getText().toString() + "&text=Merhabalar! ...";
                 try {
                     PackageManager pm = getApplicationContext().getPackageManager();
                     pm.getPackageInfo("com.whatsapp", PackageManager.GET_ACTIVITIES);
@@ -201,7 +220,7 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
 
     void yeni_musteri_kayit() {
         if (adi_edittw.getText().toString().trim().equalsIgnoreCase("")
-                || soyadi_edittw.getText().toString().trim().equalsIgnoreCase("") /*|| tel_no_edittw.getText().toString().length() != 11*/) {
+                || soyadi_edittw.getText().toString().trim().equalsIgnoreCase("")) {
             MessageBox.showAlert(MusteriKayitActivity.this, "Lütfen bilgileri eksizksiz bir şekilde giriniz.", false);
 
         } else {
@@ -215,6 +234,15 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
             musteri.setAdres(adres_edittw.getText().toString());
             musteri.setSubeId(secili_sube_id);
             musteri.setBolge(secili_bolge_adi);
+            musteri.setSenkronEdildi(false);
+            musteri.setIlId(secili_il_id);
+            musteri.setIlceId(secili_ilce_id);
+            musteri.setCadde(cadde_edittw.getText().toString());
+            musteri.setSokak(sokak_edittw.getText().toString());
+            musteri.setKapiNo(kapi_no_edittw.getText().toString());
+            musteri.setId(musteriId);
+
+
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -262,13 +290,17 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
     void getEditMode(Long musteriMid) {
         List<Musteri> updateKayitList = db.musteriDao().getMusteriForMid(musteriMid);
         if (updateKayitList != null && updateKayitList.size() > 0 && updateKayitList.get(0).getMid() == musteriMid) {
-            adi_edittw.setText(updateKayitList.get(0).getMusteriAdi().toString());
-            soyadi_edittw.setText(updateKayitList.get(0).getMusteriSoyadi().toString());
-            tel_no_edittw.setText(updateKayitList.get(0).getTelefonNumarasi().toString());
+            adi_edittw.setText(updateKayitList.get(0).getMusteriAdi());
+            soyadi_edittw.setText(updateKayitList.get(0).getMusteriSoyadi());
+            tel_no_edittw.setText(updateKayitList.get(0).getTelefonNumarasi());
             //tc_no_edittw.setText(updateKayitList.get(0).getTcKimlikNo().toString());
             // musteri_turu_spinner.setText(updateKayitList.get(0).getAciklama().toString());
             vergi_no_edittw.setText(updateKayitList.get(0).getVergiKimlikNo());
             adres_edittw.setText(updateKayitList.get(0).getAdres());
+            musteriId = updateKayitList.get(0).getId();
+            cadde_edittw.setText(updateKayitList.get(0).getCadde());
+            kapi_no_edittw.setText(updateKayitList.get(0).getKapiNo());
+            sokak_edittw.setText(updateKayitList.get(0).getSokak());
 
 
             for (Sube item : db.subeDao().getSubeAll()) {
@@ -279,6 +311,15 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
             for (Bolge item : db.bolgeDao().getBolgeAll()) {
                 if (item != null && item.getBolge() != null && updateKayitList.get(0).getBolge()!= null && item.getBolge().equalsIgnoreCase(updateKayitList.get(0).getBolge()))
                     bolge_spinner.setSelection(bolgeListString.indexOf(item.getBolge()));
+            }
+            for (S_IL item : db.sIlDao().getIlAll()) {
+                if (item != null && item.getId() != null && updateKayitList.get(0).getIlId()!= null && item.getId().toString().equalsIgnoreCase(updateKayitList.get(0).getIlId().toString()))
+                    il_spinner.setSelection(ilStringList.indexOf(item.getId()));
+            }
+
+            for (S_ILCE item : db.sIlceDao().getIlceAll()) {
+                if (item != null && item.getId() != null && updateKayitList.get(0).getIlceId()!= null && item.getId().toString().equalsIgnoreCase(updateKayitList.get(0).getIlceId().toString()))
+                    ilce_spinner.setSelection(ilceStringList.indexOf(item.getId()));
             }
 
 
@@ -436,6 +477,100 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
        // bluetooth.putExtra()
         startActivity(bluetooth);
     }
+
+    void ilIlceSpinnerList() {
+        all_ilce.add(null);
+        iller = db.sIlDao().getIlAll();
+        all_ilce = db.sIlceDao().getIlceAll();
+        ilStringList.add("İl");
+        ilceStringList.add("İlçe");
+
+        for (S_IL item : iller) {
+            ilStringList.add(item.getAd());
+        }
+
+        ArrayAdapter<String> dataAdapter_il = new ArrayAdapter<String>(MusteriKayitActivity.this, android.R.layout.simple_spinner_item, ilStringList);
+        dataAdapter_il.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        il_spinner.setAdapter(dataAdapter_il);
+        il_spinner.setSelection(0);
+
+        il_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position > 0) {
+                    String valInfo = ilStringList.get(position);
+                    if (valInfo != null) {
+                        selected_il_index = position;
+
+                        Long il_id = iller.get(selected_il_index - 1).getId();
+                        secili_il_id = il_id;
+                        secili_ilce_id = null;
+
+                        ilceStringList.clear();
+                        ilceler.clear();
+
+                        ilceler.add(null);
+                        ilceStringList.add("İlçe Seçiniz..");
+
+                        for (S_ILCE item : all_ilce) {
+                            if (item == null)
+                                continue;
+                            if (String.valueOf(item.getIlId()).equals(String.valueOf(il_id))) {
+                                ilceStringList.add(item.getAdi());
+                                ilceler.add(item);
+                            }
+                        }
+
+
+                        ArrayAdapter<String> dataAdapter_ilce = new ArrayAdapter<String>(MusteriKayitActivity.this, android.R.layout.simple_spinner_item, ilceStringList);
+                        dataAdapter_ilce.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+                        ilce_spinner.setAdapter(dataAdapter_ilce);
+                        ilce_spinner.setSelection(0);
+
+                    }
+                } else {
+                    secili_il_id = null;
+                    secili_ilce_id = null;
+
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        ArrayAdapter<String> dataAdapter_ilce = new ArrayAdapter<String>(MusteriKayitActivity.this, android.R.layout.simple_spinner_item, ilceStringList);
+        dataAdapter_ilce.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        ilce_spinner.setAdapter(dataAdapter_ilce);
+        ilce_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position > 0) {
+                    String valInfo = ilceStringList.get(position);
+                    if (valInfo != null) {
+                        selected_ilce_index = position;
+                        Long mud_id = ilceler.get(selected_ilce_index).getId();
+                        secili_ilce_id = mud_id;
+                    } else {
+
+                    }
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+    }
+
 
 
 
