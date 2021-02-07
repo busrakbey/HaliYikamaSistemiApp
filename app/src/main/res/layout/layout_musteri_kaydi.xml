@@ -24,7 +24,7 @@
             <Spinner
                 android:id="@+id/musteri_sube"
                 style="@style/modifiedEditText"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_weight="0.5"
                 android:hint="Şube"
                 android:inputType="text" />
@@ -33,21 +33,17 @@
             <Spinner
                 android:id="@+id/musteri_bolge"
                 style="@style/modifiedEditText"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_weight="0.5"
                 android:hint="Bölge"
                 android:inputType="text" />
-        </LinearLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/parent"
-            android:layout_marginTop="@dimen/signup_text_margin_top"
-            android:visibility="gone">
 
             <Spinner
                 android:id="@+id/musteri_turu"
-                style="@style/modifiedEditText" />
-        </com.google.android.material.textfield.TextInputLayout>
+                style="@style/modifiedEditText"
+                android:layout_width="0dp"
+                android:layout_weight="0.5" />
+        </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/parent"
@@ -97,35 +93,35 @@
             android:layout_weight="1"
             android:orientation="horizontal">
 
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/parent"
+                android:layout_width="0dp"
                 android:layout_marginTop="@dimen/signup_text_margin_top"
                 android:layout_weight="0.5">
 
                 <com.github.reinaldoarrosi.maskededittext.MaskedEditText
                     android:id="@+id/telefon_no"
                     style="@style/modifiedEditText"
-                    android:layout_weight="0.5"
                     android:clickable="true"
-                    android:drawableRight="@drawable/whatsapp_icon"
                     android:hint="Telefon Numarası"
-                    maskededittext:mask="(999) 999-9999"
-                    android:paddingBottom="15dp" />
+                    maskededittext:mask="(999) 999-9999" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/parent"
+                android:layout_width="0dp"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:layout_weight="0.5">
+
+                <EditText
+                    android:id="@+id/vergş_no"
+                    style="@style/modifiedEditText"
+                    android:hint="Vergi Kimlik No"
+                    android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/parent"
-            android:layout_marginTop="@dimen/signup_text_margin_top">
-
-            <EditText
-                android:id="@+id/vergş_no"
-                style="@style/modifiedEditText"
-                android:hint="Vergi Kimlik No"
-                android:inputType="number" />
-        </com.google.android.material.textfield.TextInputLayout>
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -159,8 +155,16 @@
                     android:layout_weight="0.5"
                     android:hint="İlçe" />
             </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+        <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/signup_text_margin_top"
@@ -225,7 +229,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
             android:orientation="horizontal">
 
             <Button

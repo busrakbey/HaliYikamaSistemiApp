@@ -18,7 +18,22 @@
         android:icon="@drawable/user_profile"
         android:orderInCategory="2"
         android:title="Settings"
-        app:showAsAction="always"/>
+        app:showAsAction="always">
+
+    <menu>
+
+        <item android:id="@+id/action_exit_user"
+            android:icon="@android:drawable/ic_menu_close_clear_cancel"
+            app:showAsAction="ifRoom"
+            android:title="Kullanıcı Kapat" />
+
+
+
+    </menu>
+    </item>
+
+
+
 
 
 

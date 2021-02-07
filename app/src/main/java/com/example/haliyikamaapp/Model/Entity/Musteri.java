@@ -57,6 +57,9 @@ public class Musteri {
     @ColumnInfo(name = "subeId")
     public Long subeId;
 
+    @ColumnInfo(name = "subeMid")
+    public Long subeMid;
+
     @ColumnInfo(name = "senkronEdildi")
     public Boolean senkronEdildi;
 
@@ -251,5 +254,13 @@ public class Musteri {
 
     public void setTel2(String tel2) {
         this.tel2 = tel2;
+    }
+
+    public Long getSubeMid() {
+        return subeMid;
+    }
+
+    public void setSubeMid(Long subeMid) {
+        this.subeMid = subeMid;
     }
 }

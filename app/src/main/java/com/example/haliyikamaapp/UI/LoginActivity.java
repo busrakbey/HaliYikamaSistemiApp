@@ -54,13 +54,14 @@ import static android.view.View.VISIBLE;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private ImageView bookIconImageView, ilk_logo;
-    private TextView bookITextView;
+    private ImageView iconImageView, ilk_logo;
+    private TextView textView;
     private ProgressBar loadingProgressBar;
     private RelativeLayout rootView, afterAnimationView;
     Button loginButton;
     EditText username_edittext, password_edittext;
     HaliYikamaDatabase db;
+    Boolean kullaniciEditMi = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,38 +73,57 @@ public class LoginActivity extends AppCompatActivity {
         initViews();
         ilk_logo.setVisibility(VISIBLE);
         db = HaliYikamaDatabase.getInstance(LoginActivity.this);
+        String kullaniciEdit = getIntent().getStringExtra("userEdit");
+        if (kullaniciEdit != null && kullaniciEdit.equalsIgnoreCase("userEdit"))
+            kullaniciEditMi = true;
+
+        if (!kullaniciEditMi) {
+            kullaniciGirisiVarMiKontrol();
+
+            Handler handler = new Handler();
+            Runnable r = new Runnable() {
+                public void run() {
+                    new CountDownTimer(6000, 1000) {
+
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                            textView.setVisibility(GONE);
+                            loadingProgressBar.setVisibility(GONE);
+                            rootView.setBackgroundColor(ContextCompat.getColor(LoginActivity.this, R.color.colorSplashText));
+                            iconImageView.setImageResource(R.drawable.logo_hali);
+
+                            startAnimation();
+                        }
+
+                        @Override
+                        public void onFinish() {
+
+                        }
+                    }.start();
+                }
+            };
+            handler.postDelayed(r, 1500);
+
+        }
 
 
-        Handler handler = new Handler();
-        Runnable r = new Runnable() {
-            public void run() {
-                new CountDownTimer(6000, 1000) {
 
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-                        bookITextView.setVisibility(GONE);
-                        loadingProgressBar.setVisibility(GONE);
-                        rootView.setBackgroundColor(ContextCompat.getColor(LoginActivity.this, R.color.colorSplashText));
-                        bookIconImageView.setImageResource(R.drawable.logo_hali);
+        if(kullaniciEditMi){
+            textView.setVisibility(GONE);
+            loadingProgressBar.setVisibility(GONE);
+            rootView.setBackgroundColor(ContextCompat.getColor(LoginActivity.this, R.color.colorSplashText));
+            iconImageView.setImageResource(R.drawable.logo_hali);
+            ilk_logo.setVisibility(GONE);
+            afterAnimationView.setVisibility(VISIBLE);
+        }
 
-                        startAnimation();
-                    }
-
-                    @Override
-                    public void onFinish() {
-
-                    }
-                }.start();
-            }
-        };
-        handler.postDelayed(r, 1500);
 
 
     }
 
     private void initViews() {
-        bookIconImageView = (ImageView) findViewById(R.id.bookIconImageView);
-        bookITextView = (TextView) findViewById(R.id.bookITextView);
+        iconImageView = (ImageView) findViewById(R.id.bookIconImageView);
+        textView = (TextView) findViewById(R.id.bookITextView);
         loadingProgressBar = (ProgressBar) findViewById(R.id.loadingProgressBar);
         rootView = (RelativeLayout) findViewById(R.id.rootView);
         afterAnimationView = (RelativeLayout) findViewById(R.id.afterAnimationView);
@@ -123,9 +143,9 @@ public class LoginActivity extends AppCompatActivity {
                     MessageBox.showAlert(LoginActivity.this, "Lütfen kullanıcı adı ve parolayı eksiksiz bir şekilde giriniz.", false);
                 else {
 
-                    if(InternetKontrol())
-                    OrtakFunction.getTtoken(LoginActivity.this, username_edittext.getText().toString(), password_edittext.getText().toString());
-                    else{
+                    if (InternetKontrol())
+                        OrtakFunction.getTtoken(LoginActivity.this, username_edittext.getText().toString(), password_edittext.getText().toString());
+                    else {
                         Intent i = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(i);
                     }
@@ -137,7 +157,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void startAnimation() {
-        ViewPropertyAnimator viewPropertyAnimator = bookIconImageView.animate();
+        ViewPropertyAnimator viewPropertyAnimator = iconImageView.animate();
         viewPropertyAnimator.x(50f);
         viewPropertyAnimator.y(100f);
         viewPropertyAnimator.setDuration(1000);
@@ -196,19 +216,20 @@ public class LoginActivity extends AppCompatActivity {
                     if (gelenUserList != null) {
                         try {
                             List<User> gelenUser = Arrays.asList(gson.fromJson(gelenUserList, User.class));
-
                             Boolean userVarMi = false;
                             gelenUser.get(0).setPassword(password_edittext.getText().toString());
                             for (User item : db.userDao().getUserAll()) {
                                 if (item.getId() == gelenUser.get(0).getId()) {
                                     gelenUser.get(0).setMid(item.getMid());
-
+                                    gelenUser.get(0).setPassword(item.getPassword());
                                     db.userDao().updateUserList(gelenUser);
                                     userVarMi = true;
                                 }
                             }
-                            if (!userVarMi)
+                            if (!userVarMi) {
+                                db.userDao().deleteUserAll();
                                 db.userDao().setUserList(gelenUser);
+                            }
 
                             JSONObject object = new JSONObject(gelenUserList);
                             JSONArray permissinArray = new JSONArray(object.getString("permissions"));
@@ -227,9 +248,9 @@ public class LoginActivity extends AppCompatActivity {
                         }
 
 
-                        Toast.makeText(LoginActivity.this, " " + "Giriş başarılı..", Toast.LENGTH_SHORT).show();
                         Intent i = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(i);
+                        // Toast.makeText(LoginActivity.this, " " + "Giriş başarılı..", Toast.LENGTH_SHORT).show();
 
 
                     } else
@@ -254,6 +275,22 @@ public class LoginActivity extends AppCompatActivity {
             return true;
         } else {
             return false;
+        }
+    }
+
+    void kullaniciGirisiVarMiKontrol() {
+        InternetKontrol();
+        if (InternetKontrol() == false)
+            Toast.makeText(LoginActivity.this, " " + "İnternet bağlantınız yok", Toast.LENGTH_SHORT).show();
+
+        if (db.userDao().getUserAll().size() > 0 && InternetKontrol() == false) {
+            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(i);
+        }
+
+        if (db.userDao().getUserAll().size() > 0 && InternetKontrol() == true) {
+            List<User> currentUserList = db.userDao().getUserAll();
+            OrtakFunction.getTtoken(LoginActivity.this, currentUserList.get(0).getUserName(), currentUserList.get(0).getPassword());
         }
     }
 }

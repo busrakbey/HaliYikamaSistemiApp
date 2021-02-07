@@ -57,6 +57,7 @@ public class SiparisKayitActivity extends AppCompatActivity {
     Musteri secilenMusteri;
     public List<String> subeListString;
     Sube secilenSube;
+    String gelenSubeId, gelenSubeMid;
 
 
     @SuppressLint("RestrictedApi")
@@ -134,31 +135,10 @@ public class SiparisKayitActivity extends AppCompatActivity {
         });
 
         gelenSiparisMid = getIntent().getStringExtra("siparisMid");
-        if (gelenSiparisMid != null)
-            getEditMode(Long.valueOf(gelenSiparisMid));
-
+        gelenSubeId = getIntent().getStringExtra("subeId");
+        gelenSubeMid = getIntent().getStringExtra("subeMid");
         gelenMusteriMid = getIntent().getStringExtra("musteriMid");
-        if (gelenMusteriMid != null) {
-            musteri_edittw.setEnabled(false);
-            List<Musteri> allMusteri = db.musteriDao().getMusteriForMid(Long.valueOf(gelenMusteriMid));
-            musteri_edittw.setText(allMusteri.get(0).getMusteriAdi() + " " + allMusteri.get(0).getMusteriSoyadi());
-        }
 
-
-        List<Musteri> allMusteri = db.musteriDao().getMusteriAll();
-        autoCompleteAdapter = new MusteriAutoCompleteAdapter(this, R.layout.activity_main, android.R.layout.simple_dropdown_item_1line, allMusteri);
-        musteri_edittw.setThreshold(2);
-        musteri_edittw.setAdapter(autoCompleteAdapter);
-        musteri_edittw.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Musteri dty = (Musteri) parent.getAdapter().getItem(position);
-
-                if (dty != null) {
-                    secilenMusteri = dty;
-                }
-            }
-        });
 
         final List<Sube> subeList = db.subeDao().getSubeAll();
         subeListString = new ArrayList<String>();
@@ -184,10 +164,58 @@ public class SiparisKayitActivity extends AppCompatActivity {
 
             }
         });
-
         sube_spinner.setSelection(0);
 
+        List<Musteri> allMusteri = db.musteriDao().getMusteriAll();
+        autoCompleteAdapter = new MusteriAutoCompleteAdapter(this, R.layout.activity_main, android.R.layout.simple_dropdown_item_1line, allMusteri);
+        musteri_edittw.setThreshold(2);
+        musteri_edittw.setAdapter(autoCompleteAdapter);
+        musteri_edittw.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Musteri dty = (Musteri) parent.getAdapter().getItem(position);
 
+                if (dty != null) {
+                    secilenMusteri = dty;
+                    List<Sube> allSube = null;
+
+                    if (secilenMusteri.getSubeMid() != null)
+                        allSube = db.subeDao().getSubeForId(Long.valueOf(secilenMusteri.getSubeMid()));
+                    if (secilenMusteri.getSubeId() != null)
+                        allSube = db.subeDao().getSubeForId(Long.valueOf(secilenMusteri.getSubeId()));
+
+
+                    if (allSube != null && allSube.size() > 0) {
+                        sube_spinner.setEnabled(false);
+                        sube_spinner.setSelection(subeListString.indexOf(allSube.get(0).getSubeAdi()));
+                    }
+
+
+
+                }
+            }
+        });
+
+        if (gelenSiparisMid != null)
+            getEditMode(Long.valueOf(gelenSiparisMid));
+
+        if (gelenMusteriMid != null) {
+            musteri_edittw.setEnabled(false);
+            List<Musteri> musteri = db.musteriDao().getMusteriForMid(Long.valueOf(gelenMusteriMid));
+            musteri_edittw.setText(musteri.get(0).getMusteriAdi() + " " + musteri.get(0).getMusteriSoyadi());
+        }
+
+        List<Sube> allSube = null;
+        if (gelenSubeMid != null) {
+            sube_spinner.setEnabled(false);
+            allSube = db.subeDao().getSubeForMid(Long.valueOf(gelenSubeMid));
+        }
+        if (gelenSubeId != null) {
+            sube_spinner.setEnabled(false);
+            allSube = db.subeDao().getSubeForId(Long.valueOf(gelenSubeId));
+        }
+        if (allSube != null && allSube.size() > 0)
+            sube_spinner.setSelection(subeListString.indexOf(allSube.get(0).getSubeAdi()));
     }
 
     public void musteriKayitOnclik(View v) {
@@ -204,16 +232,14 @@ public class SiparisKayitActivity extends AppCompatActivity {
                 || !soyadi_edittw.getText().toString().trim().equalsIgnoreCase("")|| !tel_no_edittw.getText().toString().trim().equalsIgnoreCase("")){
         }*/
         //  else{
-
         final Siparis siparis = new Siparis();
         siparis.setMusteriMid(gelenMusteriMid != null ? Long.valueOf(gelenMusteriMid) : secilenMusteri.getMid());
-        siparis.setSubeId(1L);
+        siparis.setSubeId(gelenSubeId != null ? Long.valueOf(gelenSubeId) : secilenSube.getId());
+        siparis.setSubeMid(gelenSubeMid != null ? Long.valueOf(gelenSubeMid) : secilenSube.getMid());
         siparis.setSiparisTarihi(tarih_edittw.getText().toString());
-     /*   if (!tutar_edittw.getText().toString().equalsIgnoreCase(""))
-            siparis.setSiparisTutar(Double.parseDouble(tutar_edittw.getText().toString()));*/
         siparis.setAciklama(aciklama_edittw.getText().toString());
         siparis.setTeslimAlinacak(teslim_alinacak_checkbox.isChecked() ? true : false);
-
+        siparis.setSenkronEdildi(false);
 
         new Thread(new Runnable() {
             @Override
@@ -232,7 +258,7 @@ public class SiparisKayitActivity extends AppCompatActivity {
                     public void run() {
                         if (gelenSiparisMid == null && Integer.valueOf(String.valueOf(finalYeniKayitSiparisMid)) > 0) {
                             if (tamamla) {
-                                db.siparisDao().updateSiparisBarkod(createBarkocImage(String.valueOf("00000" + finalYeniKayitSiparisMid)) , finalYeniKayitSiparisMid);
+                                db.siparisDao().updateSiparisBarkod(createBarkocImage(String.valueOf("00000" + finalYeniKayitSiparisMid)), finalYeniKayitSiparisMid);
                                 MessageBox.showAlert(SiparisKayitActivity.this, "Kayıt Başarılı..\n", false);
                                 Intent i = new Intent(SiparisKayitActivity.this, MainActivity.class);
                                 i.putExtra("gelenPage", "sipariş");
@@ -243,7 +269,6 @@ public class SiparisKayitActivity extends AppCompatActivity {
                                 finish();
                                 startActivity(i);
                             }
-
                         }
                         if (gelenSiparisMid != null && finalYeniKayitSiparisMid == 1) {
                             if (tamamla) {
@@ -257,19 +282,14 @@ public class SiparisKayitActivity extends AppCompatActivity {
                                 finish();
                                 startActivity(i);
                             }
-
                         } else if (finalYeniKayitSiparisMid < 0)
                             MessageBox.showAlert(SiparisKayitActivity.this, "İşlem başarısız..\n", false);
 
                     }
                 });
-
             }
         }).start();
-        //}
-
     }
-
 
     void getEditMode(Long siparisMid) {
         List<Siparis> updateKayitList = db.siparisDao().getSiparisForMid(siparisMid);
@@ -285,33 +305,33 @@ public class SiparisKayitActivity extends AppCompatActivity {
             tarih_edittw.setText(updateKayitList.get(0).getSiparisTarihi());
             //  tutar_edittw.setText(updateKayitList.get(0).getSiparisTutar() != null ? updateKayitList.get(0).getSiparisTutar().toString() : "");
             aciklama_edittw.setText(updateKayitList.get(0).getAciklama());
+            // siparisId = updateKayitList.get(0).getId();
 
 
         }
 
     }
 
-    public String createBarkocImage(String siparisNo){
+    public String createBarkocImage(String siparisNo) {
 
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         try {
-            BitMatrix bitMatrix = multiFormatWriter.encode(siparisNo, BarcodeFormat.QR_CODE,200,200);
+            BitMatrix bitMatrix = multiFormatWriter.encode(siparisNo, BarcodeFormat.QR_CODE, 200, 200);
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
             // imageView.setImageBitmap(bitmap);
 
 
-            ByteArrayOutputStream baos=new  ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
-            byte [] b=baos.toByteArray();
-            String barkodDegerString= Base64.encodeToString(b, Base64.DEFAULT);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            byte[] b = baos.toByteArray();
+            String barkodDegerString = Base64.encodeToString(b, Base64.DEFAULT);
             return barkodDegerString;
         } catch (WriterException e) {
             e.printStackTrace();
         }
         return null;
     }
-
 
 
 }

@@ -69,7 +69,7 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
             toolbar = (Toolbar) findViewById(R.id.toolbar);
             toolbar.setNavigationIcon(R.drawable.left);
             TextView toolbarTextView = (TextView) findViewById(R.id.toolbar_title);
-            toolbarTextView.setText("Sipariş Detay Bilgileri");
+            toolbarTextView.setText("Ürünler");
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

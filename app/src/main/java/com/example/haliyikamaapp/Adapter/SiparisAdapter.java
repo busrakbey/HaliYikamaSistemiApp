@@ -80,6 +80,7 @@ public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHo
             public void onClick(View view) {
                 Intent musteri = new Intent(mContext, SiparisKayitActivity.class);
                 musteri.putExtra("siparisMid" , String.valueOf(data.get(position).getMid()));
+                musteri.putExtra("musteriMid" , String.valueOf(data.get(position).getMusteriMid()));
                 musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.getApplicationContext().startActivity(musteri);
             }

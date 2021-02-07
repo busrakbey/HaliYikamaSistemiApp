@@ -2,6 +2,7 @@ package com.example.haliyikamaapp.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
@@ -13,6 +14,7 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -55,6 +57,7 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
         final Musteri myListData = data.get(position);
         holder.adiSoyadi_item.setText(itemsFiltered.get(position).getMusteriAdi() + " " + itemsFiltered.get(position).getMusteriSoyadi());
         holder.telefonNo_item.setText(itemsFiltered.get(position).getTelefonNumarasi());
+        holder.musteri_turu_item.setText(itemsFiltered.get(position).getMusteriTuru() != null ? itemsFiltered.get(position).getMusteriTuru() : ""  + ( itemsFiltered.get(position).getBolge() != null ?  " | " + itemsFiltered.get(position).getBolge() : ""));
 
 
         ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
@@ -80,6 +83,24 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
                 musteri.putExtra("musteriMid", String.valueOf(data.get(position).getMid()));
                 musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.getApplicationContext().startActivity(musteri);
+            }
+        });
+
+        holder.whatsapp_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String url = "https://api.whatsapp.com/send?phone=+90" + itemsFiltered.get(position).getTelefonNumarasi() + "&text=Merhabalar! ...";
+                try {
+                    PackageManager pm = mContext.getApplicationContext().getPackageManager();
+                    pm.getPackageInfo("com.whatsapp", PackageManager.GET_ACTIVITIES);
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(url));
+                    mContext.startActivity(i);
+                } catch (PackageManager.NameNotFoundException e) {
+                    Toast.makeText(mContext, "Lütfen cihazınıza Whatsapp uygulamasını yükleyiniz..", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+
             }
         });
 
@@ -206,8 +227,8 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         RelativeLayout relativeLayout;
-        public TextView adiSoyadi_item, tarih_item, telefonNo_item;
-        ImageView isimBasHarfi_item, edit_musteri, new_siparis_button, telefon_et_button,senkron_et_button;
+        public TextView adiSoyadi_item, tarih_item, telefonNo_item,musteri_turu_item;
+        ImageView isimBasHarfi_item, edit_musteri, new_siparis_button, telefon_et_button,senkron_et_button, whatsapp_button;
 
 
         public MyViewHolder(View itemView) {
@@ -219,6 +240,8 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
             this.new_siparis_button = (ImageView) itemView.findViewById(R.id.new_siparis);
             this.telefon_et_button = (ImageView) itemView.findViewById(R.id.telefon_button);
             this.senkron_et_button =  (ImageView) itemView.findViewById(R.id.senkron_musteri);
+            this.musteri_turu_item = (TextView) itemView.findViewById(R.id.musteri_turu_item);
+            this.whatsapp_button = (ImageView) itemView.findViewById(R.id.telefon_whatsapp);
             relativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayout);
         }
     }

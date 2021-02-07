@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             ekleButon.setVisibility(View.INVISIBLE);
 
         }
-        if(InternetKontrol()) {
+        if (InternetKontrol()) {
             getAuth();
             getUrunListFromService();
             getIlAndIlceFromService();
@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     } else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                         builder.setTitle("Uyarı");
-                        builder.setMessage("Uygulamadan çıkış yapılacaktır. Devam etmek istiyor musunuz?");
+                        builder.setMessage("Devam etmek istiyor musunuz?");
                         builder.setNegativeButton("Hayır", null);
                         builder.setPositiveButton("Evet", new DialogInterface.OnClickListener() {
                             @Override
@@ -247,6 +247,51 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         final MenuItem myActionMenuItem = menu.findItem(R.id.search);
+        MenuItem userProfile = menu.findItem(R.id.setting);
+        MenuItem exit_user = menu.findItem(R.id.action_exit_user);
+
+        exit_user.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Sistem");
+                builder.setMessage("Çıkış yapılacaktır. Devam etmek istiyor musunuz?");
+                builder.setNegativeButton("Hayır", null);
+                builder.setPositiveButton("Evet", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        db.userDao().deleteUserAll();
+                        db.sIlceDao().deleteIlceAll();
+                        db.sIlDao().deleteIlAll();
+                        db.musteriDao().deleteMusteriAll();
+                        db.siparisDao().deleteSiparisAll();
+                        db.gorevlerDao().deleteGorevAll();
+                        db.gorevFomBilgileriDao().deleteGorevAll();
+                        db.subeDao().deleteSubeAll();
+                        db.urunDao().deleteUrunAll();
+                        db.urunFiyatDao().deleteUrunFiyatAll();
+                        db.urunSubeDao().deleteUrunSubeAll();
+                        db.olcuBirimDao().deleteOlcuBirimAll();
+                        db.sTenantDao().deleteSTenantAll();
+                        db.permissionsDao().deletePermissionsAll();
+                        db.siparisDetayDao().deleteSiparisDetayAll();
+                        db.bolgeDao().deleteBolgeAll();
+                        db.musteriTuruDao().deleteMusteriTuruAll();
+                        db.authToken().deleteTokenAll();
+                        finish();
+                        Intent a = new Intent(MainActivity.this, LoginActivity.class);
+                        startActivity(a);
+                        // System.exit(0);
+
+
+                    }
+                });
+                builder.show();
+                return false;
+            }
+        });
+
+
         if (toolbarTextView.getText().toString().equalsIgnoreCase("Müşteri") || toolbarTextView.getText().toString().equalsIgnoreCase("Sipariş")) {
             final SearchView searchView = (SearchView) MenuItemCompat.getActionView(myActionMenuItem);
             searchView.setMaxWidth(Integer.MAX_VALUE);
@@ -355,13 +400,15 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     public void onBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle("Uyarı");
-        builder.setMessage("Uygulamadan çıkış yapılacaktır. Devam etmek istiyor musunuz?");
+        builder.setTitle("Sistem");
+        builder.setMessage("Uygulama kapatılacaktır. Devam etmek istiyor musunuz?");
         builder.setNegativeButton("Hayır", null);
         builder.setPositiveButton("Evet", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 finish();
+                System.exit(0);
+
             }
         });
         builder.show();
@@ -478,7 +525,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     void getAuth() {
         OrtakFunction.tokenControl(MainActivity.this);
         // if (OrtakFunction.tokenList == null || OrtakFunction.tokenList.size() == 0)
-       // OrtakFunction.getTtoken(MainActivity.this);
+        // OrtakFunction.getTtoken(MainActivity.this);
     }
 
     List<Urun> gelenUrunList = null;
@@ -593,8 +640,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                                                                 }
                                                                             });
                                                                         }
-                                                                    } else
-                                                                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);
+                                                                    } /*else
+                                                                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);*/
                                                                 }
                                                             }
 
@@ -607,8 +654,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                                         //  }
                                                     }
                                                 });
-                                            } else
-                                                MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);
+                                            } /*else
+                                                MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);*/
                                         }
                                     }
 
@@ -622,8 +669,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 //    }
                             }
                         });
-                    } else
-                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);
+                    } /*else
+                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);*/
                 }
             }
 
@@ -635,7 +682,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         });
 
     }
-
 
 
     Siparis gelenSiparis;
@@ -676,8 +722,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                         });
 
 
-                    } else
-                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);
+                    } /*else
+                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);*/
                 }
             }
 
@@ -739,8 +785,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                         });
 
 
-                    } else
-                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);
+                    } /*else
+                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);*/
                 }
             }
 
@@ -806,8 +852,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                         });
 
 
-                    } else
-                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);
+                    } /*else
+                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);*/
                 }
             }
 
@@ -1085,8 +1131,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 }
                             });
                         }
-                    } else
-                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);
+                    } /*else
+                       MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);*/
                 }
             }
 

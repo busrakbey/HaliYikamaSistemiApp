@@ -32,7 +32,6 @@ import com.example.haliyikamaapp.Model.Dao.UrunSubeDao;
 import com.example.haliyikamaapp.Model.Dao.UserDao;
 import com.example.haliyikamaapp.Model.Entity.AuthToken;
 import com.example.haliyikamaapp.Model.Entity.Bolge;
-import com.example.haliyikamaapp.Model.Entity.Converter;
 import com.example.haliyikamaapp.Model.Entity.GorevFomBilgileri;
 import com.example.haliyikamaapp.Model.Entity.Gorevler;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
