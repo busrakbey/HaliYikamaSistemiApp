@@ -12,7 +12,7 @@ import java.util.List;
 @Dao
 public interface PermissionsDao {
 
-    @Query("SELECT * FROM PERMISSIONS")
+    @Query("SELECT * FROM PERMISSIONS order by permissionFullPath asc")
     List<Permissions> getPermissionsAll();
 
     @Query("SELECT * FROM PERMISSIONS where senkronEdildi = 0")
@@ -44,6 +44,12 @@ public interface PermissionsDao {
 
     @Query("SELECT * FROM PERMISSIONS where id = :id")
     List<Permissions> getPermissionsForId(Long id);
+
+  /*  @Query("SELECT * FROM PERMISSIONS where userId = :userId order by permissionFullPath asc ")
+    List<Permissions> getPermissionsForUserId(Long userId);*/
+
+    @Query("SELECT * FROM PERMISSIONS where id = :parentId")
+    List<Permissions> getPermissionsForParentId(Long parentId);
 
 
 }

@@ -122,22 +122,69 @@
                         android:padding="@dimen/loginViewsMargin">
 
 
-                        <com.google.android.material.textfield.TextInputLayout style="@style/parent">
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/parent"
+                            android:layout_width="match_parent">
 
 
                             <EditText
-                                android:id="@+id/yetki_adi_soyadi"
+                                android:id="@+id/kullanici"
                                 style="@style/modifiedEditText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
                                 android:clickable="true"
-                                android:hint="Adı - Soyadı"
+                                android:hint="Kullanıcı Adı"
                                 android:inputType="text" />
+
                         </com.google.android.material.textfield.TextInputLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="horizontal">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/parent"
+                                android:layout_width="0dp"
+                                android:layout_weight="0.5">
+
+
+                                <EditText
+                                    android:id="@+id/kullanici_adi"
+                                    style="@style/modifiedEditText"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:clickable="true"
+                                    android:hint="Adı"
+                                    android:inputType="text" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/parent"
+                                android:layout_width="0dp"
+                                android:layout_weight="0.5">
+
+
+                                <EditText
+                                    android:id="@+id/kullanici_soyadi"
+                                    style="@style/modifiedEditText"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:clickable="true"
+                                    android:hint="Soyadı"
+                                    android:inputType="text" />
+
+                            </com.google.android.material.textfield.TextInputLayout>
+                        </LinearLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
                             style="@style/parent"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginTop="@dimen/signup_text_margin_top">
+                            android:layout_marginTop="@dimen/signup_text_margin_top"
+                            android:visibility="gone">
 
 
                             <TextView
@@ -179,11 +226,10 @@
                         android:textStyle="bold" />
 
                     <LinearLayout
+                        android:id="@+id/switch_linear"
                         style="@style/linearParent"
                         android:layout_gravity="center_vertical"
                         android:padding="@dimen/loginViewsMargin">
-
-
 
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -193,109 +239,6 @@
                             android:layout_marginTop="@dimen/signup_text_margin_top"
                             android:orientation="horizontal">
 
-                            <Switch
-                                android:id="@+id/switch_yonetici_olsunmu"
-                                style="@style/modifiedEditText"
-                                android:clickable="true"
-                                android:text="Yönetici Olsun Mu?" />
-
-                            <Switch
-                                android:id="@+id/switch_teslim_alacaklar"
-                                style="@style/modifiedEditText"
-                                android:clickable="true"
-                                android:text="Teslim Alınacaklar" />
-
-
-                            <Switch
-                                android:id="@+id/switch_teslim_edilecekler"
-                                style="@style/modifiedEditText"
-                                android:clickable="true"
-                                android:text="Teslim Edilecekler" />
-
-                            <Switch
-                                android:id="@+id/switch_tum_operasyonlar"
-                                style="@style/modifiedEditText"
-                                android:clickable="true"
-                                android:text="Tüm Operasyonlar" />
-
-                            <Switch
-                                android:id="@+id/switch_yikamada_olanlar"
-                                style="@style/modifiedEditText"
-                                android:clickable="true"
-                                android:inputType="text"
-                                android:text="Teslim Alınacaklar" />
-
-                            <Switch
-                                android:id="@+id/switch_teslime_hazirla"
-                                style="@style/modifiedEditText"
-                                android:clickable="true"
-                                android:text="Teslime Hazırla" />
-
-                            <Switch
-                                android:id="@+id/switch_tum_musteriler"
-                                style="@style/modifiedEditText"
-                                android:clickable="true"
-                                android:text="Tüm Müşteriler" />
-
-
-                            <Switch
-                                android:id="@+id/switch_musteri_arama"
-                                style="@style/modifiedEditText"
-                                android:clickable="true"
-                                android:text="Müşteri Arama" />
-
-                            <Switch
-                                android:id="@+id/switch_yeni_musteri_kaydi"
-                                style="@style/modifiedEditText"
-                                android:clickable="true"
-                                android:text="Müşteri Kaydı" />
-
-                            <Switch
-                                android:id="@+id/switch_musteri_bilgileri_guncelleme"
-                                style="@style/modifiedEditText"
-                                android:clickable="true"
-                                android:text="Müşteri Bilgileri Güncelleme" />
-
-
-                            <Switch
-                                android:id="@+id/switch_yeni_siparis"
-                                style="@style/modifiedEditText"
-                                android:clickable="true"
-                                android:text="Yeni Sipariş Oluşturma" />
-
-                            <Switch
-                                android:id="@+id/switch_siparis_icerik_degistirme"
-                                style="@style/modifiedEditText"
-                                android:clickable="true"
-                                android:text="Sipariş İçeriğini Değiştirme" />
-
-
-                            <Switch
-                                android:id="@+id/switch_siparis_araci_degistirme"
-                                style="@style/modifiedEditText"
-                                android:clickable="true"
-                                android:text="Sipariş Aracını Değiştirme" />
-
-
-                            <Switch
-                                android:id="@+id/switch_siparis_tarihi_Degistirme"
-                                style="@style/modifiedEditText"
-                                android:clickable="true"
-                                android:text="Sipariş Tarihi Değiştirme" />
-
-                            <Switch
-                                android:id="@+id/switch_siparis_aciklama_degistirme"
-                                style="@style/modifiedEditText"
-                                android:clickable="true"
-                                android:text="Sipariş Açıklamasını Değiştirme" />
-
-
-                            <Switch
-                                android:id="@+id/switch_cihaz_aktif"
-                                style="@style/modifiedEditText"
-                                android:clickable="true"
-                                android:text="Cihaz Aktif" />
-
 
                             <com.google.android.material.textfield.TextInputLayout style="@style/parent">
 
@@ -304,8 +247,8 @@
                                     android:id="@+id/aktivasyon_kodu_edittext"
                                     style="@style/modifiedEditText"
                                     android:clickable="true"
-                                    android:hint="Aktivasyon Kodu"
                                     android:enabled="false"
+                                    android:hint="Aktivasyon Kodu"
                                     android:inputType="text" />
 
                             </com.google.android.material.textfield.TextInputLayout>
@@ -320,32 +263,26 @@
 
                                 <Button
                                     android:id="@+id/yetki_kaydet_button"
-                                    android:layout_width="wrap_content"
                                     style="@style/loginButton"
+                                    android:layout_width="wrap_content"
                                     android:layout_gravity="center"
                                     android:layout_marginTop="@dimen/signup_text_margin_top"
                                     android:layout_weight="0.5"
                                     android:onClick="yetkiKaydetGuncelleOnclik"
-                                    android:text="KAYDET"
-                                    />
+                                    android:text="KAYDET" />
 
                                 <Button
                                     android:id="@+id/yetki_cihaz_sil_button"
                                     style="@style/tamamlaButton"
                                     android:layout_width="wrap_content"
                                     android:layout_gravity="center"
-                                    android:textColor="@color/text"
                                     android:layout_marginTop="@dimen/signup_text_margin_top"
                                     android:layout_weight="0.5"
                                     android:onClick="yetkiCihazSilOnclik"
-                                    android:text="CİHAZI SİL" />
+                                    android:text="CİHAZI SİL"
+                                    android:textColor="@color/text" />
 
                             </LinearLayout>
-
-
-
-
-
 
 
                         </com.google.android.material.textfield.TextInputLayout>

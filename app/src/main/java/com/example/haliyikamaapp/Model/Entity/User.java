@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Entity(tableName = "S_USER")
+@Entity(tableName = "USER")
 public class User {
 
     @NonNull
@@ -87,6 +87,12 @@ public class User {
 
     @ColumnInfo(name = "senkronEdildi")
     public Boolean senkronEdildi;
+
+    @ColumnInfo(name = "cihazAdi")
+    public String cihazAdi;
+
+    @ColumnInfo(name = "cihazNo")
+    public String cihazNo;
 
 
     @NonNull
@@ -282,5 +288,19 @@ public class User {
         this.senkronEdildi = senkronEdildi;
     }
 
+    public String getCihazAdi() {
+        return cihazAdi;
+    }
 
+    public void setCihazAdi(String cihazAdi) {
+        this.cihazAdi = cihazAdi;
+    }
+
+    public String getCihazNo() {
+        return cihazNo;
+    }
+
+    public void setCihazNo(String cihazNo) {
+        this.cihazNo = cihazNo;
+    }
 }

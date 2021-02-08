@@ -23,6 +23,7 @@ import com.example.haliyikamaapp.Model.Dao.PermissionsDao;
 import com.example.haliyikamaapp.Model.Dao.SIlDao;
 import com.example.haliyikamaapp.Model.Dao.SIlceDao;
 import com.example.haliyikamaapp.Model.Dao.STenantDao;
+import com.example.haliyikamaapp.Model.Dao.SUserDao;
 import com.example.haliyikamaapp.Model.Dao.SiparisDao;
 import com.example.haliyikamaapp.Model.Dao.SiparisDetayDao;
 import com.example.haliyikamaapp.Model.Dao.SubeDao;
@@ -30,6 +31,7 @@ import com.example.haliyikamaapp.Model.Dao.UrunDao;
 import com.example.haliyikamaapp.Model.Dao.UrunFiyatDao;
 import com.example.haliyikamaapp.Model.Dao.UrunSubeDao;
 import com.example.haliyikamaapp.Model.Dao.UserDao;
+import com.example.haliyikamaapp.Model.Dao.UserPermissionsDao;
 import com.example.haliyikamaapp.Model.Entity.AuthToken;
 import com.example.haliyikamaapp.Model.Entity.Bolge;
 import com.example.haliyikamaapp.Model.Entity.GorevFomBilgileri;
@@ -42,6 +44,7 @@ import com.example.haliyikamaapp.Model.Entity.Permissions;
 import com.example.haliyikamaapp.Model.Entity.STenant;
 import com.example.haliyikamaapp.Model.Entity.S_IL;
 import com.example.haliyikamaapp.Model.Entity.S_ILCE;
+import com.example.haliyikamaapp.Model.Entity.S_User;
 import com.example.haliyikamaapp.Model.Entity.Siparis;
 import com.example.haliyikamaapp.Model.Entity.SiparisDetay;
 import com.example.haliyikamaapp.Model.Entity.SubPermissions;
@@ -50,12 +53,13 @@ import com.example.haliyikamaapp.Model.Entity.Urun;
 import com.example.haliyikamaapp.Model.Entity.UrunFiyat;
 import com.example.haliyikamaapp.Model.Entity.UrunSube;
 import com.example.haliyikamaapp.Model.Entity.User;
+import com.example.haliyikamaapp.Model.Entity.UserPermissions;
 
 
 @Database(entities = {Musteri.class, Siparis.class, SiparisDetay.class, Urun.class, UrunSube.class, UrunFiyat.class, STenant.class,
         MusteriIletisim.class, OlcuBirim.class, AuthToken.class, Sube.class, MusteriTuru.class,
         Gorevler.class, GorevFomBilgileri.class,
-        S_IL.class, S_ILCE.class, Bolge.class, User.class, Permissions.class, SubPermissions.class} ,
+        S_IL.class, S_ILCE.class, Bolge.class, User.class, Permissions.class, SubPermissions.class, S_User.class, UserPermissions.class} ,
         version = 1, exportSchema = false)
 public abstract class HaliYikamaDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "HALIYIKAMA_DB";
@@ -82,6 +86,10 @@ public abstract class HaliYikamaDatabase extends RoomDatabase {
     public abstract UserDao userDao();
     public abstract PermissionsDao permissionsDao();
     public  abstract GorevFormBilgileriDao gorevFomBilgileriDao();
+    public  abstract SUserDao sUserDao();
+    public  abstract UserPermissionsDao userPermissionsDao();
+
+
 
 
     public static synchronized HaliYikamaDatabase getInstance(Context context) {

@@ -3,6 +3,8 @@ package com.example.haliyikamaapp.ToolLayer;
 import com.example.haliyikamaapp.Model.Entity.AuthToken;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.Model.Entity.MusteriTuru;
+import com.example.haliyikamaapp.Model.Entity.Permissions;
+import com.example.haliyikamaapp.Model.Entity.S_User;
 import com.example.haliyikamaapp.Model.Entity.Siparis;
 import com.example.haliyikamaapp.Model.Entity.SiparisDetay;
 import com.example.haliyikamaapp.Model.Entity.Sube;
@@ -107,7 +109,17 @@ public interface RefrofitRestApi {
     @GET("hy/musteri/musteriBolgeler")
     Call<List<String>> getBolgeList (@Header("Authorization") String auth, @Header("tenant-id") String tenantId);
 
+    @GET("fw/user/list")
+    Call<List<S_User>> getUserList (@Header("Authorization") String auth, @Header("tenant-id") String tenantId);
 
+    @POST("fw/user/save")
+    Call<S_User> postUser (@Header("Authorization") String auth, @Header("tenant-id") String tenantId);
+
+    @GET("fw/permission/list")
+    Call<List<Permissions>> geTPermissionList (@Header("Authorization") String auth, @Header("tenant-id") String tenantId);
+
+    @GET()
+    Call<List<S_User>> getUsersPermission (@Url String url, @Header("Authorization") String auth, @Header("tenant-id") String tenantId);
 
 }
 

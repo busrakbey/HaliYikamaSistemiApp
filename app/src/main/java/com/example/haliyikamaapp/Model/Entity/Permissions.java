@@ -40,6 +40,8 @@ public class Permissions {
     public Boolean senkronEdildi;
 
 
+
+
     @NonNull
     public Long getMid() {
         return mid;
@@ -112,4 +114,6 @@ public class Permissions {
     public void setSenkronEdildi(Boolean senkronEdildi) {
         this.senkronEdildi = senkronEdildi;
     }
+
+
 }

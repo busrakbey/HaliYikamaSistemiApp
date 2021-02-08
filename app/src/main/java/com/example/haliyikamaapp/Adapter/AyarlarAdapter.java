@@ -79,7 +79,7 @@ public class AyarlarAdapter extends RecyclerView.Adapter<AyarlarAdapter.MyViewHo
                     mContext.getApplicationContext().startActivity(i);
                }*/
 
-                Intent i = new Intent(mContext, TanimlamalarActivity.class);
+                Intent i = new Intent(mContext, YetkiliCihazlarActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.getApplicationContext().startActivity(i);
             }
