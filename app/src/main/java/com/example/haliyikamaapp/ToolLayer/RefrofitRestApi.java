@@ -113,13 +113,16 @@ public interface RefrofitRestApi {
     Call<List<S_User>> getUserList (@Header("Authorization") String auth, @Header("tenant-id") String tenantId);
 
     @POST("fw/user/save")
-    Call<S_User> postUser (@Header("Authorization") String auth, @Header("tenant-id") String tenantId);
+    Call<S_User> postUser (@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body S_User user);
 
     @GET("fw/permission/list")
     Call<List<Permissions>> geTPermissionList (@Header("Authorization") String auth, @Header("tenant-id") String tenantId);
 
     @GET()
     Call<List<S_User>> getUsersPermission (@Url String url, @Header("Authorization") String auth, @Header("tenant-id") String tenantId);
+
+    @PUT()
+    Call<S_User> putUpdateUser (@Url String url, @Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body S_User user);
 
 }
 

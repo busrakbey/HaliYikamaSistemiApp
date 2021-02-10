@@ -1,6 +1,7 @@
 package com.example.haliyikamaapp.ToolLayer;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Entity;
@@ -12,7 +13,10 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
@@ -54,22 +58,23 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 import static android.content.Context.LOCATION_SERVICE;
+import static androidx.core.content.PermissionChecker.checkSelfPermission;
 
 public class OrtakFunction {
     public static List<AuthToken> tokenList = null;
     public static String serviceUrl = "http://35.204.214.240:80/haliBackend/";
     public static HaliYikamaDatabase db = null;
     public static String authorization = null;
-    public static  String tenantId = "test";
+    public static String tenantId = "test";
 
     public static void tokenControl(Context context) {
         db = HaliYikamaDatabase.getInstance(context);
         tokenList = db.authToken().getAuthTokenAll();
         if (tokenList.size() > 0)
-            authorization =  "Bearer " +  tokenList.get(0).getAccess_token();
+            authorization = "Bearer " + tokenList.get(0).getAccess_token();
     }
 
-    public static void getTtoken(final Context context, final String username, final String password) {
+    public static void getTtoken(final Context context, final String username, final String password, final String tenantId) {
         db = HaliYikamaDatabase.getInstance(context);
         String url = serviceUrl + "oauth/token";
         RequestQueue mQueue = Volley.newRequestQueue(context);
@@ -101,7 +106,7 @@ public class OrtakFunction {
                                     if (Integer.valueOf(String.valueOf(finalyeniKayit)) > 0) {
                                         tokenControl(context);
                                         if (authorization != null)
-                                            ((LoginActivity)context).getCurrentUserFromService();
+                                            ((LoginActivity) context).getCurrentUserFromService();
 
 
                                     }
@@ -126,7 +131,7 @@ public class OrtakFunction {
                             Log.e("TAG", error.getMessage(), error);
 
                         } else {
-                           // Toast.makeText(context, "Kullanıcı adı veya parola hatalı ! " , Toast.LENGTH_SHORT).show();
+                            // Toast.makeText(context, "Kullanıcı adı veya parola hatalı ! " , Toast.LENGTH_SHORT).show();
                             MessageBox.showAlert(context, "Kullanıcı adı veya parola hatalı !", false);
 
                             Log.e("TAG", error.getMessage(), error);
@@ -146,6 +151,11 @@ public class OrtakFunction {
                 headers.put("Content-Type", "application/x-www-form-urlencoded");
                 headers.put("Authorization", "Basic " + base64);
                 headers.put("tenant-id", "test");
+               // headers.put("imei-number ", "123");
+
+
+
+
                 return headers;
 
             }
@@ -168,6 +178,8 @@ public class OrtakFunction {
         request.setRetryPolicy(new DefaultRetryPolicy(1000, 2, 1));
         mQueue.add(request);
     }
+
+
 
     public static void permission_control(Context context, Activity activity) {
         Boolean hasCallPermission = ActivityCompat.checkSelfPermission(context,

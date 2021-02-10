@@ -67,7 +67,7 @@ public class MusteriGorevlerimFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         init_item(view);
         try {
-            getGorevlerimFromService(999L);
+            getGorevlerimFromService(999L/*db.userDao().getUserAll().get(0).getId()*/);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -93,42 +93,7 @@ public class MusteriGorevlerimFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         gorevlerAdapter.notifyDataSetChanged();
         recyclerView.setAdapter(gorevlerAdapter);
-       /* SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(mContext) {
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-                final int position = viewHolder.getAdapterPosition();
-                final List<SiparisDetay> silinecekDetayListe = db.siparisDetayDao().getSiparisDetayForMustId(siparisAdapter.getData().get(position).getMid());
-                final int silinenSiparisDetayMidSayisi = db.siparisDetayDao().deletedSiparisDetayForMustId(siparisAdapter.getData().get(position).getMid());
-                if (silinenSiparisDetayMidSayisi == silinecekDetayListe.size()) {
-                    final int silinenSiparisMid = db.siparisDao().deletedSiparisForMid(siparisAdapter.getData().get(position).getMid());
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (silinenSiparisMid == 1) {
-                                siparisAdapter.getData().remove(position);
-                                siparisAdapter.notifyDataSetChanged();
-                                snackbar = Snackbar
-                                        .make(relativeLayout, "Kayıt silinmiştir.", Snackbar.LENGTH_LONG);
-                                snackbar.setActionTextColor(Color.YELLOW);
-                                snackbar.show();
-
-                            } else
-                                MessageBox.showAlert(getContext(), "İşlem başarısız..\n", false);
-
-                        }
-                    });
-
-
-                } else
-                    MessageBox.showAlert(getContext(), "İşlem başarısız..\n", false);
-
-            }
-        };
-        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeToDeleteCallback);
-        itemTouchhelper.attachToRecyclerView(recyclerView);*/
-
-
-    }
+       }
 
 
     String gelenGorevList = null;
@@ -160,7 +125,7 @@ public class MusteriGorevlerimFragment extends Fragment {
                     if (!gelenGorevList.equalsIgnoreCase("")) {
                         List<Gorevler> allGorevList = db.gorevlerDao().getGorevAll();
                         JSONObject gelenObject = null;
-                        db.gorevlerDao().deleteGorevAll();
+                        //db.gorevlerDao().deleteGorevAll();
                         Boolean yeniKayitMi = true;
                         Long gorevMid;
                         try {
@@ -173,61 +138,26 @@ public class MusteriGorevlerimFragment extends Fragment {
                                 rowObject.put("musteriId", processVariablesObject.get("musteriId"));
                                 List<Gorevler> gorevlerList = Arrays.asList(gson.fromJson(rowObject.toString(), Gorevler.class));
                                 for (Gorevler item : allGorevList) {
-                                    if (item.getId() == Long.valueOf(rowObject.getString("id"))) {
+                                    if (item.getId() != null && item.getId().toString().equalsIgnoreCase(rowObject.getString("id"))) {
                                         yeniKayitMi = false;
-                                        item.setMid(item.getMid());
                                     }
-                                }
-                                if (yeniKayitMi)
+
+                                    if (yeniKayitMi)
+                                        db.gorevlerDao().setGorev(item);
+
+                                    else{
+                                        item.setMid(item.getMid());
+                                        db.gorevlerDao().updateGorev(item);
+
+                                    }
+                                }if(allGorevList != null && allGorevList.size() ==0)
                                     db.gorevlerDao().setGorevList(gorevlerList);
 
-                                else{
-                                    db.gorevlerDao().updateGorevList(gorevlerList);
-
-                                }
                                 JSONObject musteriObject = new JSONObject(processVariablesObject.getString("musteri"));
                                 List<Musteri> gelenMusteriList = Arrays.asList(gson.fromJson(musteriObject.toString(), Musteri.class));
 
                                 JSONObject siparisObject = new JSONObject(processVariablesObject.getString("siparis"));
                                 List<Siparis> gelenSiparisList = Arrays.asList(gson.fromJson(siparisObject.toString(), Siparis.class));
-
-
-                              /*  List<Musteri> updateMusteriList = new ArrayList<Musteri>();
-                                final List<Musteri> musteriList = db.musteriDao().getMusteriAll();
-                                for (Musteri item : musteriList) {
-                                    for (Musteri j : gelenMusteriList) {
-                                        if (j.getId() == item.getId())
-                                            updateMusteriList.add(j);
-                                    }
-                                }
-                                if (gelenMusteriList != null && gelenMusteriList.size() > 0)
-                                    gelenMusteriList.removeAll(updateMusteriList);
-                                final List<Long> kayitList = db.musteriDao().setMusteriList(gelenMusteriList);
-                                for(Musteri item : updateMusteriList){
-                                    int result = db.musteriDao().updateMusteriAllColumnQuery(item.getId(), item.getMusteriAdi(),item.getMusteriSoyadi(), item.getMusteriTuru(), item.getTelefonNumarasi(),
-                                            item.getVergiKimlikNo(), item.getTcKimlikNo());
-                                }
-
-
-                                for (Siparis item : gelenSiparisList) {
-                                    final List<Musteri> updateMustId = db.musteriDao().getMusteriForId(item.getMusteriId());
-                                    if (updateMustId != null && updateMustId.size() > 0)
-                                        item.setMusteriMid(updateMustId.get(0).getMid());
-                                }
-                                get_list();
-
-                                List<Siparis> updateSiparisList = new ArrayList<Siparis>();
-                                final List<Siparis> siparisList = db.siparisDao().getSiparisAll();
-                                for (Siparis item : siparisList) {
-                                    for (Siparis k : gelenSiparisList) {
-                                        if (k.getId() == item.getId())
-                                            updateSiparisList.add(k);
-                                    }
-                                }
-                                if (gelenSiparisList != null && gelenSiparisList.size() > 0)
-                                    gelenSiparisList.removeAll(updateSiparisList);
-                                db.siparisDao().setSiparisList(gelenSiparisList);
-                                db.siparisDao().updateSiparisList(updateSiparisList);*/
 
 
                             }
@@ -238,16 +168,12 @@ public class MusteriGorevlerimFragment extends Fragment {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        //   db.siparisDao().updateSiparisProcessId(Long.valueOf(gelenObject.getString("processInstanceId")), item.get(0).getId());
 
 
                         mActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
 
-                             /*   if (gelenMusteriList.size() != kayitList.size())
-                                    MessageBox.showAlert(MusteriKayitActivity.this, "Müşteri listesi senkron edilirken hata oluştu.", false);
-                            */
                                 get_list();
                                 List<Gorevler> totalGorevList = db.gorevlerDao().getGorevAll();
                                 for (Gorevler item : totalGorevList) {

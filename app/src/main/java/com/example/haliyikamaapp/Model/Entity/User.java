@@ -5,13 +5,9 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
-
-import java.util.ArrayList;
-import java.util.List;
-
 
 @Entity(tableName = "USER")
+//////giriş yapan kullanıcı bilgilerinin tutulduğu tablodur
 public class User {
 
     @NonNull

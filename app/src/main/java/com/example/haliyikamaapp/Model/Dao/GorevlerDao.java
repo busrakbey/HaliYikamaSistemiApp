@@ -17,6 +17,9 @@ public interface GorevlerDao {
     @Insert
     void setGorev(Gorevler musteri);
 
+    @Update
+    void updateGorev(Gorevler musteri);
+
     @Insert
     List<Long> setGorevList(List<Gorevler> urun);
 
@@ -31,5 +34,8 @@ public interface GorevlerDao {
 
     @Query("SELECT * FROM GOREVLER where mid = :mid")
     List<Gorevler> getGorevForMid(Long mid);
+
+    @Query("SELECT * FROM GOREVLER where siparisId = :siparisId")
+    List<Gorevler> getGorevForSiparisId(Long siparisId);
 
 }

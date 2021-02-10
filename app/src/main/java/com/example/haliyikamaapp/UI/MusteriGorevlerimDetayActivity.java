@@ -58,7 +58,7 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
     Toolbar toolbar;
     HaliYikamaDatabase db;
     RecyclerView recyclerView;
-    String gorevMid, gorevId;
+    String gorevMid, gorevId, siparisId;
     GorevlerDetayAdapter gorevlerAdapter;
     List<SiparisDetay> siparisDetayList;
     EditText not_edittext;
@@ -114,6 +114,7 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
         Intent intent = getIntent();
         gorevMid = intent.getStringExtra("gorevMid");
         gorevId = intent.getStringExtra("gorevId");
+        siparisId = intent.getStringExtra("siparisId");
 
         List<GorevFomBilgileri> formBilgiList = db.gorevFomBilgileriDao().getGorevId(Long.valueOf(gorevId));
         for (GorevFomBilgileri item : formBilgiList) {
@@ -262,8 +263,6 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
     List<Gorevler> gorevlerList;
 
     void get_list() {
-
-
         gorevlerList = db.gorevlerDao().getGorevForMid(Long.valueOf(gorevMid));
         if (gorevlerList.size() > 0) {
             List<Siparis> siparisList = db.siparisDao().getSiparisForSiparisId(gorevlerList.get(0).getSiparisId());

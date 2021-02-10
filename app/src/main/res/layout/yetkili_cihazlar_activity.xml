@@ -93,7 +93,7 @@
                             <TextView
                                 style="@style/modifiedEditText"
                                 android:clickable="true"
-                                android:hint="Kayıtlı Cihazlarınız"
+                                android:hint="Kayıtlı Kullanıcılar"
                                 android:inputType="text" />
 
                             <Spinner
@@ -220,7 +220,7 @@
                         android:layout_marginTop="5dp"
                         android:clickable="true"
                         android:gravity="center"
-                        android:hint="Cihaz Yetkileri"
+                        android:hint="Kullanıcı Yetkileri"
                         android:inputType="text"
                         android:textColorHint="#000000"
                         android:textStyle="bold" />
@@ -237,59 +237,43 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginTop="@dimen/signup_text_margin_top"
-                            android:orientation="horizontal">
-
-
-                            <com.google.android.material.textfield.TextInputLayout style="@style/parent">
-
-
-                                <EditText
-                                    android:id="@+id/aktivasyon_kodu_edittext"
-                                    style="@style/modifiedEditText"
-                                    android:clickable="true"
-                                    android:enabled="false"
-                                    android:hint="Aktivasyon Kodu"
-                                    android:inputType="text" />
-
-                            </com.google.android.material.textfield.TextInputLayout>
-
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_gravity="center"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <Button
-                                    android:id="@+id/yetki_kaydet_button"
-                                    style="@style/loginButton"
-                                    android:layout_width="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:layout_marginTop="@dimen/signup_text_margin_top"
-                                    android:layout_weight="0.5"
-                                    android:onClick="yetkiKaydetGuncelleOnclik"
-                                    android:text="KAYDET" />
-
-                                <Button
-                                    android:id="@+id/yetki_cihaz_sil_button"
-                                    style="@style/tamamlaButton"
-                                    android:layout_width="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:layout_marginTop="@dimen/signup_text_margin_top"
-                                    android:layout_weight="0.5"
-                                    android:onClick="yetkiCihazSilOnclik"
-                                    android:text="CİHAZI SİL"
-                                    android:textColor="@color/text" />
-
-                            </LinearLayout>
-
-
-                        </com.google.android.material.textfield.TextInputLayout>
+                            android:orientation="horizontal"/>
 
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:background="@color/whiteCardColor"
+                    android:orientation="vertical"
+                    android:padding="6dp">
+
+                    <Button
+                        android:id="@+id/yetki_kaydet_button"
+                        style="@style/loginButton"
+                        android:layout_width="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/signup_text_margin_top"
+                        android:layout_weight="0.5"
+                        android:onClick="yetkiKaydetGuncelleOnclik"
+                        android:text="KAYDET" />
+
+                    <Button
+                        android:id="@+id/yetki_cihaz_sil_button"
+                        style="@style/tamamlaButton"
+                        android:layout_width="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/signup_text_margin_top"
+                        android:layout_weight="0.5"
+                        android:onClick="yetkiCihazSilOnclik"
+                        android:text="KULLANICI PASİFE AL"
+                        android:textColor="@color/text" />
+
+                </LinearLayout>
 
             </LinearLayout>
 

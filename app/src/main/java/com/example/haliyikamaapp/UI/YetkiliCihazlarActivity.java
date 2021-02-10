@@ -51,6 +51,8 @@ import com.example.haliyikamaapp.ToolLayer.RefrofitRestApi;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +74,7 @@ public class YetkiliCihazlarActivity extends AppCompatActivity {
     S_User secili_user;
     View addView;
     LinearLayout switch_linear;
+    Button yetki_kaydet_button;
 
 
     @Override
@@ -123,9 +126,28 @@ public class YetkiliCihazlarActivity extends AppCompatActivity {
         progressDoalog.setTitle("SİSTEM");
         progressDoalog.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
         switch_linear = (LinearLayout) findViewById(R.id.switch_linear);
-
+        yetki_kaydet_button = (Button) findViewById(R.id.yetki_kaydet_button);
         userList = new ArrayList<S_User>();
         userListString = new ArrayList<String>();
+
+        yetki_kaydet_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (secili_user != null) {
+                    postUpdateSendUser(secili_user);
+                } else {
+                    if (!kullanici_adi_edittext.getText().toString().equalsIgnoreCase("") && !kullanici_edittext.getText().toString().equalsIgnoreCase("") &&
+                            !kullanici_soyadi_edittext.getText().toString().equalsIgnoreCase(""))
+                        postSendUser();
+                    else
+                        MessageBox.showAlert(YetkiliCihazlarActivity.this, "Lütfen kullanıcı bilgilerini eksiksiz bir şekilde giriniz.", false);
+
+                }
+
+            }
+        });
+
+
     }
 
     public void get_list() {
@@ -142,7 +164,7 @@ public class YetkiliCihazlarActivity extends AppCompatActivity {
             public void onResponse(Call<List<S_User>> call, Response<List<S_User>> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                    MessageBox.showAlert(YetkiliCihazlarActivity.this, "Ürün bilgileri alınırken hata oluştu...", false);
+                    MessageBox.showAlert(YetkiliCihazlarActivity.this, "Kullanıcı bilgileri alınırken hata oluştu...", false);
                     userSpinnerList();
                     return;
                 }
@@ -190,7 +212,7 @@ public class YetkiliCihazlarActivity extends AppCompatActivity {
             public void onResponse(Call<List<Permissions>> call, Response<List<Permissions>> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                    MessageBox.showAlert(YetkiliCihazlarActivity.this, "Ürün bilgileri alınırken hata oluştu...", false);
+                    MessageBox.showAlert(YetkiliCihazlarActivity.this, "Yetki bilgileri alınırken hata oluştu...", false);
                     userSpinnerList();
                     return;
                 }
@@ -248,7 +270,7 @@ public class YetkiliCihazlarActivity extends AppCompatActivity {
                     public void onResponse(Call<List<S_User>> call, Response<List<S_User>> response) {
                         if (!response.isSuccessful()) {
                             progressDoalog.dismiss();
-                            MessageBox.showAlert(YetkiliCihazlarActivity.this, "Ürün bilgileri alınırken hata oluştu...", false);
+                            MessageBox.showAlert(YetkiliCihazlarActivity.this, "Kullanıcı yetkileri alınırken hata oluştu...", false);
                             userSpinnerList();
                             return;
                         }
@@ -294,14 +316,16 @@ public class YetkiliCihazlarActivity extends AppCompatActivity {
         userListString.add("Kullanıcılar");
 
         for (S_User item : userList) {
-            userListString.add(item.getName() + " " + item.getSurname());
+            Boolean aktif = true;
+            if (item.getActive() != null && item.getActive() == false)
+                aktif = false;
+            userListString.add(item.getName() + " " + item.getSurname() + (aktif == true ? "" : "(Pasif)"));
         }
 
         ArrayAdapter<String> dataAdapter_il = new ArrayAdapter<String>(YetkiliCihazlarActivity.this, android.R.layout.simple_spinner_item, userListString);
         dataAdapter_il.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         yetkili_kullanicilar_spinner.setAdapter(dataAdapter_il);
         yetkili_kullanicilar_spinner.setSelection(0);
-
         yetkili_kullanicilar_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -313,20 +337,23 @@ public class YetkiliCihazlarActivity extends AppCompatActivity {
                         secili_user = userList.get(selected_user_index - 1);
 
                         if (secili_user != null) {
+                            yetki_kaydet_button.setText("GÜNCELLE");
                             kullanici_adi_edittext.setText(secili_user.getName());
                             kullanici_soyadi_edittext.setText(secili_user.getSurname());
                             kullanici_edittext.setText(secili_user.getUserName());
                             dynamicSwitchLayout(secili_user.getId());
                         }
-
-
                     }
                 } else {
                     secili_user = null;
                     selected_user_index = 0;
+                    yetki_kaydet_button.setText("KAYDET");
+                    kullanici_adi_edittext.setText("");
+                    kullanici_soyadi_edittext.setText("");
+                    kullanici_edittext.setText("");
+
 
                 }
-
             }
 
             @Override
@@ -334,8 +361,6 @@ public class YetkiliCihazlarActivity extends AppCompatActivity {
 
             }
         });
-
-
     }
 
 
@@ -345,24 +370,119 @@ public class YetkiliCihazlarActivity extends AppCompatActivity {
         List<UserPermissions> allPermissionList = db.userPermissionsDao().getUserAll();
 
         for (Permissions permissions : allList) {
-            if ( permissions.getId() != null && permissions.getParentId() != null) {
+            if (permissions.getId() != null && permissions.getParentId() != null) {
                 Switch myButton = new Switch(this);
-                myButton.setText(db.permissionsDao().getPermissionsForParentId(permissions.getParentId()).get(0).getName() + " " + permissions.getName());
+                myButton.setText(db.permissionsDao().getPermissionsForParentId(permissions.getParentId()).get(0).getName() + " " + permissions.getName() + "");
                 ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 switch_linear.addView(myButton, lp);
-                for(UserPermissions item : allPermissionList){
+                for (UserPermissions item : allPermissionList) {
                     if (item.getUserId() != null && userId != null && item.getUserId().toString().equalsIgnoreCase(String.valueOf(userId))) {
                         myButton.setChecked(true);
                     }
                 }
             }
         }
+    }
+
+    S_User gelenUser;
+
+    void postSendUser() {
+        progressDoalog.show();
+        RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
+        S_User gidenUser = new S_User();
+        gidenUser.setUserName(kullanici_adi_edittext.getText().toString());
+        gidenUser.setName(kullanici_adi_edittext.getText().toString());
+        gidenUser.setSurname(kullanici_soyadi_edittext.getText().toString());
+
+        progressDoalog.show();
+        Call<S_User> call = refrofitRestApi.postUser(OrtakFunction.authorization, OrtakFunction.tenantId, gidenUser);
+        call.enqueue(new Callback<S_User>() {
+            @Override
+            public void onResponse(Call<S_User> call, Response<S_User> response) {
+                if (!response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    MessageBox.showAlert(YetkiliCihazlarActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                    return;
+                }
+                if (response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    gelenUser = response.body();
+                    if (gelenUser != null) {
+
+                        YetkiliCihazlarActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                db.sUserDao().setUser(gelenUser);
+                                getUserList();
+                            }
+                        });
 
 
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<S_User> call, Throwable t) {
+                progressDoalog.dismiss();
+                MessageBox.showAlert(YetkiliCihazlarActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+            }
+        });
 
     }
 
+    void postUpdateSendUser(S_User item) {
+        progressDoalog.show();
+        RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
+        S_User gidenUser = new S_User();
+        gidenUser.setUserName(item.getUserName());
+        gidenUser.setName(item.getName());
+        gidenUser.setSurname(item.getSurname());
 
+        progressDoalog.show();
+        Call<S_User> call = refrofitRestApi.putUpdateUser("fw/user" + item.getId(), OrtakFunction.authorization, OrtakFunction.tenantId, gidenUser);
+        call.enqueue(new Callback<S_User>() {
+            @Override
+            public void onResponse(Call<S_User> call, Response<S_User> response) {
+                if (!response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    MessageBox.showAlert(YetkiliCihazlarActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                    return;
+                }
+                if (response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    gelenUser = response.body();
+                    if (gelenUser != null) {
+
+                        YetkiliCihazlarActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                db.sUserDao().setUser(gelenUser);
+                                List<S_User> urunSubeVarMi = db.sUserDao().getUserForId(gelenUser.getId());
+                                if (urunSubeVarMi.size() > 0) {
+                                    gelenUser.setMid(urunSubeVarMi.get(0).getMid());
+                                    db.sUserDao().updateUser(gelenUser);
+                                    getUserList();
+                                }
+                            }
+
+                        });
+
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<S_User> call, Throwable t) {
+                progressDoalog.dismiss();
+                MessageBox.showAlert(YetkiliCihazlarActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+            }
+        });
+
+    }
 }
+
+
 
 

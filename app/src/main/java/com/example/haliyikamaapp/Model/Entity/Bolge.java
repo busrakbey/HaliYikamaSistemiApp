@@ -6,6 +6,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "BOLGE")
+/*created by busrakbey*/
 public class Bolge {
 
     @NonNull
@@ -24,6 +25,9 @@ public class Bolge {
 
     @ColumnInfo(name = "senkronEdildi")
     public Boolean senkronEdildi;
+
+    @ColumnInfo(name = "aktif")
+    public Boolean aktif;
 
     public Boolean getSenkronEdildi() {
         return senkronEdildi;
@@ -64,5 +68,13 @@ public class Bolge {
 
     public void setBolge(String bolge) {
         this.bolge = bolge;
+    }
+
+    public Boolean getAktif() {
+        return aktif;
+    }
+
+    public void setAktif(Boolean aktif) {
+        this.aktif = aktif;
     }
 }

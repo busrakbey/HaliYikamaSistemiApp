@@ -3,9 +3,7 @@ package com.example.haliyikamaapp.ToolLayer;
 import android.app.AlertDialog;
 import android.content.Context;
 
-/**
- * Created by omeryildirim on 9.09.2015.
- */
+
 public class DefaultException extends Exception
 {
     /**

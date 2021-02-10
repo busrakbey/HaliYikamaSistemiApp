@@ -52,11 +52,9 @@ public class GorevlerAdapter extends RecyclerView.Adapter<GorevlerAdapter.MyView
             Date date = new Date(stamp.getTime());
             holder.tarih_item.setText(f.format(date));
         }
-       // holder.sipariş_durumu_item.setText(data.get(position).getGorevlerDurumu() != null ? data.get(position).getGorevlerDurumu() : "" );
-     /*   holder.sipariş_durumu_item.setText("SİPARİŞ ALINDI");
-        holder.siparis_tutari_item.setText(data.get(position).getGorevlerTutar() != null ? data.get(position).getGorevlerTutar().toString() + " TL": ""  );
-        holder.sube_item.setText("Merkez Şube" );*/
 
+        holder.siparis_tutari_item.setText(data.get(position).getDescription());
+        holder.sipariş_durumu_item.setText(data.get(position).getCategory());
 
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,6 +62,7 @@ public class GorevlerAdapter extends RecyclerView.Adapter<GorevlerAdapter.MyView
                 Intent musteri = new Intent(mContext, MusteriGorevlerimDetayActivity.class);
                 musteri.putExtra("gorevMid" , String.valueOf(data.get(position).getMid()));
                 musteri.putExtra("gorevId" , String.valueOf(data.get(position).getId()));
+                musteri.putExtra("siparisId" , String.valueOf(data.get(position).getSiparisId()));
                 musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.getApplicationContext().startActivity(musteri);            }
         });

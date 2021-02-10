@@ -44,44 +44,31 @@ public class AyarlarAdapter extends RecyclerView.Adapter<AyarlarAdapter.MyViewHo
         holder.ayarlar_item.setText(data.get(position));
 
 
-        /*holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+        holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(data.get(position).equalsIgnoreCase("Sistem Url Adresi")){
+                if (data.get(position).equalsIgnoreCase("Sistem Url Adresi")) {
 
-                    FragmentManager manager =((AppCompatActivity)mContext).getFragmentManager();
+                    FragmentManager manager = ((AppCompatActivity) mContext).getFragmentManager();
                     DialogConfigFragment kd = new DialogConfigFragment(mContext);
-                    kd.show(manager,"");
+                    kd.show(manager, "");
                 }
-            }
-        });*/
 
+                if (data.get(position).equalsIgnoreCase("Yetkili Cihazlar")) {
 
-       /* holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                    Intent i = new Intent(mContext, YetkiliCihazlarActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.getApplicationContext().startActivity(i);
+
+                }
+
                 if (data.get(position).equalsIgnoreCase("Tanımlamalar")) {
                     Intent i = new Intent(mContext, TanimlamalarActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.getApplicationContext().startActivity(i);
                 }
 
-            }
-        });*/
 
-
-        holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               /*if (data.get(position).equalsIgnoreCase("Yetkili Cihazlar")) {
-                    Intent i = new Intent(mContext, YetkiliCihazlarActivity.class);
-                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    mContext.getApplicationContext().startActivity(i);
-               }*/
-
-                Intent i = new Intent(mContext, YetkiliCihazlarActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.getApplicationContext().startActivity(i);
             }
         });
 

@@ -18,10 +18,10 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:layout_weight="0.1"
+            android:layout_weight="0.7"
             android:orientation="vertical">
 
 
@@ -121,6 +121,16 @@
                 android:textColor="@color/mr_toolbar3"
                 android:textSize="@dimen/text_size_small" />
 
+            <TextView
+                android:id="@+id/siparis_detay_toplam_tutar_item2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_weight="0.5"
+                android:text="Miktar :"
+                android:textColor="@color/mr_toolbar3"
+                android:textSize="@dimen/text_size_small" />
+
 
         </LinearLayout>
 
@@ -130,7 +140,8 @@
             android:layout_height="20dp"
             android:layout_marginTop="-30dp"
             android:layout_marginRight="15dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="wrap_content"

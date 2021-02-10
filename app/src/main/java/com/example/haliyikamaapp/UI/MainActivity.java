@@ -1099,7 +1099,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     List<String> gelenBolgeList;
-
     void getBolgeList() {
         Call<List<String>> call = refrofitRestApi.getBolgeList(OrtakFunction.authorization, OrtakFunction.tenantId);
         call.enqueue(new Callback<List<String>>() {

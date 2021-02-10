@@ -22,6 +22,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
+import com.example.haliyikamaapp.Model.Entity.Bolge;
 import com.example.haliyikamaapp.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -103,6 +104,10 @@ public class TanimlamalarActivity extends AppCompatActivity {
         bolgeler_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                Intent i = new Intent(TanimlamalarActivity.this, BolgeTanimlamaActivity.class );
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
 
             }
         });

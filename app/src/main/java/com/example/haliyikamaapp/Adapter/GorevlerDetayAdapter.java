@@ -2,6 +2,7 @@ package com.example.haliyikamaapp.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.icu.text.DecimalFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
+import com.example.haliyikamaapp.Model.Entity.OlcuBirim;
 import com.example.haliyikamaapp.Model.Entity.SiparisDetay;
 import com.example.haliyikamaapp.Model.Entity.Urun;
 import com.example.haliyikamaapp.R;
@@ -49,13 +51,15 @@ public class GorevlerDetayAdapter extends RecyclerView.Adapter<GorevlerDetayAdap
     public void onBindViewHolder(GorevlerDetayAdapter.MyViewHolder holder, final int position) {
         final SiparisDetay myListData = data.get(position);
         HaliYikamaDatabase db = HaliYikamaDatabase.getInstance(mContext);
-        List<Urun> allUrun = db.urunDao().getUrunForMid(data.get(position).getUrunMid());
+        List<Urun> allUrun = db.urunDao().getUrunForId(data.get(position).getUrunId());
         if (allUrun != null && allUrun.size() > 0)
             holder.urun_adi_item.setText(allUrun.get(0).getUrunAdi());
 
-        holder.olcu_birimi_item.setText("Ölçü Birimi : ");
+        List<OlcuBirim> urunBirim = db.olcuBirimDao().getOlcuBirimForId(data.get(position).getUrunId());
+        holder.olcu_birimi_item.setText("Ölçü Birimi : " + (urunBirim.size() > 0 ? urunBirim.get(0).getOlcuBirimi() : ""));
         holder.miktar_item.setText("Miktarı : " + (data.get(position).getMiktar() != null ? data.get(position).getMiktar().toString() : ""));
         holder.fiyat_item.setText(data.get(position).getBirimFiyat() != null ? data.get(position).getBirimFiyat().toString() + " TL" : "");
+        holder.siparis_detay_toplam_tutar_item2.setText("Toplam Tutar: " + String.valueOf(data.get(position).getMiktar() * data.get(position).getBirimFiyat()));
 
 
     }
@@ -83,7 +87,7 @@ public class GorevlerDetayAdapter extends RecyclerView.Adapter<GorevlerDetayAdap
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         RelativeLayout relativeLayout;
-        public TextView urun_adi_item, olcu_birimi_item, miktar_item, fiyat_item;
+        public TextView urun_adi_item, olcu_birimi_item, miktar_item, fiyat_item,siparis_detay_toplam_tutar_item2;
         // ImageView isimBasHarfi_item;
 
 
@@ -93,6 +97,7 @@ public class GorevlerDetayAdapter extends RecyclerView.Adapter<GorevlerDetayAdap
             this.olcu_birimi_item = (TextView) itemView.findViewById(R.id.siparis_detay_olcu_birimi_item);
             this.miktar_item = (TextView) itemView.findViewById(R.id.siparis_detay_miktar_item);
             this.fiyat_item = (TextView) itemView.findViewById(R.id.siparis_detay_birim_fiyati_item);
+            this.siparis_detay_toplam_tutar_item2 = (TextView) itemView.findViewById(R.id.siparis_detay_toplam_tutar_item2);
             relativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayout);
         }
     }

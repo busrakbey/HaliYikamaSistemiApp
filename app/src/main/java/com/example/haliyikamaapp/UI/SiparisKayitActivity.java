@@ -198,6 +198,8 @@ public class SiparisKayitActivity extends AppCompatActivity {
 
         if (gelenSiparisMid != null)
             getEditMode(Long.valueOf(gelenSiparisMid));
+        else
+            teslim_alinacak_checkbox.setChecked(true);
 
         if (gelenMusteriMid != null) {
             musteri_edittw.setEnabled(false);

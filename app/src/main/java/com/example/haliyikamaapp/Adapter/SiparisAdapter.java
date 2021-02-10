@@ -15,7 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.Siparis;
+import com.example.haliyikamaapp.Model.Entity.SiparisDetay;
+import com.example.haliyikamaapp.Model.Entity.Sube;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.UI.MainActivity;
 import com.example.haliyikamaapp.UI.SiparisDetayActivity;
@@ -45,12 +48,26 @@ public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
+        HaliYikamaDatabase db = HaliYikamaDatabase.getInstance(mContext);
         final Siparis myListData = data.get(position);
         holder.tarih_item.setText(data.get(position).getSiparisTarihi() != null ? data.get(position).getSiparisTarihi() : "" );
        // holder.sipariş_durumu_item.setText(data.get(position).getSiparisDurumu() != null ? data.get(position).getSiparisDurumu() : "" );
-        holder.sipariş_durumu_item.setText("SİPARİŞ ALINDI");
-        holder.siparis_tutari_item.setText(data.get(position).getSiparisTutar() != null ? data.get(position).getSiparisTutar().toString() + " TL": ""  );
-        holder.sube_item.setText("Merkez Şube" );
+        holder.sipariş_durumu_item.setText(data.get(position).getSiparisDurumu());
+        holder.siparis_tutari_item.setText(String.valueOf(0));
+        List<SiparisDetay> siparisDetayList = db.siparisDetayDao().getSiparisDetayForSiparisMid(data.get(position).getMid());
+        List<SiparisDetay> siparisDetayList2 = db.siparisDetayDao().getSiparisDetayForSiparisId(data.get(position).getId());
+        for(SiparisDetay item : siparisDetayList2)
+            holder.siparis_tutari_item.setText(String.valueOf(Double.valueOf(holder.siparis_tutari_item.getText().toString())+item.getBirimFiyat()*item.getMiktar()));
+        if(siparisDetayList2.size() == 0) {
+            for (SiparisDetay item : siparisDetayList)
+                holder.siparis_tutari_item.setText(String.valueOf(Double.valueOf(holder.siparis_tutari_item.getText().toString()) + item.getBirimFiyat() * item.getMiktar()));
+        }
+        List<Sube> sube = db.subeDao().getSubeForId(data.get(position).getSubeId());
+        List<Sube> sube2 = db.subeDao().getSubeForMid(data.get(position).getSubeMid());
+        if(sube.size() > 0)
+            holder.sube_item.setText(sube.get(0).getSubeAdi());
+        if(sube2.size() > 0)
+            holder.sube_item.setText(sube.get(0).getSubeAdi());
 
 
 

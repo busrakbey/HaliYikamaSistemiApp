@@ -72,22 +72,12 @@
                 android:layout_weight="0.5"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="0.1"
-                    android:text="Sipariş Tutarı: "
-                    android:textColor="@color/mr_toolbar"
-                    android:textSize="@dimen/text_size_normal" />
-
 
                 <TextView
                     android:id="@+id/siparis_tutari_item"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="0.1"
                     android:text="300 TL"
                     android:textColor="@color/mr_toolbar"
                     android:textSize="@dimen/text_size_normal" />
@@ -116,15 +106,6 @@
                 android:textSize="@dimen/text_size_normal"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/siparis_sube_item"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:layout_weight="0.5"
-                android:text="Merkez Şubesi"
-                android:textColor="@color/mr_toolbar3"
-                android:textSize="@dimen/text_size_small" />
         </LinearLayout>
 
 

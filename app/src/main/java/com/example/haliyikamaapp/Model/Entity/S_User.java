@@ -8,6 +8,7 @@ import androidx.room.PrimaryKey;
 
 
 @Entity(tableName = "S_USER")
+/// sistemdeki tüm kullanıcıların tutulduğu tablodu
 public class S_User {
 
     @NonNull

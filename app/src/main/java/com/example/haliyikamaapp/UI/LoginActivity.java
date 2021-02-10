@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressBar loadingProgressBar;
     private RelativeLayout rootView, afterAnimationView;
     Button loginButton;
-    EditText username_edittext, password_edittext;
+    EditText username_edittext, password_edittext, tenantId_edittext;
     HaliYikamaDatabase db;
     Boolean kullaniciEditMi = false;
 
@@ -131,6 +131,7 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = (Button) findViewById(R.id.loginButton);
         username_edittext = (EditText) findViewById(R.id.usernameEditText);
         password_edittext = (EditText) findViewById(R.id.passwordEditText);
+        tenantId_edittext = (EditText) findViewById(R.id.tenantIdEdittext);
 
 
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -139,12 +140,12 @@ public class LoginActivity extends AppCompatActivity {
                 //  OrtakFunction.tokenControl(Log.this);
 
                 if (username_edittext.getText().toString().trim().equalsIgnoreCase("") ||
-                        password_edittext.getText().toString().trim().equalsIgnoreCase(""))
+                        password_edittext.getText().toString().trim().equalsIgnoreCase("") || tenantId_edittext.getText().toString().equalsIgnoreCase(""))
                     MessageBox.showAlert(LoginActivity.this, "Lütfen kullanıcı adı ve parolayı eksiksiz bir şekilde giriniz.", false);
                 else {
 
                     if (InternetKontrol())
-                        OrtakFunction.getTtoken(LoginActivity.this, username_edittext.getText().toString(), password_edittext.getText().toString());
+                        OrtakFunction.getTtoken(LoginActivity.this, username_edittext.getText().toString(), password_edittext.getText().toString(), tenantId_edittext.getText().toString());
                     else {
                         Intent i = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(i);
@@ -290,7 +291,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (db.userDao().getUserAll().size() > 0 && InternetKontrol() == true) {
             List<User> currentUserList = db.userDao().getUserAll();
-            OrtakFunction.getTtoken(LoginActivity.this, currentUserList.get(0).getUserName(), currentUserList.get(0).getPassword());
+            OrtakFunction.getTtoken(LoginActivity.this, currentUserList.get(0).getUserName(), currentUserList.get(0).getPassword(), currentUserList.get(0).getTenantId());
         }
     }
 }
