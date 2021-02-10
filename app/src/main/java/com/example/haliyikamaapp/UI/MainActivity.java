@@ -703,7 +703,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     gelenSiparis = response.body();
                     if (gelenSiparis != null) {
 
-                        db.siparisDao().updateSiparisQuery(siparisMid, gelenSiparis.getId());
+                        db.siparisDao().updateSiparisQuery(siparisMid, gelenSiparis.getId(), true);
                         MainActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

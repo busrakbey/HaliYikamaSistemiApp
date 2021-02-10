@@ -201,7 +201,7 @@ public class SiparisKayitActivity extends AppCompatActivity {
         else
             teslim_alinacak_checkbox.setChecked(true);
 
-        if (gelenMusteriMid != null) {
+        if (!gelenMusteriMid .equalsIgnoreCase("null")) {
             musteri_edittw.setEnabled(false);
             List<Musteri> musteri = db.musteriDao().getMusteriForMid(Long.valueOf(gelenMusteriMid));
             musteri_edittw.setText(musteri.get(0).getMusteriAdi() + " " + musteri.get(0).getMusteriSoyadi());
@@ -235,9 +235,9 @@ public class SiparisKayitActivity extends AppCompatActivity {
         }*/
         //  else{
         final Siparis siparis = new Siparis();
-        siparis.setMusteriMid(gelenMusteriMid != null ? Long.valueOf(gelenMusteriMid) : secilenMusteri.getMid());
+        siparis.setMusteriMid(!gelenMusteriMid.equals("null") ? Long.valueOf(gelenMusteriMid) : secilenMusteri.getMid());
         siparis.setSubeId(gelenSubeId != null ? Long.valueOf(gelenSubeId) : secilenSube.getId());
-        siparis.setSubeMid(gelenSubeMid != null ? Long.valueOf(gelenSubeMid) : secilenSube.getMid());
+        siparis.setSubeMid(gelenSubeMid != null  ? Long.valueOf(gelenSubeMid) : secilenSube.getMid());
         siparis.setSiparisTarihi(tarih_edittw.getText().toString());
         siparis.setAciklama(aciklama_edittw.getText().toString());
         siparis.setTeslimAlinacak(teslim_alinacak_checkbox.isChecked() ? true : false);
@@ -281,6 +281,8 @@ public class SiparisKayitActivity extends AppCompatActivity {
                             } else {
                                 Intent i = new Intent(SiparisKayitActivity.this, SiparisDetayKayitActivity.class);
                                 i.putExtra("siparisMid", String.valueOf(finalYeniKayitSiparisMid));
+                                i.putExtra("subeId" , secilenSube.getId());
+                                i.putExtra("subeMid", secilenSube.getMid());
                                 finish();
                                 startActivity(i);
                             }

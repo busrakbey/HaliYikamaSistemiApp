@@ -38,6 +38,9 @@ public interface SiparisDetayDao {
     @Query("SELECT * FROM SIPARIS_DETAY where mid = :mid")
     List<SiparisDetay> getSiparisDetayForMid(Long mid);
 
+    @Query("SELECT * FROM SIPARIS_DETAY where id = :id")
+    List<SiparisDetay> getSiparisDetayForId(Long id);
+
     @Query("SELECT * FROM SIPARIS_DETAY where mustId = :siparisMid")
     List<SiparisDetay> getSiparisDetayForMustId(Long siparisMid);
 
@@ -46,4 +49,7 @@ public interface SiparisDetayDao {
 
     @Query("SELECT * FROM SIPARIS_DETAY where siparisMid = :siparisMid")
     List<SiparisDetay> getSiparisDetayForSiparisMid(Long siparisMid);
+
+    @Query("UPDATE SIPARIS_DETAY SET id = :id, senkronEdildi = :senkronEdildi WHERE mid in (:mid)")
+    int updateSiparisDetayQuery(List<Long> mid, Long id, Boolean senkronEdildi);
 }

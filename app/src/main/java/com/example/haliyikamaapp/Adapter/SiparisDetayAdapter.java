@@ -41,14 +41,21 @@ public class SiparisDetayAdapter extends RecyclerView.Adapter<SiparisDetayAdapte
     @Override
     public void onBindViewHolder(SiparisDetayAdapter.MyViewHolder holder, final int position) {
         final SiparisDetay myListData = data.get(position);
-        HaliYikamaDatabase db = HaliYikamaDatabase.getInstance(mContext);
+        final HaliYikamaDatabase db = HaliYikamaDatabase.getInstance(mContext);
         List<Urun> allUrun = db.urunDao().getUrunForMid(data.get(position).getUrunMid());
         if (allUrun != null && allUrun.size() > 0)
             holder.urun_adi_item.setText(allUrun.get(0).getUrunAdi());
 
+        List<Urun> allUrun2 = db.urunDao().getUrunForId(data.get(position).getUrunId());
+        if (allUrun2 != null && allUrun2.size() > 0)
+            holder.urun_adi_item.setText(allUrun2.get(0).getUrunAdi());
+
+
         holder.olcu_birimi_item.setText("Ölçü Birimi : ");
         holder.miktar_item.setText("Miktarı : " + (data.get(position).getMiktar() != null ? data.get(position).getMiktar().toString() : ""));
         holder.fiyat_item.setText(data.get(position).getBirimFiyat() != null ? data.get(position).getBirimFiyat().toString() + " TL" : "");
+        holder.siparis_detay_toplam_tutar_item2.setText("Toplam Tutar: " + String.valueOf(data.get(position).getMiktar() * data.get(position).getBirimFiyat()));
+
 
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +63,8 @@ public class SiparisDetayAdapter extends RecyclerView.Adapter<SiparisDetayAdapte
                 Intent musteri = new Intent(mContext, SiparisDetayKayitActivity.class);
                 musteri.putExtra("siparisDetayMid", String.valueOf(data.get(position).getMid()));
                 musteri.putExtra("siparisMid", String.valueOf(data.get(position).getMustId()));
+                musteri.putExtra("subeId" , String.valueOf(db.siparisDao().getSiparisForSiparisId(data.get(position).getSiparisId()).get(0).getSubeId()));
+              //  musteri.putExtra("subeMid" , String.valueOf(data.get(position).getSubeMid()));
                 musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.getApplicationContext().startActivity(musteri);
             }
@@ -85,7 +94,7 @@ public class SiparisDetayAdapter extends RecyclerView.Adapter<SiparisDetayAdapte
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         RelativeLayout relativeLayout;
-        public TextView urun_adi_item, olcu_birimi_item, miktar_item, fiyat_item;
+        public TextView urun_adi_item, olcu_birimi_item, miktar_item, fiyat_item,siparis_detay_toplam_tutar_item2;
         // ImageView isimBasHarfi_item;
 
 
@@ -95,6 +104,7 @@ public class SiparisDetayAdapter extends RecyclerView.Adapter<SiparisDetayAdapte
             this.olcu_birimi_item = (TextView) itemView.findViewById(R.id.siparis_detay_olcu_birimi_item);
             this.miktar_item = (TextView) itemView.findViewById(R.id.siparis_detay_miktar_item);
             this.fiyat_item = (TextView) itemView.findViewById(R.id.siparis_detay_birim_fiyati_item);
+            this.siparis_detay_toplam_tutar_item2 = (TextView) itemView.findViewById(R.id.siparis_detay_toplam_tutar_item2);
             relativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayout);
         }
     }

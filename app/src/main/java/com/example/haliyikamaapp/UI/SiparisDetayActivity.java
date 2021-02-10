@@ -44,7 +44,7 @@ public class SiparisDetayActivity extends AppCompatActivity {
     ConstraintLayout relativeLayout;
     SiparisDetayAdapter siparis_detay_adapter;
     RecyclerView recyclerView;
-    String siparisMid;
+    String siparisMid, subeId, subeMid;
     HaliYikamaDatabase db;
     Snackbar snackbar;
     FloatingActionButton yeni_siparis_detay_button;
@@ -82,12 +82,16 @@ public class SiparisDetayActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.siparis_detay_recyclerview);
         Intent intent = getIntent();
         siparisMid = intent.getStringExtra("siparisMid");
+        subeId = intent.getStringExtra("subeId");
+        subeMid = intent.getStringExtra("subeMid");
 
         yeni_siparis_detay_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(SiparisDetayActivity.this, SiparisDetayKayitActivity.class);
                 i.putExtra("siparisMid", siparisMid);
+                i.putExtra("subeId" , subeId);
+                i.putExtra("subeMid" , subeMid);
                 finish();
                 startActivity(i);
             }

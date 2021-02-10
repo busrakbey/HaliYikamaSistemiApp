@@ -140,7 +140,7 @@ public class LoginActivity extends AppCompatActivity {
                 //  OrtakFunction.tokenControl(Log.this);
 
                 if (username_edittext.getText().toString().trim().equalsIgnoreCase("") ||
-                        password_edittext.getText().toString().trim().equalsIgnoreCase("") || tenantId_edittext.getText().toString().equalsIgnoreCase(""))
+                        password_edittext.getText().toString().trim().equalsIgnoreCase("") /*|| tenantId_edittext.getText().toString().equalsIgnoreCase("")*/)
                     MessageBox.showAlert(LoginActivity.this, "Lütfen kullanıcı adı ve parolayı eksiksiz bir şekilde giriniz.", false);
                 else {
 

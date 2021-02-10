@@ -35,6 +35,12 @@ public interface UrunSubeDao {
     @Query("SELECT * FROM URUN_SUBE where id = :id")
     List<UrunSube> getUrunSubeForId(Long id);
 
+    @Query("SELECT * FROM URUN_SUBE where subeId = :subeId")
+    List<UrunSube> getUrunSubeId(Long subeId);
+
+    @Query("SELECT * FROM URUN_SUBE where subeMid = :subeMid")
+    List<UrunSube> getUrunSubeMid(Long subeMid);
+
     @Query("SELECT * FROM URUN_SUBE where urunMid = :urunMid")
     List<UrunSube> getUrunSubeForUrunMid(Long urunMid);
 
@@ -46,6 +52,9 @@ public interface UrunSubeDao {
 
     @Query("UPDATE URUN_SUBE SET urunId = :urunId WHERE urunMid = :urunMid")
     int updateUrunSubeQueryForUrunMid(Long urunMid, Long urunId);
+
+    @Query("SELECT * FROM URUN_SUBE where urunId = :urunId and subeId = :subeId")
+    List<UrunSube> getUrunSubeAndUrunId(Long urunId,Long subeId);
 
 }
 

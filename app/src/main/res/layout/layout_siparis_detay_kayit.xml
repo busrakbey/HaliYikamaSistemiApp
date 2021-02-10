@@ -26,27 +26,28 @@
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/parent"
-            android:layout_marginTop="@dimen/signup_text_margin_top">
-
-            <EditText
-                android:id="@+id/sip_birim_fiyat"
-                style="@style/modifiedEditText"
-                android:hint="Birim Fiyatı"
-                android:inputType="numberDecimal" />
-        </com.google.android.material.textfield.TextInputLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_weight="1"
             android:orientation="horizontal">
 
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/parent"
+                android:layout_width="0dp"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:layout_weight="0.5">
+
+                <EditText
+                    android:id="@+id/sip_birim_fiyat"
+                    style="@style/modifiedEditText"
+                    android:hint="Birim Fiyatı"
+                    android:inputType="numberDecimal" />
+            </com.google.android.material.textfield.TextInputLayout>
+
 
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/signup_text_margin_top"
 
@@ -56,10 +57,9 @@
                     android:id="@+id/sip_olcu_birim"
                     style="@style/modifiedEditText"
                     android:layout_weight="0.5"
-                    android:hint="Ölçü Birimi"/>
+                    android:hint="Ölçü Birimi" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
-
         <LinearLayout
             android:layout_width = "match_parent"
             android:layout_height="wrap_content"

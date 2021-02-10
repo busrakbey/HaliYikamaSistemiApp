@@ -42,6 +42,9 @@ public interface UrunDao {
     @Query("SELECT * FROM URUN where id = :id")
     List<Urun> getUrunForId(Long id);
 
+    @Query("SELECT * FROM URUN where id in (:id)")
+    List<Urun> getUrunForIdList(List<Long> id);
+
     @Query("UPDATE URUN SET id = :id , senkronEdildi = :senkronEdildiMi WHERE mid = :mid")
     int updateUrunQuery(Long mid, Long id, Boolean senkronEdildiMi);
 
