@@ -183,6 +183,7 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
             final SiparisDetay siparisDetay = new SiparisDetay();
             if (!birim_fiyati_edittw.getText().toString().equalsIgnoreCase(""))
                 siparisDetay.setBirimFiyat(Double.parseDouble(birim_fiyati_edittw.getText().toString()));
+
             siparisDetay.setOlcuBirimMid(secilenOlcuBirim.getMid());
             siparisDetay.setOlcuBirimId(secilenUrun.getId());
             if (!miktar_edittw.getText().toString().equalsIgnoreCase(""))
@@ -255,8 +256,17 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
             //  olcu_birim_spinne.setText(updateKayitList.get(0).getKapiNo());
 
             List<Urun> allUrun = db.urunDao().getUrunForMid(updateKayitList.get(0).getUrunMid());
+            if(allUrun.size() == 0)
+                allUrun = db.urunDao().getUrunForId(updateKayitList.get(0).getUrunId());
             if (allUrun != null && allUrun.size() > 0)
                 urun_adi_autocomplete.setText(allUrun.get(0).getUrunAdi());
+
+
+            List<OlcuBirim> olcuBirim = db.olcuBirimDao().getOlcuBirimForMid(updateKayitList.get(0).getOlcuBirimMid());
+            if(olcuBirim.size() == 0)
+                olcuBirim = db.olcuBirimDao().getOlcuBirimForId(updateKayitList.get(0).getOlcuBirimId());
+            if (olcuBirim != null && olcuBirim.size() > 0)
+                olcu_birim_autocomplete.setText(olcuBirim.get(0).getOlcuBirimi());
 
         }
     }

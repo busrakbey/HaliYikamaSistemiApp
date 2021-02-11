@@ -11,7 +11,7 @@ import java.util.List;
 
 @Dao
 public interface SiparisDao {
-    @Query("SELECT * FROM SIPARIS")
+    @Query("SELECT * FROM SIPARIS order by siparisTarihi desc")
     List<Siparis> getSiparisAll();
 
     @Insert
@@ -32,8 +32,8 @@ public interface SiparisDao {
     @Query("UPDATE SIPARIS SET id = :id, senkronEdildi = :senkronEdildi WHERE mid = :mid")
    int updateSiparisQuery(Long mid, Long id, Boolean senkronEdildi);
 
-    @Query("UPDATE SIPARIS SET processInstanceId = :processInstanceId WHERE id = :id")
-    int updateSiparisProcessId(Long processInstanceId, Long id);
+    @Query("UPDATE SIPARIS SET processInstanceId = :processInstanceId, siparisDurumu = :siparisDurumu WHERE id = :id")
+    int updateSiparisProcessId(Long processInstanceId, Long id, String siparisDurumu);
 
     @Query("DELETE FROM SIPARIS where mid = :mid")
     int deletedSiparisForMid(Long mid );
@@ -52,5 +52,11 @@ public interface SiparisDao {
 
     @Query("SELECT * FROM SIPARIS where senkronEdildi = 0")
     List<Siparis> getSenkronEdilmeyenAll();
+
+    @Query("SELECT * FROM SIPARIS where musteriId = :musteriId")
+    List<Siparis> getSiparisForMusterIid(Long musteriId);
+
+    @Query("UPDATE SIPARIS SET siparisDurumu = :siparisDurumu WHERE id = :id")
+    int updateSiparisDurumu(Long id, String siparisDurumu);
 
 }

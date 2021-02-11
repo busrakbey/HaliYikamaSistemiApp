@@ -55,7 +55,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/gorev_spinner"
+            android:id="@+id/gorev_teslim_et_linear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -69,6 +69,24 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:textColor="@color/text" />
+
+            <EditText
+                android:id="@+id/gorev_tahsil_edilen_tutar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:enabled="false"
+                android:hint="Tahsil Edilecek Tutar"
+                android:textColor="@color/text" />
+
+            <EditText
+                android:id="@+id/gorev_tahsilat_tutari"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:hint="Tahsilat Tutarı"
+                android:textColor="@color/text" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -99,7 +117,7 @@
                 android:layout_marginLeft="50dp"
                 android:layout_weight="0.5"
                 android:background="@drawable/login_shape_bk"
-                android:text="İlerle"
+                android:text="Tamamla"
                 android:textAllCaps="false"
                 android:textColor="@color/beyaz"
                 android:textSize="@dimen/mr_dialog_title_text"

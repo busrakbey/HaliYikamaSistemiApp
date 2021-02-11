@@ -61,7 +61,7 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
     MaskedEditText tel_no_edittw;
     Spinner musteri_turu_spinner, sube_spinner, bolge_spinner, il_spinner, ilce_spinner;
     Button kayit_button;
-    String gelenMusteriMid, gelenTelefonNumarasi, secili_bolge_adi = null, secili_musteri_turu = null;
+    String gelenMusteriMid, gelenTelefonNumarasi, secili_bolge_adi = null, secili_musteri_turu = null, gelenMusteriId;
     HaliYikamaDatabase db;
     private ExpandableLayout expandableLayout;
     private ImageView expandButton;
@@ -359,6 +359,7 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
         }
         Intent i = new Intent(MusteriKayitActivity.this, SiparisKayitActivity.class);
         i.putExtra("musteriMid", gelenMusteriMid != null ? gelenMusteriMid : String.valueOf(yeniKayitMusteriMid));
+        i.putExtra("musteriId", gelenMusteriId);
         i.putExtra("subeId" , secili_sube_id);
         i.putExtra("subeMid" , secili_sube_mid);
         startActivity(i);
@@ -371,13 +372,28 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
             return;
         }
 
+
+
+
+
+        List<Siparis> siparisList2 = db.siparisDao().getSiparisForMusterIid(gelenMusteriId != null ? Long.valueOf(gelenMusteriId) : 0L);
         List<Siparis> siparisList = db.siparisDao().getSiparisForMusteriMid(gelenMusteriMid != null ? Long.valueOf(gelenMusteriMid) : yeniKayitMusteriMid);
-        if (siparisList != null && siparisList.size() > 0) {
-            List<SiparisDetay> siparisDetayList = db.siparisDetayDao().getSiparisDetayForMid(siparisList.get(0).getMid());  ///bir müşterinin birden fazla siparişi olabılır. o yuzden burasıdegısecek
-            Intent i = new Intent(MusteriKayitActivity.this, SiparisDetayActivity.class);
-            i.putExtra("siparisMid", siparisList.get(0).getMid().toString());
+        if (siparisList2 != null && siparisList2.size() > 0) {
+            Intent i = new Intent(MusteriKayitActivity.this, MainActivity.class);
+            i.putExtra("gelenPage", "sipariş");
+            i.putExtra("musteriId" , gelenMusteriId);
+            i.putExtra("musteriMid" , gelenMusteriMid != null ? Long.valueOf(gelenMusteriMid) : yeniKayitMusteriMid);
             startActivity(i);
-        } else {
+        }
+
+         else if  (siparisList != null && siparisList.size() > 0) {
+            Intent i = new Intent(MusteriKayitActivity.this, MainActivity.class);
+            i.putExtra("gelenPage", "sipariş");
+            i.putExtra("musteriId" , gelenMusteriId);
+            i.putExtra("musteriMid" , gelenMusteriMid != null ? Long.valueOf(gelenMusteriMid) : yeniKayitMusteriMid);
+            startActivity(i);
+        }
+        else {
             MessageBox.showAlert(MusteriKayitActivity.this, "Mevcut sipariş bulunamamıştır..\n", false);
         }
     }
@@ -498,8 +514,11 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
         });
 
         gelenMusteriMid = getIntent().getStringExtra("musteriMid");
+        gelenMusteriId = getIntent().getStringExtra("musteriId");
         if (gelenMusteriMid != null)
             getEditMode(Long.valueOf(gelenMusteriMid));
+
+
         gelenTelefonNumarasi = getIntent().getStringExtra("number");
         if (gelenTelefonNumarasi != null)
             tel_no_edittw.setText(gelenTelefonNumarasi);

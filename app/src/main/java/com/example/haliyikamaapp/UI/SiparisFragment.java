@@ -32,6 +32,9 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +53,7 @@ public class SiparisFragment extends Fragment {
     Context mContext;
     ProgressDialog progressDoalog;
     RefrofitRestApi refrofitRestApi;
+    String gelenMusteriId, gelenMusteriMid, gelenSiparisId;
 
 
     @Nullable
@@ -63,7 +67,9 @@ public class SiparisFragment extends Fragment {
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         init_item(view);
+        senkronEdilmeyenKayitlariGonder();
         getSiparisListFromService();
+
         //get_list();
 
 
@@ -79,6 +85,9 @@ public class SiparisFragment extends Fragment {
         progressDoalog.setTitle("SİSTEM");
         progressDoalog.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
 
+        gelenMusteriId = mActivity.getIntent().getStringExtra("musteriId");
+        gelenMusteriMid = mActivity.getIntent().getStringExtra("musteriMid");
+        gelenSiparisId = mActivity.getIntent().getStringExtra("siparisId");
 
     }
 
@@ -99,7 +108,16 @@ public class SiparisFragment extends Fragment {
 
 
     void get_list() {
-        List<Siparis> siparisler = db.siparisDao().getSiparisAll();
+        List<Siparis> siparisler;
+        if(gelenMusteriId != null)
+            siparisler = db.siparisDao().getSiparisForMusterIid(Long.valueOf(gelenMusteriId));
+        else if(gelenMusteriMid != null)
+            siparisler = db.siparisDao().getSiparisForMusteriMid(Long.valueOf(gelenMusteriMid));
+        else if(gelenSiparisId != null || !gelenSiparisId.equalsIgnoreCase("null"))
+            siparisler = db.siparisDao().getSiparisForSiparisId(Long.valueOf(gelenSiparisId));
+        else
+            siparisler= db.siparisDao().getSiparisAll();
+
         siparisAdapter = new SiparisAdapter(getContext(), siparisler);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -149,9 +167,12 @@ public class SiparisFragment extends Fragment {
 
 
     List<Siparis> gelenSiparisList;
+    List<SiparisDetay> gelenSiparisDetayList2;
+    List<SiparisDetay> updateSiparisDetayList2;
+
     void getSiparisListFromService() {
 
-        RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
+        final RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
         final ProgressDialog progressDoalog;
         progressDoalog = new ProgressDialog(getContext());
         progressDoalog.setMessage("Lütfen bekleyiniz..");
@@ -164,7 +185,7 @@ public class SiparisFragment extends Fragment {
             public void onResponse(Call<List<Siparis>> call, Response<List<Siparis>> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                    MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
+                   // MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -172,33 +193,78 @@ public class SiparisFragment extends Fragment {
                     gelenSiparisList = response.body();
                     if (gelenSiparisList != null && gelenSiparisList.size() > 0) {
 
-                        for (Siparis item : gelenSiparisList) {
-                            List<Siparis> urunVarMi = db.siparisDao().getSiparisForSiparisId(item.getId());
-                            if (urunVarMi.size() > 0) {
-                                item.setMid(urunVarMi.get(0).getMid());
-                                item.setMusteriMid(urunVarMi.get(0).getMusteriMid());
-                                item.setSubeMid(urunVarMi.get(0).getSubeMid());
-                                db.siparisDao().updateSiparis(item);
-                            } else
-                                db.siparisDao().setSiparis(item);
-                        }
-
 
                         mActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                for (final Siparis item : gelenSiparisList) {
+                                    List<Siparis> urunVarMi = db.siparisDao().getSiparisForSiparisId(item.getId());
+                                    if (urunVarMi.size() > 0) {
+                                        item.setMid(urunVarMi.get(0).getMid());
+                                        item.setMusteriMid(urunVarMi.get(0).getMusteriMid());
+                                        item.setSubeMid(urunVarMi.get(0).getSubeMid());
+                                        db.siparisDao().updateSiparis(item);
+                                    } else
+                                        db.siparisDao().setSiparis(item);
 
 
-                                get_list();
-                                senkronEdilmeyenKayitlariGonder();
+                                    Call<List<SiparisDetay>> call = refrofitRestApi.getSiparisDetayList("hy/siparis/siparisUrunler/" + item.getId(), OrtakFunction.authorization, OrtakFunction.tenantId);
+                                    call.enqueue(new Callback<List<SiparisDetay>>() {
+                                        @Override
+                                        public void onResponse(Call<List<SiparisDetay>> call, Response<List<SiparisDetay>> response) {
+                                            if (!response.isSuccessful()) {
+                                                progressDoalog.dismiss();
+                                              //  MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
+                                                return;
+                                            }
+                                            if (response.isSuccessful()) {
+                                                progressDoalog.dismiss();
+                                                gelenSiparisDetayList2 = response.body();
+
+                                                mActivity.runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+
+                                                        for (SiparisDetay i : gelenSiparisDetayList2) {
+                                                            List<Siparis> siparis = db.siparisDao().getSiparisForSiparisId(item.getId());
+                                                            List<SiparisDetay> urunVarMi = db.siparisDetayDao().getSiparisDetayForId(i.getId());
+                                                            i.setMustId(siparis.get(0).getMid());
+                                                            i.setSiparisMid(siparis.get(0).getMid());
+                                                            if (urunVarMi.size() > 0) {
+                                                                i.setMid(urunVarMi.get(0).getMid());
+                                                                i.setUrunMid(urunVarMi.get(0).getUrunMid());
+                                                                i.setOlcuBirimMid(urunVarMi.get(0).getOlcuBirimMid());
+                                                                db.siparisDetayDao().updateSiparisDetay(i);
+                                                            } else
+                                                                db.siparisDetayDao().setSiparisDetay(i);
+                                                        }
+                                                        get_list();
+
+
+                                                    }
+                                                });
+
+
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<List<SiparisDetay>> call, Throwable t) {
+                                            progressDoalog.dismiss();
+                                            MessageBox.showAlert(getContext(), "Hata Oluştu.. " + t.getMessage(), false);
+                                        }
+                                    });
+
+
+                                }
 
 
                             }
                         });
 
 
-                    } else
-                        MessageBox.showAlert(getContext(), "Kayıt bulunamamıştır..", false);
+                    } /*else
+                        MessageBox.showAlert(getContext(), "Kayıt bulunamamıştır..", false);*/
                 }
             }
 
@@ -234,7 +300,7 @@ public class SiparisFragment extends Fragment {
             public void onResponse(Call<Siparis> call, Response<Siparis> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                    MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
+                   // MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -248,10 +314,19 @@ public class SiparisFragment extends Fragment {
                             public void run() {
                                 // db.siparisDao().getSiparisAll()
                                 List<SiparisDetay> siparisdetayList = db.siparisDetayDao().getSiparisDetayForMustId(siparisMid);
-                                if (siparisdetayList != null && siparisdetayList.size() > 0) {
+
+                                List<SiparisDetay> siparisdetayList2 = db.siparisDetayDao().getSiparisDetayForSiparisId(siparis.getId());
+
+                                if(siparisdetayList2 != null && siparisdetayList2.size() >0){
                                     List<Siparis> gidecekSiparis = db.siparisDao().getSiparisForSiparisId(gelenSiparis.getId());
-                                    postSiparisDetayListFromService(siparisdetayList, gidecekSiparis);
+                                    postSiparisDetayListFromService(siparisdetayList2, gidecekSiparis);
                                 }
+
+                                /*if (siparisdetayList != null && siparisdetayList.size() > 0) {
+                                    List<Siparis> gidecekSiparis = db.siparisDao().getSiparisForMid(gelenSiparis.getMid());
+                                    postSiparisDetayListFromService(siparisdetayList, gidecekSiparis);
+                                }*/
+
                             }
                         });
                     }
@@ -270,6 +345,7 @@ public class SiparisFragment extends Fragment {
     List<SiparisDetay> gelenSiparisDetayLists;
     List<SiparisDetay> updateSiparisDetayList;
     String gelenSiparisDetayList = null;
+
 
     public void postSiparisDetayListFromService(List<SiparisDetay> siparisDetayList, final List<Siparis> gelenSiparis) {
         progressDoalog.show();
@@ -297,7 +373,7 @@ public class SiparisFragment extends Fragment {
             public void onResponse(Call<String> call, Response<String> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                    MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
+                   // MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -317,7 +393,7 @@ public class SiparisFragment extends Fragment {
                                     public void onResponse(Call<List<SiparisDetay>> call, Response<List<SiparisDetay>> response) {
                                         if (!response.isSuccessful()) {
                                             progressDoalog.dismiss();
-                                            MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
+                                            //MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
                                             return;
                                         }
                                         if (response.isSuccessful()) {
@@ -326,23 +402,22 @@ public class SiparisFragment extends Fragment {
                                             if (gelenSiparisDetayLists != null && gelenSiparisDetayLists.size() > 0) {
                                                 updateSiparisDetayList = new ArrayList<SiparisDetay>();
 
+
                                                 for (SiparisDetay item : gelenSiparisDetayLists) {
+                                                    List<SiparisDetay> urunVarMi = db.siparisDetayDao().getSiparisDetayForId(item.getId());
                                                     final List<Siparis> updateMustId = db.siparisDao().getSiparisForSiparisId(item.getSiparisId());
+
                                                     if (updateMustId != null && updateMustId.size() > 0) {
                                                         item.setSiparisMid(updateMustId.get(0).getMid());
                                                         item.setMustId(updateMustId.get(0).getMid());
                                                     }
+                                                    item.setSenkronEdildi(true);
 
-                                                }
-
-                                                for (SiparisDetay item : gelenSiparisDetayLists) {
-                                                    List<SiparisDetay> urunVarMi = db.siparisDetayDao().getSiparisDetayForId(item.getId());
                                                     if (urunVarMi.size() > 0) {
                                                         item.setMid(urunVarMi.get(0).getMid());
                                                         item.setSiparisMid(urunVarMi.get(0).getSiparisMid());
                                                         item.setUrunMid(urunVarMi.get(0).getUrunMid());
                                                         item.setOlcuBirimMid(urunVarMi.get(0).getOlcuBirimMid());
-                                                        // item.setSenkronEdildi(true);
                                                         db.siparisDetayDao().updateSiparisDetay(item);
                                                     } else
                                                         db.siparisDetayDao().setSiparisDetay(item);
@@ -351,7 +426,7 @@ public class SiparisFragment extends Fragment {
                                                     @Override
                                                     public void run() {
 
-                                                        get_list();
+
 
                                                     }
                                                 });
@@ -386,5 +461,7 @@ public class SiparisFragment extends Fragment {
         });
 
     }
+
+
 
 }

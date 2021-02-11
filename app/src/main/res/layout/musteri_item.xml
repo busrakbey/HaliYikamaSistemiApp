@@ -74,7 +74,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.6"
-                    android:text="05543283278"
                     android:textSize="@dimen/text_size_normal" />
 
                 <ImageView

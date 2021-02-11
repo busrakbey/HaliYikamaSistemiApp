@@ -50,25 +50,24 @@ public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHo
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         HaliYikamaDatabase db = HaliYikamaDatabase.getInstance(mContext);
         final Siparis myListData = data.get(position);
-        holder.tarih_item.setText(data.get(position).getSiparisTarihi() != null ? data.get(position).getSiparisTarihi() : "" );
-       // holder.sipariş_durumu_item.setText(data.get(position).getSiparisDurumu() != null ? data.get(position).getSiparisDurumu() : "" );
+        holder.tarih_item.setText(data.get(position).getSiparisTarihi() != null ? data.get(position).getSiparisTarihi() : "");
+        // holder.sipariş_durumu_item.setText(data.get(position).getSiparisDurumu() != null ? data.get(position).getSiparisDurumu() : "" );
         holder.sipariş_durumu_item.setText(data.get(position).getSiparisDurumu());
         holder.siparis_tutari_item.setText(String.valueOf(0));
         List<SiparisDetay> siparisDetayList = db.siparisDetayDao().getSiparisDetayForSiparisMid(data.get(position).getMid());
         List<SiparisDetay> siparisDetayList2 = db.siparisDetayDao().getSiparisDetayForSiparisId(data.get(position).getId());
-        for(SiparisDetay item : siparisDetayList2)
-            holder.siparis_tutari_item.setText(String.valueOf(Double.valueOf(holder.siparis_tutari_item.getText().toString())+item.getBirimFiyat()*item.getMiktar()));
-        if(siparisDetayList2.size() == 0) {
+        for (SiparisDetay item : siparisDetayList2)
+            holder.siparis_tutari_item.setText(String.valueOf(Double.valueOf(holder.siparis_tutari_item.getText().toString()) + item.getBirimFiyat() * item.getMiktar()));
+        if (siparisDetayList2.size() == 0) {
             for (SiparisDetay item : siparisDetayList)
                 holder.siparis_tutari_item.setText(String.valueOf(Double.valueOf(holder.siparis_tutari_item.getText().toString()) + item.getBirimFiyat() * item.getMiktar()));
         }
         List<Sube> sube = db.subeDao().getSubeForId(data.get(position).getSubeId());
         List<Sube> sube2 = db.subeDao().getSubeForMid(data.get(position).getSubeMid());
-        if(sube.size() > 0)
+        if (sube.size() > 0)
             holder.sube_item.setText(sube.get(0).getSubeAdi());
-        if(sube2.size() > 0)
+        if (sube2.size() > 0)
             holder.sube_item.setText(sube.get(0).getSubeAdi());
-
 
 
         ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
@@ -82,24 +81,30 @@ public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHo
                 .rect();
 
 
-
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent musteri = new Intent(mContext, SiparisDetayActivity.class);
-                musteri.putExtra("siparisMid" , String.valueOf(data.get(position).getMid()));
-                musteri.putExtra("subeId" , String.valueOf(data.get(position).getSubeId()));
-                musteri.putExtra("subeMid" , String.valueOf(data.get(position).getSubeMid()));
+                musteri.putExtra("siparisMid", String.valueOf(data.get(position).getMid()));
+                musteri.putExtra("subeId", String.valueOf(data.get(position).getSubeId()));
+                musteri.putExtra("subeMid", String.valueOf(data.get(position).getSubeMid()));
+                musteri.putExtra("siparisId", String.valueOf(data.get(position).getId()));
+                musteri.putExtra("musteriId", String.valueOf(data.get(position).getMusteriId()));
                 musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.getApplicationContext().startActivity(musteri);            }
+                mContext.getApplicationContext().startActivity(musteri);
+            }
         });
 
         holder.edit_item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent musteri = new Intent(mContext, SiparisKayitActivity.class);
-                musteri.putExtra("siparisMid" , String.valueOf(data.get(position).getMid()));
-                musteri.putExtra("musteriMid" , String.valueOf(data.get(position).getMusteriMid()));
+                musteri.putExtra("siparisMid", String.valueOf(data.get(position).getMid()));
+                musteri.putExtra("siparisId", String.valueOf(data.get(position).getId()));
+                musteri.putExtra("musteriMid", String.valueOf(data.get(position).getMusteriMid()));
+                musteri.putExtra("siparisId", String.valueOf(data.get(position).getId()));
+                musteri.putExtra("musteriId", String.valueOf(data.get(position).getMusteriId()));
+
                 musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.getApplicationContext().startActivity(musteri);
             }
@@ -108,12 +113,7 @@ public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHo
         holder.senkron_siparis.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Siparis siparis = new Siparis();
-                siparis.musteriId = data.get(position).getMusteriId();
-                siparis.siparisTarihi= data.get(position).getSiparisTarihi();
-                siparis.subeId = data.get(position).getSubeId();
-                Long siparisMid = data.get(position).getMid();
-                ((MainActivity)mContext).postSiparisListFromService(siparis, siparisMid);
+                ((MainActivity) mContext).postSiparisSureciBaslatService(data.get(position));
             }
         });
     }

@@ -298,8 +298,8 @@ public class OrtakFunction {
                 Location location = locationManager.getLastKnownLocation(bestProvider);
 
                 if (location == null) {
-                    Toast.makeText(context, "GPS signal not found",
-                            Toast.LENGTH_LONG).show();
+                  /*  Toast.makeText(context, "GPS signal not found",
+                            Toast.LENGTH_LONG).show();*/
                     return;
                 }
                 if (location != null) {

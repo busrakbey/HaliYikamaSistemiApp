@@ -67,7 +67,7 @@ public class MusteriGorevlerimFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         init_item(view);
         try {
-            getGorevlerimFromService(999L/*db.userDao().getUserAll().get(0).getId()*/);
+            getGorevlerimFromService(998L/*db.userDao().getUserAll().get(0).getId()*/);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -123,6 +123,8 @@ public class MusteriGorevlerimFragment extends Fragment {
                     progressDoalog.dismiss();
                     gelenGorevList = response.body();
                     if (!gelenGorevList.equalsIgnoreCase("")) {
+                        db.gorevlerDao().deleteGorevAll();
+
                         List<Gorevler> allGorevList = db.gorevlerDao().getGorevAll();
                         JSONObject gelenObject = null;
                         //db.gorevlerDao().deleteGorevAll();
@@ -188,8 +190,8 @@ public class MusteriGorevlerimFragment extends Fragment {
                         });
 
 
-                    } else
-                        MessageBox.showAlert(getContext(), "Kayıt bulunamamıştır..", false);
+                    } /*else
+                        MessageBox.showAlert(getContext(), "Kayıt bulunamamıştır..", false);*/
                 }
             }
 

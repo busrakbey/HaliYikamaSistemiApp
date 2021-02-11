@@ -317,8 +317,8 @@ public class SubeTanimlamaActivity extends AppCompatActivity {
                         });
 
 
-                    } else
-                        MessageBox.showAlert(SubeTanimlamaActivity.this, "Kayıt bulunamamıştır..", false);
+                    } /*else
+                        MessageBox.showAlert(SubeTanimlamaActivity.this, "Kayıt bulunamamıştır..", false);*/
                 }
             }
 

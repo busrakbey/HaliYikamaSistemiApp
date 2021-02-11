@@ -126,11 +126,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             getUrunListFromService();
             getIlAndIlceFromService();
             getBolgeList();
-            try {
+          /*  try {
                 OrtakFunction.GetLocation(MainActivity.this, getApplicationContext());
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
 
         }
     }
@@ -168,13 +168,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                         case R.id.nav_siparis:
                             selectedFragment = new SiparisFragment();
                             initToolBar("Sipariş");
-                            ekleButon.setVisibility(View.VISIBLE);
+                            ekleButon.setVisibility(View.INVISIBLE);
                             click_ekle_button("Sipariş");
                             break;
                         case R.id.nav_musterigorevlerim:
                             selectedFragment = new MusteriGorevlerimFragment();
                             initToolBar("Görevlerim");
-                            ekleButon.setVisibility(View.VISIBLE);
+                            ekleButon.setVisibility(View.INVISIBLE);
                             break;
                     }
 
@@ -346,6 +346,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     }
 
+    String musteriId, musteriMid;
+
     void init_item() {
         ekleButon = (FloatingActionButton) findViewById(R.id.btnAdd);
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
@@ -359,8 +361,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             if (gelenPage.equalsIgnoreCase("müşteri"))
                 bottomNavigationView.setSelectedItemId(R.id.nav_musteri);
 
-            if (gelenPage.equalsIgnoreCase("sipariş"))
+            if (gelenPage.equalsIgnoreCase("sipariş")) {
+                musteriId = getIntent().getStringExtra("musteriId");
+                musteriMid = getIntent().getStringExtra("musteriMid");
                 bottomNavigationView.setSelectedItemId(R.id.nav_siparis);
+            }
 
             if (gelenPage.equalsIgnoreCase("anasayfa"))
                 bottomNavigationView.setSelectedItemId(R.id.nav_home);
@@ -684,135 +689,19 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
 
-    Siparis gelenSiparis;
-
-    public void postSiparisListFromService(final Siparis siparis, final Long siparisMid) {
-        progressDoalog.show();
-
-        Call<Siparis> call = refrofitRestApi.postSiparis(OrtakFunction.authorization, OrtakFunction.tenantId, siparis);
-        call.enqueue(new Callback<Siparis>() {
-            @Override
-            public void onResponse(Call<Siparis> call, Response<Siparis> response) {
-                if (!response.isSuccessful()) {
-                    progressDoalog.dismiss();
-                    MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
-                    return;
-                }
-                if (response.isSuccessful()) {
-                    progressDoalog.dismiss();
-                    gelenSiparis = response.body();
-                    if (gelenSiparis != null) {
-
-                        db.siparisDao().updateSiparisQuery(siparisMid, gelenSiparis.getId(), true);
-                        MainActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                // db.siparisDao().getSiparisAll()
-                                List<SiparisDetay> siparisdetayList = db.siparisDetayDao().getSiparisDetayForMustId(siparisMid);
-                                if (siparisdetayList != null && siparisdetayList.size() > 0) {
-                                    List<Siparis> gidecekSiparis = db.siparisDao().getSiparisForSiparisId(gelenSiparis.getId());
-                                    postSiparisDetayListFromService(siparisdetayList, gidecekSiparis);
-                                }
-                               /* if (gelenMusteriList.size() != kayitList.size())
-                                    MessageBox.showAlert(MusteriKayitActivity.this, "Müşteri listesi senkron edilirken hata oluştu.", false);
-                                else
-                                    get_list();*/
-
-                            }
-                        });
-
-
-                    } /*else
-                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);*/
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Siparis> call, Throwable t) {
-                progressDoalog.dismiss();
-                MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
-            }
-        });
-    }
-
-
-    String gelenSiparisDetayList = null;
-
-    public void postSiparisDetayListFromService(List<SiparisDetay> siparisDetayList, final List<Siparis> gelenSiparis) {
-        progressDoalog.show();
-        RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
-        JsonArray datas = new JsonArray();
-        for (SiparisDetay item : siparisDetayList) {
-            JsonObject object = new JsonObject();
-            object.addProperty("id", item.getId());
-            object.addProperty("siparisId", item.getSiparisId());
-            object.addProperty("urunId", item.getUrunId());
-            object.addProperty("olcuBirimId", item.getOlcuBirimId());
-            object.addProperty("birimFiyat", item.getBirimFiyat());
-            object.addProperty("miktar", item.getMiktar());
-            //  object.addProperty("musteriNotu", "");
-            datas.add(object);
-        }
-
-        progressDoalog.show();
-        Call<String> call = refrofitRestApi.postSiparisDetay(OrtakFunction.authorization, OrtakFunction.tenantId, datas.toString());
-
-        call.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (!response.isSuccessful()) {
-                    progressDoalog.dismiss();
-                    MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
-                    return;
-                }
-                if (response.isSuccessful()) {
-                    progressDoalog.dismiss();
-                    gelenSiparisDetayList = response.body();
-                    if (gelenSiparisDetayList != null) {
-
-                        //  db.siparisDao().updateSiparis(gelenSiparisDetayList);
-                        MainActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                             /*   if (gelenMusteriList.size() != kayitList.size())
-                                    MessageBox.showAlert(MusteriKayitActivity.this, "Müşteri listesi senkron edilirken hata oluştu.", false);
-                                else
-                                    get_list();*/
-                                postSiparisSureciBaslatService(gelenSiparis);
-
-                            }
-                        });
-
-
-                    } /*else
-                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);*/
-                }
-            }
-
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                progressDoalog.dismiss();
-                MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
-            }
-        });
-
-    }
-
-
     String gelenProcessId = null;
 
-    public void postSiparisSureciBaslatService(final List<Siparis> item) {
+    public void postSiparisSureciBaslatService(final Siparis item) {
         progressDoalog.show();
         RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
         JsonObject object = new JsonObject();
-        object.addProperty("subeId", item.get(0).getSubeId());
-        object.addProperty("musteriId", item.get(0).getMusteriId());
-        if (item.get(0).getTeslimAlinacak() != null)
-            object.addProperty("teslimAlinacak", item.get(0).getTeslimAlinacak() == true ? "Evet" : "Hayır");
+        object.addProperty("subeId", item.getSubeId());
+        object.addProperty("musteriId", item.getMusteriId());
+        if (item.getTeslimAlinacak() != null)
+            object.addProperty("teslimAlinacak", item.getTeslimAlinacak() == true ? "Evet" : "Hayır");
         else
             object.addProperty("teslimAlinacak", "Hayır");
-        object.addProperty("siparisId", item.get(0).getId());
+        object.addProperty("siparisId", item.getId());
 
 
         progressDoalog.show();
@@ -833,7 +722,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                         JSONObject gelenObject = null;
                         try {
                             gelenObject = new JSONObject(gelenProcessId);
-                            db.siparisDao().updateSiparisProcessId(Long.valueOf(gelenObject.getString("processInstanceId")), item.get(0).getId());
+                            if (item.getTeslimAlinacak() != null && item.getTeslimAlinacak() == true)
+                                db.siparisDao().updateSiparisProcessId(Long.valueOf(gelenObject.getString("processInstanceId")), item.getId(), "Teslim Alınacak");
+                            if (item.getTeslimAlinacak() == null && item.getTeslimAlinacak() == false)
+                                db.siparisDao().updateSiparisProcessId(Long.valueOf(gelenObject.getString("processInstanceId")), item.getId(), "Yıkamada");
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -1099,6 +992,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     List<String> gelenBolgeList;
+
     void getBolgeList() {
         Call<List<String>> call = refrofitRestApi.getBolgeList(OrtakFunction.authorization, OrtakFunction.tenantId);
         call.enqueue(new Callback<List<String>>() {

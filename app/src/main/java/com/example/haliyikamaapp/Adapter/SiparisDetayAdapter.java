@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
+import com.example.haliyikamaapp.Model.Entity.OlcuBirim;
 import com.example.haliyikamaapp.Model.Entity.SiparisDetay;
 import com.example.haliyikamaapp.Model.Entity.Urun;
 import com.example.haliyikamaapp.R;
@@ -51,7 +52,13 @@ public class SiparisDetayAdapter extends RecyclerView.Adapter<SiparisDetayAdapte
             holder.urun_adi_item.setText(allUrun2.get(0).getUrunAdi());
 
 
-        holder.olcu_birimi_item.setText("Ölçü Birimi : ");
+        List<OlcuBirim> olcuBirim = db.olcuBirimDao().getOlcuBirimForMid(data.get(position).getOlcuBirimMid());
+        if(olcuBirim.size() == 0)
+            olcuBirim = db.olcuBirimDao().getOlcuBirimForId(data.get(position).getOlcuBirimId());
+        if (olcuBirim != null && olcuBirim.size() > 0)
+            holder.olcu_birimi_item.setText("Ölçü Birimi : " + olcuBirim.get(0).getOlcuBirimi());
+
+
         holder.miktar_item.setText("Miktarı : " + (data.get(position).getMiktar() != null ? data.get(position).getMiktar().toString() : ""));
         holder.fiyat_item.setText(data.get(position).getBirimFiyat() != null ? data.get(position).getBirimFiyat().toString() + " TL" : "");
         holder.siparis_detay_toplam_tutar_item2.setText("Toplam Tutar: " + String.valueOf(data.get(position).getMiktar() * data.get(position).getBirimFiyat()));

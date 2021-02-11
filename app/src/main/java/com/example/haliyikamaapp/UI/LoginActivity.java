@@ -254,8 +254,8 @@ public class LoginActivity extends AppCompatActivity {
                         // Toast.makeText(LoginActivity.this, " " + "Giriş başarılı..", Toast.LENGTH_SHORT).show();
 
 
-                    } else
-                        MessageBox.showAlert(LoginActivity.this, "Kayıt bulunamamıştır..", false);
+                    } /*else
+                        MessageBox.showAlert(LoginActivity.this, "Kayıt bulunamamıştır..", false);*/
                 }
             }
 

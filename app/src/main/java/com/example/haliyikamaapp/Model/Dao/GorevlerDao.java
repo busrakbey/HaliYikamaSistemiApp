@@ -35,6 +35,9 @@ public interface GorevlerDao {
     @Query("SELECT * FROM GOREVLER where mid = :mid")
     List<Gorevler> getGorevForMid(Long mid);
 
+    @Query("SELECT * FROM GOREVLER where id = :id")
+    List<Gorevler> getGorevForId(Long id);
+
     @Query("SELECT * FROM GOREVLER where siparisId = :siparisId")
     List<Gorevler> getGorevForSiparisId(Long siparisId);
 

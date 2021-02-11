@@ -44,7 +44,7 @@ public class SiparisDetayActivity extends AppCompatActivity {
     ConstraintLayout relativeLayout;
     SiparisDetayAdapter siparis_detay_adapter;
     RecyclerView recyclerView;
-    String siparisMid, subeId, subeMid;
+    String siparisMid, subeId, subeMid, siparisId;
     HaliYikamaDatabase db;
     Snackbar snackbar;
     FloatingActionButton yeni_siparis_detay_button;
@@ -64,7 +64,7 @@ public class SiparisDetayActivity extends AppCompatActivity {
         setContentView(R.layout.siparis_detay_activity);
         initToolBar();
         init_item();
-        getSiparisDetayListFromService();
+       // getSiparisDetayListFromService();
         //get_list();
 
     }
@@ -84,6 +84,8 @@ public class SiparisDetayActivity extends AppCompatActivity {
         siparisMid = intent.getStringExtra("siparisMid");
         subeId = intent.getStringExtra("subeId");
         subeMid = intent.getStringExtra("subeMid");
+        siparisId = intent.getStringExtra("siparisId");
+
 
         yeni_siparis_detay_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,79 +215,6 @@ public class SiparisDetayActivity extends AppCompatActivity {
     }
 
 
-    List<SiparisDetay> gelenSiparisDetayList;
-    List<SiparisDetay> updateSiparisDetayList;
-    void getSiparisDetayListFromService() {
-        RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
-        final ProgressDialog progressDoalog;
-        progressDoalog = new ProgressDialog(SiparisDetayActivity.this);
-        progressDoalog.setMessage("Lütfen bekleyiniz..");
-        progressDoalog.setTitle("SİSTEM");
-        progressDoalog.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
-        progressDoalog.show();
-        Call<List<SiparisDetay>> call = refrofitRestApi.getSiparisDetayList("hy/siparis/siparisUrunler/" + siparisMid, OrtakFunction.authorization, OrtakFunction.tenantId);
-        call.enqueue(new Callback<List<SiparisDetay>>() {
-            @Override
-            public void onResponse(Call<List<SiparisDetay>> call, Response<List<SiparisDetay>> response) {
-                if (!response.isSuccessful()) {
-                    progressDoalog.dismiss();
-                    MessageBox.showAlert(SiparisDetayActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
-                    return;
-                }
-                if (response.isSuccessful()) {
-                    progressDoalog.dismiss();
-                    gelenSiparisDetayList = response.body();
-                    if (gelenSiparisDetayList != null && gelenSiparisDetayList.size() > 0) {
-                        updateSiparisDetayList = new ArrayList<SiparisDetay>();
 
-                        for (SiparisDetay item : gelenSiparisDetayList) {
-                            final List<Siparis> updateMustId = db.siparisDao().getSiparisForSiparisId(item.getSiparisId());
-                            if (updateMustId != null && updateMustId.size() > 0) {
-                                item.setSiparisMid(updateMustId.get(0).getMid());
-                                item.setMustId(updateMustId.get(0).getMid());
-                            }
-
-                        }
-
-                        final List<SiparisDetay> musteriList = db.siparisDetayDao().getSiparisDetayAll();
-                        for (SiparisDetay item : musteriList) {
-                            for (SiparisDetay i : gelenSiparisDetayList) {
-                                if (i.getId() == item.getId())
-                                    updateSiparisDetayList.add(i);
-                            }
-                        }
-                        if (gelenSiparisDetayList != null && gelenSiparisDetayList.size() > 0)
-                            gelenSiparisDetayList.removeAll(updateSiparisDetayList);
-
-
-                        final List<Long> kayitList = db.siparisDetayDao().setSiparisDetayList(gelenSiparisDetayList);
-                        db.siparisDetayDao().updateSiparisDetayList(updateSiparisDetayList);
-                        SiparisDetayActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                if (gelenSiparisDetayList.size() != kayitList.size())
-                                    MessageBox.showAlert(SiparisDetayActivity.this, "Sipariş listesi alınırken hata oluştu.", false);
-                                else
-                                    get_list();
-
-                            }
-                        });
-
-
-                    } else
-                        MessageBox.showAlert(SiparisDetayActivity.this, "Kayıt bulunamamıştır..", false);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<SiparisDetay>> call, Throwable t) {
-                progressDoalog.dismiss();
-                MessageBox.showAlert(SiparisDetayActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
-            }
-        });
-
-
-    }
 
 }

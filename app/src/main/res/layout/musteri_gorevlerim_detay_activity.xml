@@ -48,18 +48,18 @@
                 android:textStyle="bold"
                 app:fontFamily="@font/segoeuib" />
 
-            <ImageView
-                android:id="@+id/toolbar_right_subtitle"
-                android:layout_width="45dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:layout_marginRight="10dp"
-                android:padding="5dp"
-                android:scaleType="centerCrop"
-                android:singleLine="true"
-                android:src="@drawable/user_profile"
-                android:text="Start a new Journey"
-                android:textSize="16dp" />
+            <Button
+                android:id="@+id/gorevde_urun_ekle_button"
+                style="@style/tamamlaButton"
+                android:layout_width="100dp"
+                android:layout_height="35dp"
+                android:layout_margin="5dp"
+                android:onClick="gorevUrunEkleOnClick"
+                android:text="ÜRÜN EKLE"
+                android:textColor="@color/text"
+                tools:ignore="OnClick" />
+
+
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
@@ -68,16 +68,15 @@
         android:id="@+id/gorevlerim_rcyc"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="75dp"
         android:layout_marginBottom="100dp"
         android:clickable="true"
-        android:layout_marginRight="2dp"
-        android:layout_marginLeft="2dp"
         android:scrollbars="vertical"
         app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/toolbar"
-        app:layout_constraintTop_toBottomOf="@+id/cordinatorBottom">
+        app:layout_constraintTop_toBottomOf="@+id/cordinatorBottom"
+        app:layout_constraintVertical_bias="0.996">
 
     </androidx.recyclerview.widget.RecyclerView>
 

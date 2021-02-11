@@ -299,8 +299,8 @@ public class UrunTanimlamaActivity extends AppCompatActivity {
                         });
 
 
-                    } else
-                        MessageBox.showAlert(UrunTanimlamaActivity.this, "Kayıt bulunamamıştır..", false);
+                    } /*else
+                        MessageBox.showAlert(UrunTanimlamaActivity.this, "Kayıt bulunamamıştır..", false);*/
                 }
             }
 

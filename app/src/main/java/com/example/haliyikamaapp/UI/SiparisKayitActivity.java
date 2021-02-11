@@ -49,7 +49,7 @@ public class SiparisKayitActivity extends AppCompatActivity {
     EditText tarih_edittw, tutar_edittw, aciklama_edittw;
     AutoCompleteTextView musteri_edittw;
     Button kayit_ilerle_button, kayit_tamamla_button;
-    String gelenSiparisMid, gelenMusteriMid;
+    String gelenSiparisMid, gelenMusteriMid, gelenSiparisId;
     HaliYikamaDatabase db;
     private DatePickerDialog datePickerDialog;
     MusteriAutoCompleteAdapter autoCompleteAdapter;
@@ -57,7 +57,7 @@ public class SiparisKayitActivity extends AppCompatActivity {
     Musteri secilenMusteri;
     public List<String> subeListString;
     Sube secilenSube;
-    String gelenSubeId, gelenSubeMid;
+    String gelenSubeId, gelenSubeMid,gelenMusteriId;
 
 
     @SuppressLint("RestrictedApi")
@@ -138,6 +138,8 @@ public class SiparisKayitActivity extends AppCompatActivity {
         gelenSubeId = getIntent().getStringExtra("subeId");
         gelenSubeMid = getIntent().getStringExtra("subeMid");
         gelenMusteriMid = getIntent().getStringExtra("musteriMid");
+        gelenMusteriId = getIntent().getStringExtra("musteriId");
+        gelenSiparisId = getIntent().getStringExtra("siparisId");
 
 
         final List<Sube> subeList = db.subeDao().getSubeAll();
@@ -235,12 +237,15 @@ public class SiparisKayitActivity extends AppCompatActivity {
         }*/
         //  else{
         final Siparis siparis = new Siparis();
-        siparis.setMusteriMid(!gelenMusteriMid.equals("null") ? Long.valueOf(gelenMusteriMid) : secilenMusteri.getMid());
+
+        siparis.setMusteriMid(!gelenMusteriMid.equals("null") ? Long.valueOf(gelenMusteriMid) : null);
+        siparis.setMusteriId(!gelenMusteriId.equals("null") ? Long.valueOf(gelenMusteriId) : null);
         siparis.setSubeId(gelenSubeId != null ? Long.valueOf(gelenSubeId) : secilenSube.getId());
         siparis.setSubeMid(gelenSubeMid != null  ? Long.valueOf(gelenSubeMid) : secilenSube.getMid());
         siparis.setSiparisTarihi(tarih_edittw.getText().toString());
         siparis.setAciklama(aciklama_edittw.getText().toString());
         siparis.setTeslimAlinacak(teslim_alinacak_checkbox.isChecked() ? true : false);
+        siparis.setId(!gelenSiparisId.equalsIgnoreCase("null") ?Long.valueOf(gelenSiparisId)  : null);
         siparis.setSenkronEdildi(false);
 
         new Thread(new Runnable() {
@@ -303,13 +308,25 @@ public class SiparisKayitActivity extends AppCompatActivity {
                 musteri_edittw.setText(allMusteri.get(0).getMusteriAdi() + " " + allMusteri.get(0).getMusteriSoyadi());
                 musteri_edittw.setEnabled(false);
             }
+
+            if (updateKayitList.get(0).getMusteriId() != null) {
+                List<Musteri> allMusteri = db.musteriDao().getMusteriForId(updateKayitList.get(0).getMusteriId());
+                musteri_edittw.setText(allMusteri.get(0).getMusteriAdi() + " " + allMusteri.get(0).getMusteriSoyadi());
+                musteri_edittw.setEnabled(false);
+            }
             if (updateKayitList.get(0).getTeslimAlinacak() != null && updateKayitList.get(0).getTeslimAlinacak() == true)
                 teslim_alinacak_checkbox.setChecked(true);
-            //    sube_edittw.setText("");
             tarih_edittw.setText(updateKayitList.get(0).getSiparisTarihi());
-            //  tutar_edittw.setText(updateKayitList.get(0).getSiparisTutar() != null ? updateKayitList.get(0).getSiparisTutar().toString() : "");
             aciklama_edittw.setText(updateKayitList.get(0).getAciklama());
-            // siparisId = updateKayitList.get(0).getId();
+            //siparisId = updateKayitList.get(0).getId();
+
+            List<Sube> subeList = db.subeDao().getSubeForId(updateKayitList.get(0).getSubeId());
+            if(subeList.size() >0){
+                for (Sube item : subeList) {
+                        sube_spinner.setSelection(subeListString.indexOf(item.getSubeAdi()));
+                }
+            }
+
 
 
         }

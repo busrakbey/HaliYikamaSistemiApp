@@ -81,6 +81,7 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
             public void onClick(View view) {
                 Intent musteri = new Intent(mContext, MusteriKayitActivity.class);
                 musteri.putExtra("musteriMid", String.valueOf(data.get(position).getMid()));
+                musteri.putExtra("musteriId", String.valueOf(data.get(position).getId()));
                 musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.getApplicationContext().startActivity(musteri);
             }
@@ -109,6 +110,7 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
             public void onClick(View view) {
                 Intent musteri = new Intent(mContext, MusteriKayitActivity.class);
                 musteri.putExtra("musteriMid", String.valueOf(data.get(position).getMid()));
+                musteri.putExtra("musteriId", String.valueOf(data.get(position).getId()));
                 musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.getApplicationContext().startActivity(musteri);
             }

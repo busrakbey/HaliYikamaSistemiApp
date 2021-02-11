@@ -81,6 +81,9 @@
         <activity android:name=".UI.BluetoothActivity"></activity>
 
         <activity android:name=".UI.BolgeTanimlamaActivity"></activity>
+        <activity android:name=".UI.DeviceListActivity"></activity>
+
+
 
 
 
