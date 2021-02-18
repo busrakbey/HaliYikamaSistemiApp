@@ -79,7 +79,7 @@
                     android:layout_weight="0.1"
                     android:text="Sipariş Tutarı: "
                     android:textColor="@color/mr_toolbar"
-                    android:textSize="@dimen/text_size_normal" />
+                    android:textSize="@dimen/text_size_medium" />
 
 
                 <TextView
@@ -90,7 +90,7 @@
                     android:layout_weight="0.1"
                     android:text="300 TL"
                     android:textColor="@color/mr_toolbar"
-                    android:textSize="@dimen/text_size_normal" />
+                    android:textSize="@dimen/text_size_medium" />
 
 
                 <ImageView
@@ -113,7 +113,7 @@
                 android:layout_weight="0.5"
                 android:text="SİPARİŞ ALINDI"
                 android:textColor="@color/mr_toolbar2"
-                android:textSize="@dimen/text_size_normal"
+                android:textSize="@dimen/text_size_medium"
                 android:textStyle="bold" />
 
             <TextView
@@ -137,17 +137,17 @@
 
             <ImageView
                 android:id="@+id/edit_imageview"
-                android:layout_width="20dp"
+                android:layout_width="25dp"
                 android:layout_height="30dp"
                 android:layout_marginRight="8dp"
-                android:src="@drawable/pencil" />
+                android:src="@drawable/edit_icon" />
 
             <ImageView
                 android:id="@+id/senkron_siparis"
                 android:layout_width="40dp"
                 android:layout_height="30dp"
-                android:src="@drawable/upload_icon"
-                android:visibility="gone" />
+                android:src="@drawable/start_icon"
+                android:visibility="visible" />
 
 
 

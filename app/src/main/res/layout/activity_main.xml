@@ -113,7 +113,7 @@
             android:layout_marginTop="15dp"
             android:clickable="true"
             android:src="@drawable/floating_button_background"
-            app:backgroundTint="#7E85CC"
+            app:backgroundTint="#C4F44336"
             app:elevation="150dp"
             app:layout_anchor="@id/bottom_bar"
             app:maxImageSize="75dp" />

@@ -90,7 +90,7 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
         holder.whatsapp_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String url = "https://api.whatsapp.com/send?phone=+90" + itemsFiltered.get(position).getTelefonNumarasi() + "&text=Merhabalar! ...";
+                String url = "https://api.whatsapp.com/send?phone=+90" + data.get(position).getTelefonNumarasi() + "&text=Merhabalar! ...";
                 try {
                     PackageManager pm = mContext.getApplicationContext().getPackageManager();
                     pm.getPackageInfo("com.whatsapp", PackageManager.GET_ACTIVITIES);

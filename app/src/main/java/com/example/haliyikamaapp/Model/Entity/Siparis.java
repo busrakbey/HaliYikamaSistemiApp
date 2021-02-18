@@ -204,4 +204,11 @@ public class Siparis {
     }
 
 
+    public String getBarkod() {
+        return barkod;
+    }
+
+    public void setBarkod(String barkod) {
+        this.barkod = barkod;
+    }
 }

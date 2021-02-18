@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
                             textView.setVisibility(GONE);
                             loadingProgressBar.setVisibility(GONE);
                             rootView.setBackgroundColor(ContextCompat.getColor(LoginActivity.this, R.color.colorSplashText));
-                            iconImageView.setImageResource(R.drawable.logo_hali);
+                            iconImageView.setImageResource(R.drawable.login_logo);
 
                             startAnimation();
                         }
@@ -250,6 +250,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
                         Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                        i.putExtra("login" , "login");
                         startActivity(i);
                         // Toast.makeText(LoginActivity.this, " " + "Giriş başarılı..", Toast.LENGTH_SHORT).show();
 
@@ -268,7 +269,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public boolean InternetKontrol() {
+    public boolean  InternetKontrol() {
         ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (manager.getActiveNetworkInfo() != null
                 && manager.getActiveNetworkInfo().isAvailable()
@@ -280,16 +281,16 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     void kullaniciGirisiVarMiKontrol() {
-        InternetKontrol();
-        if (InternetKontrol() == false)
+        Boolean internetKontrol = InternetKontrol();
+        if (internetKontrol == false)
             Toast.makeText(LoginActivity.this, " " + "İnternet bağlantınız yok", Toast.LENGTH_SHORT).show();
 
-        if (db.userDao().getUserAll().size() > 0 && InternetKontrol() == false) {
+        if (db.userDao().getUserAll().size() > 0 && internetKontrol == false) {
             Intent i = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(i);
         }
 
-        if (db.userDao().getUserAll().size() > 0 && InternetKontrol() == true) {
+        if (db.userDao().getUserAll().size() > 0 && internetKontrol == true) {
             List<User> currentUserList = db.userDao().getUserAll();
             OrtakFunction.getTtoken(LoginActivity.this, currentUserList.get(0).getUserName(), currentUserList.get(0).getPassword(), currentUserList.get(0).getTenantId());
         }

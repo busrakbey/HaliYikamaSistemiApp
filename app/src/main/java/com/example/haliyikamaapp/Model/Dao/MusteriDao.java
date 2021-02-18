@@ -52,6 +52,9 @@ public interface MusteriDao {
     @Query("SELECT * FROM MUSTERI where id = :id")
     List<Musteri> getMusteriForId(Long id);
 
+
+
+
 }
 
 

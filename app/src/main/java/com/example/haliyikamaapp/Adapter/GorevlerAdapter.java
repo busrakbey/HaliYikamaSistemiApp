@@ -64,7 +64,8 @@ public class GorevlerAdapter extends RecyclerView.Adapter<GorevlerAdapter.MyView
                 musteri.putExtra("gorevId" , String.valueOf(data.get(position).getId()));
                 musteri.putExtra("siparisId" , String.valueOf(data.get(position).getSiparisId()));
                 musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.getApplicationContext().startActivity(musteri);            }
+                mContext.getApplicationContext().startActivity(musteri);
+            }
         });
 
 

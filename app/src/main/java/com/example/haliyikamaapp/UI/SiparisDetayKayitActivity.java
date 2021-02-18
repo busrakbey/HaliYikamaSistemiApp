@@ -103,6 +103,18 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
         if (siparisDetayMid != null)
             getEditMode(Long.valueOf(siparisDetayMid));
 
+        if (siparisMid != null && siparisMid.equalsIgnoreCase("null"))
+            siparisMid = null;
+
+        if (siparisDetayMid != null && siparisDetayMid.equalsIgnoreCase("null"))
+            siparisDetayMid = null;
+
+        if (subeMid != null && subeMid.equalsIgnoreCase("null"))
+            subeMid = null;
+
+        if (subeId != null && subeId.equalsIgnoreCase("null"))
+            subeId = null;
+
 
         List<OlcuBirim> allOlcuBirim = db.olcuBirimDao().getOlcuBirimAll();
         autoCompleteAdapter = new OlcuBirimAutoCompleteAdapter(this, R.layout.activity_main, android.R.layout.simple_dropdown_item_1line, allOlcuBirim);
@@ -189,6 +201,7 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
             if (!miktar_edittw.getText().toString().equalsIgnoreCase(""))
                 siparisDetay.setMiktar(Double.parseDouble(miktar_edittw.getText().toString()));
             siparisDetay.setMustId(Long.valueOf(siparisMid));
+            siparisDetay.setSiparisMid(Long.valueOf(siparisMid));
             siparisDetay.setUrunMid(secilenUrun.getMid());
             siparisDetay.setUrunId(secilenUrun.getId());
 
@@ -256,14 +269,14 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
             //  olcu_birim_spinne.setText(updateKayitList.get(0).getKapiNo());
 
             List<Urun> allUrun = db.urunDao().getUrunForMid(updateKayitList.get(0).getUrunMid());
-            if(allUrun.size() == 0)
+            if (allUrun.size() == 0)
                 allUrun = db.urunDao().getUrunForId(updateKayitList.get(0).getUrunId());
             if (allUrun != null && allUrun.size() > 0)
                 urun_adi_autocomplete.setText(allUrun.get(0).getUrunAdi());
 
 
             List<OlcuBirim> olcuBirim = db.olcuBirimDao().getOlcuBirimForMid(updateKayitList.get(0).getOlcuBirimMid());
-            if(olcuBirim.size() == 0)
+            if (olcuBirim.size() == 0)
                 olcuBirim = db.olcuBirimDao().getOlcuBirimForId(updateKayitList.get(0).getOlcuBirimId());
             if (olcuBirim != null && olcuBirim.size() > 0)
                 olcu_birim_autocomplete.setText(olcuBirim.get(0).getOlcuBirimi());

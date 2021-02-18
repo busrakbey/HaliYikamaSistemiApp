@@ -59,4 +59,7 @@ public interface SiparisDao {
     @Query("UPDATE SIPARIS SET siparisDurumu = :siparisDurumu WHERE id = :id")
     int updateSiparisDurumu(Long id, String siparisDurumu);
 
+    @Query("UPDATE SIPARIS SET musteriId = :musteriId WHERE mid = :mid")
+    int updateSiparisId(Long mid, Long musteriId);
+
 }

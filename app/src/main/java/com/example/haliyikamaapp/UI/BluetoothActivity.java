@@ -87,71 +87,7 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
         mPrint = (Button) findViewById(R.id.mPrint);
         mPrint.setOnClickListener(new View.OnClickListener() {
             public void onClick(View mView) {
-                Thread t = new Thread() {
-                    public void run() {
-                        try {
-                            OutputStream os = mBluetoothSocket
-                                    .getOutputStream();
-                            String BILL = "";
-
-                           /* BILL = "                   XXXX MART    \n"
-                                    + "                   XX.AA.BB.CC.     \n " +
-                                    "                 NO 25 ABC ABCDE    \n" +
-                                    "                  XXXXX YYYYYY      \n" +
-                                    "                   MMM 590019091      \n";
-                            BILL = BILL
-                                    + "-----------------------------------------------\n";
-
-
-                            BILL = BILL + String.format("%1$-10s %2$10s %3$13s %4$10s", "Item", "Qty", "Rate", "Totel");
-                            BILL = BILL + "\n";
-                            BILL = BILL
-                                    + "-----------------------------------------------";
-                            BILL = BILL + "\n " + String.format("%1$-10s %2$10s %3$11s %4$10s", "item-001", "5", "10", "50.00");
-                            BILL = BILL + "\n " + String.format("%1$-10s %2$10s %3$11s %4$10s", "item-002", "10", "5", "50.00");
-                            BILL = BILL + "\n " + String.format("%1$-10s %2$10s %3$11s %4$10s", "item-003", "20", "10", "200.00");
-                            BILL = BILL + "\n " + String.format("%1$-10s %2$10s %3$11s %4$10s", "item-004", "50", "10", "500.00");
-
-                            BILL = BILL
-                                    + "\n-----------------------------------------------";
-                            BILL = BILL + "\n\n ";
-
-                            BILL = BILL + "                   Total Qty:" + "      " + "85" + "\n";
-                            BILL = BILL + "                   Total Value:" + "     " + "700.00" + "\n";
-
-                            BILL = BILL
-                                    + "-----------------------------------------------\n";
-                            BILL = BILL + "\n\n ";*/
-                         //  BILL = createBarkocImage("1545");
-
-
-                            os.write(new byte[] { 0x1b, 'a', 0x01 });
-                            os.write(createBarkocImage("111"));
-                            //This is printer specific code you can comment ==== > Start
-
-                            // Setting height
-                            int gs = 29;
-                            os.write(intToByteArray(gs));
-                            int h = 104;
-                            os.write(intToByteArray(h));
-                            int n = 162;
-                            os.write(intToByteArray(n));
-
-                            // Setting Width
-                            int gs_width = 29;
-                            os.write(intToByteArray(gs_width));
-                            int w = 119;
-                            os.write(intToByteArray(w));
-                            int n_width = 2;
-                            os.write(intToByteArray(n_width));
-
-
-                        } catch (Exception e) {
-                            Log.e("BluetoothActivity", "Exe ", e);
-                        }
-                    }
-                };
-                t.start();
+                barkodYazici(null, "ZUMRUT - BETA HALI YIKAMA");
             }
         });
 
@@ -162,6 +98,7 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
                     mBluetoothAdapter.disable();
             }
         });
+
 
     }// onCreate
 
@@ -284,22 +221,22 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
         return buffer.array();
     }
 
-    public byte[] createBarkocImage(String siparisNo) {
+    public byte[] createBarkocImage(Long siparisId) {
 
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         try {
-            BitMatrix bitMatrix = multiFormatWriter.encode(siparisNo, BarcodeFormat.QR_CODE, 200, 200);
+            BitMatrix bitMatrix = multiFormatWriter.encode(siparisId.toString(), BarcodeFormat.QR_CODE, 200, 200);
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
             // imageView.setImageBitmap(bitmap);
 
             byte[] command = new byte[0];
             try {
-                if(bitmap!=null){
+                if (bitmap != null) {
                     command = Utils.decodeBitmap(bitmap);
                    /* outputStream.write(new byte[] { 0x1b, 'a', 0x01 });
                     printText(command);*/
-                }else{
+                } else {
                     Log.e("Print Photo error", "the file isn't exists");
                 }
             } catch (Exception e) {
@@ -308,7 +245,7 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
             }
 
 
-           ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
             byte[] b = baos.toByteArray();
             String barkodDegerString = Base64.encodeToString(b, Base64.DEFAULT);
@@ -317,6 +254,44 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void barkodYazici(Long siparisId, final String subeAdi) {
+
+        OutputStream os = null;
+        try {
+            os = mBluetoothSocket
+                    .getOutputStream();
+            // os.write(new byte[] { 0x1b, 'a', 0x01 });
+            os.write(new byte[]{0x1b, 'a', 0x01});
+            os.write((subeAdi + "\n").getBytes());
+            os.write(createBarkocImage(111L));
+            //This is printer specific code you can comment ==== > Start
+
+            byte[] format = new byte[]{27, 33, 0};
+            byte[] change = new byte[]{27, 33, 0};
+
+
+            // Setting height
+                   /* int gs = 29;
+                    os.write(intToByteArray(gs));
+                    int h = 104;
+                    os.write(intToByteArray(h));
+                    int n = 162;
+                    os.write(intToByteArray(n));
+
+                    // Setting Width
+                    int gs_width = 29;
+                    os.write(intToByteArray(gs_width));
+                    int w = 119;
+                    os.write(intToByteArray(w));
+                    int n_width = 2;
+                    os.write(intToByteArray(n_width));*/
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 }

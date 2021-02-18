@@ -67,7 +67,7 @@ public class MusteriGorevlerimFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         init_item(view);
         try {
-            getGorevlerimFromService(998L/*db.userDao().getUserAll().get(0).getId()*/);
+            getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
         } catch (Exception e) {
             e.printStackTrace();
         }

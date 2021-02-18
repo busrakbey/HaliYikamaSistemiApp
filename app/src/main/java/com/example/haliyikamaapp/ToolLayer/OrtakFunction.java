@@ -3,6 +3,7 @@ package com.example.haliyikamaapp.ToolLayer;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Entity;
 import android.content.Intent;
@@ -22,6 +23,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -31,6 +33,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.haliyikamaapp.Adapter.MyDateTypeAdapter;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Dao.AuthTokenDao;
 import com.example.haliyikamaapp.Model.Entity.AuthToken;
@@ -39,17 +42,27 @@ import com.example.haliyikamaapp.UI.LoginActivity;
 import com.example.haliyikamaapp.UI.MainActivity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -74,14 +87,48 @@ public class OrtakFunction {
             authorization = "Bearer " + tokenList.get(0).getAccess_token();
     }
 
+    public static TelephonyManager tm;
+    public static String imei;
+
+    public  static  ProgressDialog dialog;
+    @SuppressLint("WrongConstant")
     public static void getTtoken(final Context context, final String username, final String password, final String tenantId) {
         db = HaliYikamaDatabase.getInstance(context);
         String url = serviceUrl + "oauth/token";
+
+        dialog = new ProgressDialog(context);
+        final TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (checkSelfPermission(context,Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                if (telephonyManager != null) {
+                    try {
+                        imei = telephonyManager.getImei();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        imei = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+                    }
+                }
+            } else {
+                ActivityCompat.requestPermissions((Activity)context, new String[]{Manifest.permission.READ_PHONE_STATE}, 1010);
+            }
+        } else {
+            if (ActivityCompat.checkSelfPermission((Activity)context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                if (telephonyManager != null) {
+                    imei = telephonyManager.getDeviceId();
+                }
+            } else {
+                ActivityCompat.requestPermissions((Activity)context, new String[]{Manifest.permission.READ_PHONE_STATE}, 1010);
+            }
+        }
+
+
         RequestQueue mQueue = Volley.newRequestQueue(context);
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.i("VOLLEY", response.toString());
+                dialog.dismiss();
 
                 try {
                     JSONObject jsonObject = new JSONObject(response);
@@ -124,6 +171,7 @@ public class OrtakFunction {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        dialog.dismiss();
                         if (error instanceof AuthFailureError) {
                             //Toast.makeText(context, "Kullanıcı adı veya parola hatalı ! " , Toast.LENGTH_SHORT).show();
                             MessageBox.showAlert(context, "Kullanıcı adı veya parola hatalı !", false);
@@ -151,9 +199,12 @@ public class OrtakFunction {
                 headers.put("Content-Type", "application/x-www-form-urlencoded");
                 headers.put("Authorization", "Basic " + base64);
                 headers.put("tenant-id", "test");
-               // headers.put("imei-number ", "123");
+                headers.put("Connection", "keep-alive");
 
 
+
+
+                //   headers.put("imei-number ", imei);
 
 
                 return headers;
@@ -177,8 +228,9 @@ public class OrtakFunction {
         };
         request.setRetryPolicy(new DefaultRetryPolicy(1000, 2, 1));
         mQueue.add(request);
-    }
+        dialog.show();
 
+    }
 
 
     public static void permission_control(Context context, Activity activity) {
@@ -213,8 +265,13 @@ public class OrtakFunction {
     }
 
 
-    public  static RefrofitRestApi refrofitRestApiSetting(){
+    public static RefrofitRestApi refrofitRestApiSetting() {
         String url = OrtakFunction.serviceUrl;
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Date.class, new MyDateTypeAdapter())
+                .create();
+
         final OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(4, TimeUnit.MINUTES)
                 .writeTimeout(60, TimeUnit.SECONDS)
@@ -223,10 +280,9 @@ public class OrtakFunction {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(url)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(okHttpClient)
                 .build();
-
 
 
         RefrofitRestApi refrofitRestApi = retrofit.create(RefrofitRestApi.class);
@@ -234,7 +290,7 @@ public class OrtakFunction {
 
     }
 
-    public  static RefrofitRestApi refrofitRestApiForScalar(){
+    public static RefrofitRestApi refrofitRestApiForScalar() {
         String url = OrtakFunction.serviceUrl;
         final OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(4, TimeUnit.MINUTES)
@@ -268,7 +324,6 @@ public class OrtakFunction {
         } else {
 
 
-
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 0, new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
@@ -294,7 +349,7 @@ public class OrtakFunction {
             });
             Criteria criteria = new Criteria();
             String bestProvider = locationManager.getBestProvider(criteria, true);
-            if(locationManager != null) {
+            if (locationManager != null) {
                 Location location = locationManager.getLastKnownLocation(bestProvider);
 
                 if (location == null) {

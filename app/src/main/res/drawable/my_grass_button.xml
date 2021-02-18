@@ -12,7 +12,7 @@
 
     <gradient
         android:angle="90"
-        android:centerColor="#F76E72C5"
+        android:centerColor="#D38689DA"
         android:endColor="#B8BAE6"
         android:startColor="#B7546CBE"
         android:type="linear" />

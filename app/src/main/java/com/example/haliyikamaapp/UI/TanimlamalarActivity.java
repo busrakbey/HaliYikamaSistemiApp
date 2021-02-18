@@ -33,7 +33,7 @@ import java.util.List;
 public class TanimlamalarActivity extends AppCompatActivity {
     Toolbar toolbar;
     HaliYikamaDatabase db;
-    CardView urunler_button, subeler_button, bolgeler_button;
+    CardView urunler_button, subeler_button, bolgeler_button, sms_button;
 
 
     @SuppressLint("RestrictedApi")
@@ -81,6 +81,7 @@ public class TanimlamalarActivity extends AppCompatActivity {
         urunler_button = (CardView) findViewById(R.id.urun_cardview);
         subeler_button = (CardView) findViewById(R.id.sube_tanim_cardview);
         bolgeler_button = (CardView) findViewById(R.id.bolge_tanim_cardview);
+        sms_button = (CardView) findViewById(R.id.sms_tanim_cardview);
 
         urunler_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,7 +113,16 @@ public class TanimlamalarActivity extends AppCompatActivity {
             }
         });
 
+        sms_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+                Intent i = new Intent(TanimlamalarActivity.this, SmsTanimlamaActivity.class );
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+
+            }
+        });
 
 
 

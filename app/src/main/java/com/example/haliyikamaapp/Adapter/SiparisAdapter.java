@@ -20,6 +20,7 @@ import com.example.haliyikamaapp.Model.Entity.Siparis;
 import com.example.haliyikamaapp.Model.Entity.SiparisDetay;
 import com.example.haliyikamaapp.Model.Entity.Sube;
 import com.example.haliyikamaapp.R;
+import com.example.haliyikamaapp.ToolLayer.MessageBox;
 import com.example.haliyikamaapp.UI.MainActivity;
 import com.example.haliyikamaapp.UI.SiparisDetayActivity;
 import com.example.haliyikamaapp.UI.SiparisKayitActivity;
@@ -73,7 +74,7 @@ public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHo
         ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
         int color1 = generator.getRandomColor();
         int color2 = generator.getColor("user@gmail.com");
-        int color = generator.getColor(data.get(position));
+        final int color = generator.getColor(data.get(position));
         TextDrawable.IBuilder builder = TextDrawable.builder()
                 .beginConfig()
                 .withBorder(1)
@@ -113,7 +114,10 @@ public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHo
         holder.senkron_siparis.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((MainActivity) mContext).postSiparisSureciBaslatService(data.get(position));
+                if (data.get(position).getProcessInstanceId() != null)
+                    MessageBox.showAlert(mContext, "Süreç zaten başlatılmıştır.\n", false);
+                else
+                    ((MainActivity) mContext).postSiparisSureciBaslatService(data.get(position));
             }
         });
     }

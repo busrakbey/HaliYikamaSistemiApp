@@ -115,6 +115,17 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
         urunEkleButton = (Button) findViewById(R.id.gorevde_urun_ekle_button);
         urunEkleButton.setVisibility(View.GONE);
 
+        final AlertDialog.Builder mBuilder = new AlertDialog.Builder(MusteriGorevlerimDetayActivity.this);
+        final View mView = getLayoutInflater().inflate(R.layout.not_popup_window, null);
+        final EditText call_message = (EditText) mView.findViewById(R.id.call_message);
+        final Button vazgec_button = (Button) mView.findViewById(R.id.not_vazgec_button);
+        final Button kaydet_button = (Button) mView.findViewById(R.id.not_kaydet_button);
+        final TextView tittle = (TextView) mView.findViewById(R.id.call_tittle);
+        final EditText tahsilatTutari = (EditText) mView.findViewById(R.id.gorev_tahsilat_tutari);
+        not_linear = (LinearLayout) mView.findViewById(R.id.gorev_not);
+        spinenr_linerar = (LinearLayout) mView.findViewById(R.id.gorev_teslim_et_linear);
+        final Spinner spinner_teslim_edildi_mi = (Spinner) mView.findViewById(R.id.gorev_tamamla_spinner);
+
 
         Intent intent = getIntent();
         gorevMid = intent.getStringExtra("gorevMid");
@@ -147,6 +158,8 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
                 }
                 if (item.getId().equalsIgnoreCase("teslimEdildi")) {
                     teslim_edildi_item = item;
+                    spinenr_linerar.setVisibility(View.VISIBLE);
+
                 }
                 if (item.getId().equalsIgnoreCase("tahsilEdilecekTutar")) {
                     tahsil_edildi_item = item;
@@ -174,19 +187,49 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(MusteriGorevlerimDetayActivity.this);
-                View mView = getLayoutInflater().inflate(R.layout.not_popup_window, null);
-                final EditText call_message = (EditText) mView.findViewById(R.id.call_message);
-                final Button vazgec_button = (Button) mView.findViewById(R.id.not_vazgec_button);
-                final Button kaydet_button = (Button) mView.findViewById(R.id.not_kaydet_button);
-                final TextView tittle = (TextView) mView.findViewById(R.id.call_tittle);
-                final EditText tahsilatTutari = (EditText) mView.findViewById(R.id.gorev_tahsilat_tutari);
-                not_linear = (LinearLayout) mView.findViewById(R.id.gorev_not);
-                spinenr_linerar = (LinearLayout) mView.findViewById(R.id.gorev_teslim_et_linear);
-                final Spinner spinner_teslim_edildi_mi = (Spinner) mView.findViewById(R.id.gorev_tamamla_spinner);
 
                 if (teslim_edildi_item != null) {
                     spinenr_linerar.setVisibility(View.VISIBLE);
+                    mBuilder.setView(mView);
+                    final AlertDialog dialog = mBuilder.create();
+                    dialog.show();
+
+                    vazgec_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    kaydet_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            gorevNotu = call_message.getText().toString();
+                            if (spinner_teslim_edildi_mi.getSelectedItemPosition() == 0) {
+                                MessageBox.showAlert(MusteriGorevlerimDetayActivity.this, "Teslimat durumunu seçmeden görev tamamlanamaz..", false);
+                                return;
+                            }
+                            if (spinner_teslim_edildi_mi.getSelectedItemPosition() == 1)
+                                secilenTeslimEtDurumu = "Evet";
+                            if (spinner_teslim_edildi_mi.getSelectedItemPosition() == 2)
+                                secilenTeslimEtDurumu = "Hayır";
+
+                            if (tahsilatTutari.getText().toString().equalsIgnoreCase("")) {
+                                MessageBox.showAlert(MusteriGorevlerimDetayActivity.this, "Tahsilat tutarını girmeden görev tamamlanamaz..", false);
+                                return;
+                            } else
+                                girilenTahsilatTutari = tahsilatTutari.getText().toString();
+                            dialog.dismiss();
+                            try {
+                                gorevTamamlaPostService(Long.valueOf(gorevId));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+
+                    });
+
                     if (teslim_edildi_item.getFormValues() != null) {
                         try {
                             jsonObjectGorevTamamla = new JSONObject(teslim_edildi_item.getFormValues());
@@ -212,20 +255,6 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
                         dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spinner_teslim_edildi_mi.setAdapter(dataAdapter2);
 
-                        if (spinner_teslim_edildi_mi.getSelectedItemPosition() == 0) {
-                            MessageBox.showAlert(MusteriGorevlerimDetayActivity.this, "Teslimat durumunu seçmeden görev tamamlanamaz..", false);
-                            return;
-                        }
-                        if (spinner_teslim_edildi_mi.getSelectedItemPosition() == 1)
-                            secilenTeslimEtDurumu = "Evet";
-                        if (spinner_teslim_edildi_mi.getSelectedItemPosition() == 2)
-                            secilenTeslimEtDurumu = "Hayır";
-
-                        if (tahsilatTutari.getText().toString().equalsIgnoreCase("")) {
-                            MessageBox.showAlert(MusteriGorevlerimDetayActivity.this, "Tahsilat tutarını girmeden görev tamamlanamaz..", false);
-                            return;
-                        } else
-                            girilenTahsilatTutari = tahsilatTutari.getText().toString();
 
                     }
                 }
@@ -233,6 +262,13 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
                 if (urunListesiVarMi && urunZorunluMu && siparisDetayList.size() == 0) {
                     MessageBox.showAlert(MusteriGorevlerimDetayActivity.this, "Ürün listesi olmadan görev tamamlanamaz..", false);
                     return;
+                } if (urunListesiVarMi && urunZorunluMu && siparisDetayList.size() > 0)  {
+
+                    try {
+                        gorevTamamlaPostService(Long.valueOf(gorevId));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
 
 
@@ -268,14 +304,14 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
 
                         }
                     });
-                } else {
+                } /*else {
 
                     try {
                         gorevTamamlaPostService(Long.valueOf(gorevId));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }
+                }*/
 
 
             }
@@ -286,13 +322,16 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
     List<Gorevler> gorevlerList;
 
     void get_list() {
-        gorevlerList = db.gorevlerDao().getGorevForMid(Long.valueOf(gorevMid));
+        gorevlerList = db.gorevlerDao().getGorevForId(Long.valueOf(gorevId));
         if (gorevlerList.size() > 0) {
             List<Siparis> siparisList = db.siparisDao().getSiparisForSiparisId(gorevlerList.get(0).getSiparisId());
             if (siparisList.size() > 0) {
                 siparisDetayList = db.siparisDetayDao().getSiparisDetayForSiparisId(siparisList.get(0).getId());
+                if (siparisDetayList.size() == 0)
+                    siparisDetayList = db.siparisDetayDao().getSiparisDetayForSiparisMid(siparisList.get(0).getMid());
             }
         }
+
         gorevlerAdapter = new GorevlerDetayAdapter(MusteriGorevlerimDetayActivity.this, siparisDetayList);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(MusteriGorevlerimDetayActivity.this));
@@ -362,6 +401,7 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
 
 
     String gelenGorevList = null;
+
     public void gorevTamamlaPostService(final Long gorevId) throws Exception {
         progressDoalog.show();
         RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
@@ -371,7 +411,7 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
         JSONObject disObje = new JSONObject();
         final JSONArray urunArray = new JSONArray();
 
-        if (gorevlerList.get(0).getName().equalsIgnoreCase("TeslimAl")) {
+        if (gorevlerList != null && gorevlerList.size() != 0 && gorevlerList.get(0).getName().equalsIgnoreCase("TeslimAl")) {
             disObje.put("notlar", gorevNotu);
             if (siparisDetayList != null && siparisDetayList.size() > 0)
                 for (SiparisDetay item : siparisDetayList) {
@@ -384,17 +424,22 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
                     icObje.put("olcuBirimAdi", db.olcuBirimDao().getOlcuBirimForId(item.getOlcuBirimId()).get(0).getOlcuBirimi());
                     icObje.put("birimFiyat", item.getBirimFiyat());
                     icObje.put("miktar", item.getMiktar());
-                    icObje.put("toplamTutar", item.getBirimFiyat()*item.getMiktar());
+                    icObje.put("toplamTutar", item.getBirimFiyat() * item.getMiktar());
                     icObje.put("musteriNotu", null);
                     urunArray.put(icObje);
                 }
             disObje.put("urunListesi", urunArray);
         }
 
-        if (gorevlerList.get(0).getName().equalsIgnoreCase("TeslimEt")) {
-            disObje.put("tahasilatTutari", girilenTahsilatTutari);
+        if (girilenTahsilatTutari != null) {
+            disObje.put("tahsilatTutari", girilenTahsilatTutari);
             disObje.put("teslimEdildi", secilenTeslimEtDurumu);
-            disObje.put("tahsilEdilecekTutar", "");
+           // disObje.put("tahsilEdilecekTutar", "");
+            disObje.put("hesabiKapat", "");
+            disObje.put("teslimatNotu", "");
+
+
+
         }
         Call<String> call = refrofitRestApi.postGorevTamamla("fw/process/completeTask/" + gorevId, OrtakFunction.authorization, OrtakFunction.tenantId, disObje.toString());
         call.enqueue(new Callback<String>() {
@@ -414,7 +459,7 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
                     if (gorevlerList.get(0).getName().equalsIgnoreCase("TeslimEt")){
                         db.siparisDao().updateSiparisDurumu(gorevId, )
                     }*/
-                        MessageBox.showAlert(MusteriGorevlerimDetayActivity.this, "Görev başarıyla tamamlanmıştır..", false);
+                    MessageBox.showAlert(MusteriGorevlerimDetayActivity.this, "Görev başarıyla tamamlanmıştır..", false);
                     finish();
 
                 }
@@ -441,7 +486,7 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         if (urunListesiVarMi)
-        get_list();
+            get_list();
     }
 
 

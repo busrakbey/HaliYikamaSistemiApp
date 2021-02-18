@@ -4,8 +4,10 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +21,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -27,6 +30,7 @@ import com.example.haliyikamaapp.AutoCompleteAdapter.MusteriAutoCompleteAdapter;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.Model.Entity.Siparis;
+import com.example.haliyikamaapp.Model.Entity.Sms;
 import com.example.haliyikamaapp.Model.Entity.Sube;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
@@ -57,7 +61,7 @@ public class SiparisKayitActivity extends AppCompatActivity {
     Musteri secilenMusteri;
     public List<String> subeListString;
     Sube secilenSube;
-    String gelenSubeId, gelenSubeMid,gelenMusteriId;
+    String gelenSubeId, gelenSubeMid, gelenMusteriId;
 
 
     @SuppressLint("RestrictedApi")
@@ -141,6 +145,19 @@ public class SiparisKayitActivity extends AppCompatActivity {
         gelenMusteriId = getIntent().getStringExtra("musteriId");
         gelenSiparisId = getIntent().getStringExtra("siparisId");
 
+        if (gelenSiparisMid != null && gelenSiparisMid.equalsIgnoreCase("null"))
+            gelenSiparisMid = null;
+        if (gelenSubeId != null && gelenSubeId.equalsIgnoreCase("null"))
+            gelenSubeId = null;
+        if (gelenSubeMid != null && gelenSubeMid.equalsIgnoreCase("null"))
+            gelenSubeMid = null;
+        if (gelenMusteriMid != null && gelenMusteriMid.equalsIgnoreCase("null"))
+            gelenMusteriMid = null;
+        if (gelenMusteriId != null && gelenMusteriId.equalsIgnoreCase("null"))
+            gelenMusteriId = null;
+        if (gelenSiparisId != null && gelenSiparisId.equalsIgnoreCase("null"))
+            gelenSiparisId = null;
+
 
         final List<Sube> subeList = db.subeDao().getSubeAll();
         subeListString = new ArrayList<String>();
@@ -193,7 +210,6 @@ public class SiparisKayitActivity extends AppCompatActivity {
                     }
 
 
-
                 }
             }
         });
@@ -203,7 +219,7 @@ public class SiparisKayitActivity extends AppCompatActivity {
         else
             teslim_alinacak_checkbox.setChecked(true);
 
-        if (!gelenMusteriMid .equalsIgnoreCase("null")) {
+        if (gelenMusteriMid != null ) {
             musteri_edittw.setEnabled(false);
             List<Musteri> musteri = db.musteriDao().getMusteriForMid(Long.valueOf(gelenMusteriMid));
             musteri_edittw.setText(musteri.get(0).getMusteriAdi() + " " + musteri.get(0).getMusteriSoyadi());
@@ -238,14 +254,15 @@ public class SiparisKayitActivity extends AppCompatActivity {
         //  else{
         final Siparis siparis = new Siparis();
 
-        siparis.setMusteriMid(!gelenMusteriMid.equals("null") ? Long.valueOf(gelenMusteriMid) : null);
-        siparis.setMusteriId(!gelenMusteriId.equals("null") ? Long.valueOf(gelenMusteriId) : null);
+        siparis.setMusteriMid(gelenMusteriMid != null ? Long.valueOf(gelenMusteriMid) : null);
+        siparis.setMusteriId(gelenMusteriId != null  ? Long.valueOf(gelenMusteriId) : null);
         siparis.setSubeId(gelenSubeId != null ? Long.valueOf(gelenSubeId) : secilenSube.getId());
         siparis.setSubeMid(gelenSubeMid != null  ? Long.valueOf(gelenSubeMid) : secilenSube.getMid());
         siparis.setSiparisTarihi(tarih_edittw.getText().toString());
         siparis.setAciklama(aciklama_edittw.getText().toString());
         siparis.setTeslimAlinacak(teslim_alinacak_checkbox.isChecked() ? true : false);
-        siparis.setId(!gelenSiparisId.equalsIgnoreCase("null") ?Long.valueOf(gelenSiparisId)  : null);
+        siparis.setSiparisDurumu(teslim_alinacak_checkbox.isChecked() ?  "Teslim Alınacak" : "" );
+        siparis.setId(gelenSiparisId != null  ? Long.valueOf(gelenSiparisId) : null);
         siparis.setSenkronEdildi(false);
 
         new Thread(new Runnable() {
@@ -286,7 +303,7 @@ public class SiparisKayitActivity extends AppCompatActivity {
                             } else {
                                 Intent i = new Intent(SiparisKayitActivity.this, SiparisDetayKayitActivity.class);
                                 i.putExtra("siparisMid", String.valueOf(finalYeniKayitSiparisMid));
-                                i.putExtra("subeId" , secilenSube.getId());
+                                i.putExtra("subeId", secilenSube.getId());
                                 i.putExtra("subeMid", secilenSube.getMid());
                                 finish();
                                 startActivity(i);
@@ -321,12 +338,11 @@ public class SiparisKayitActivity extends AppCompatActivity {
             //siparisId = updateKayitList.get(0).getId();
 
             List<Sube> subeList = db.subeDao().getSubeForId(updateKayitList.get(0).getSubeId());
-            if(subeList.size() >0){
+            if (subeList.size() > 0) {
                 for (Sube item : subeList) {
-                        sube_spinner.setSelection(subeListString.indexOf(item.getSubeAdi()));
+                    sube_spinner.setSelection(subeListString.indexOf(item.getSubeAdi()));
                 }
             }
-
 
 
         }
@@ -352,6 +368,24 @@ public class SiparisKayitActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return null;
+    }
+
+    void otomatikSmsGonder(String siparisDurumu) {
+        List<Sms> smsList = db.smsDao().getSmsForSiparisDurumu(siparisDurumu);
+        if (smsList != null && smsList.size() > 0) {
+            try {
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage("+905543283278", null, "selammm", null, null);
+                getContentResolver().delete(Uri.parse("content://sms/outbox"), "address = ? and body = ?", new String[]{"+905543283278", smsList.get(0).getAciklama()});
+
+                Toast.makeText(getApplicationContext(), "Message Sent",
+                        Toast.LENGTH_LONG).show();
+            } catch (Exception ex) {
+                Toast.makeText(getApplicationContext(), ex.getMessage().toString(),
+                        Toast.LENGTH_LONG).show();
+                ex.printStackTrace();
+            }
+        }
     }
 
 
