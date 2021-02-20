@@ -132,7 +132,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         init_item();
         if (telephoneNumber != null)
             getCallLogs();
-//        permissonControl();
+       permissonControl();
+
 
         if (savedInstanceState == null && gelenPage == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,

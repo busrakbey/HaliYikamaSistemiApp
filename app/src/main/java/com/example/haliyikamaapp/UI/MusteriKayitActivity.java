@@ -220,6 +220,7 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
             musteri.setSokak(sokak_edittw.getText().toString());
             musteri.setKapiNo(kapi_no_edittw.getText().toString());
             musteri.setId(musteriId);
+            musteri.setSubeMid(secili_sube_mid);
 
 
             new Thread(new Runnable() {
@@ -235,20 +236,13 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
                     }
 
                     final long finalMusteriMid = musteriMid;
+                    yeniKayitMusteriMid = musteriMid;
                     MusteriKayitActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
 
                             if (gelenMusteriMid == null && Integer.valueOf(String.valueOf(finalMusteriMid)) > 0) {
                                 MessageBox.showAlert(MusteriKayitActivity.this, "Kayıt Başarılı..\n", false);
-                                // Intent i = new Intent(MusteriKayitActivity.this, SiparisKayitActivity.class);
-
-                             /*   Intent i = new Intent(MusteriKayitActivity.this, MusteriDetayKayitActivity.class);
-                                i.putExtra("musteriMid", String.valueOf(finalMusteriMid));
-                                i.putExtra("cepNo", String.valueOf(tel_no_edittw.getText().toString()));
-                                yeniKayitMusteriMid = finalMusteriMid;
-                                finish();
-                                startActivity(i);*/
                             }
                             if (gelenMusteriMid != null && finalMusteriMid == 1) {
                                 MessageBox.showAlert(MusteriKayitActivity.this, "İşlem Başarılı..\n", false);
@@ -517,7 +511,11 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
         gelenMusteriId = getIntent().getStringExtra("musteriId");
         if (gelenMusteriMid != null)
             getEditMode(Long.valueOf(gelenMusteriMid));
+        if (gelenMusteriMid != null && gelenMusteriMid.equalsIgnoreCase("null"))
+            gelenMusteriMid = null;
 
+        if (gelenMusteriId != null && gelenMusteriId.equalsIgnoreCase("null"))
+            gelenMusteriId = null;
 
         gelenTelefonNumarasi = getIntent().getStringExtra("number");
         if (gelenTelefonNumarasi != null)

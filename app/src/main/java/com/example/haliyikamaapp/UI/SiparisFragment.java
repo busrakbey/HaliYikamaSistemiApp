@@ -110,8 +110,12 @@ public class SiparisFragment extends Fragment {
                 e.printStackTrace();
             }
         }
-        if (db.siparisDao().getSenkronEdilmeyenAll().size() == 0)
+        if (db.siparisDao().getSenkronEdilmeyenAll().size() == 0) {
+
+
+
             getSiparisListFromService();
+        }
 
     }
 
@@ -195,11 +199,6 @@ public class SiparisFragment extends Fragment {
     void getSiparisListFromService() {
 
         final RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
-        final ProgressDialog progressDoalog;
-        progressDoalog = new ProgressDialog(getContext());
-        progressDoalog.setMessage("Lütfen bekleyiniz..");
-        progressDoalog.setTitle("SİSTEM");
-        progressDoalog.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
         progressDoalog.show();
         Call<List<Siparis>> call = refrofitRestApi.getSiparisList(OrtakFunction.authorization, OrtakFunction.tenantId);
         call.enqueue(new Callback<List<Siparis>>() {
@@ -342,9 +341,12 @@ public class SiparisFragment extends Fragment {
 
                                 List<SiparisDetay> siparisdetayList2 = db.siparisDetayDao().getSiparisDetayForSiparisId(siparis.getId());
 
-                                if (siparisdetayList2 != null && siparisdetayList2.size() > 0) {
+                                if (siparisdetayList != null && siparisdetayList.size() > 0) {
                                     List<Siparis> gidecekSiparis = db.siparisDao().getSiparisForSiparisId(gelenSiparis.getId());
-                                    postSiparisDetayListFromService(siparisdetayList2, gidecekSiparis);
+                                    postSiparisDetayListFromService(siparisdetayList, gidecekSiparis);
+                                    for(SiparisDetay item : siparisdetayList){
+                                        db.siparisDetayDao().updateSiparisId(siparisMid , siparis.getId());
+                                    }
                                 }
 
                                 /*if (siparisdetayList != null && siparisdetayList.size() > 0) {

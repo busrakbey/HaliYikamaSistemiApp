@@ -205,6 +205,8 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
             siparisDetay.setUrunMid(secilenUrun.getMid());
             siparisDetay.setUrunId(secilenUrun.getId());
 
+            db.siparisDao().updateSiparisSenkronDurum(Long.valueOf(siparisMid),false);
+
             new Thread(new Runnable() {
                 @Override
                 public void run() {

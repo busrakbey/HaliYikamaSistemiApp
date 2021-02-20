@@ -82,8 +82,16 @@
         <activity android:name=".UI.BluetoothActivity"></activity>
 
         <activity android:name=".UI.BolgeTanimlamaActivity"></activity>
+
         <activity android:name=".UI.DeviceListActivity"></activity>
+
         <activity android:name=".UI.SmsTanimlamaActivity"></activity>
+
+        <activity android:name=".UI.HesapActivity"></activity>
+
+        <activity android:name=".UI.HesapKayitActivity"></activity>
+
+
 
 
 

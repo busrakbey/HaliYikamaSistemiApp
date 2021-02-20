@@ -90,7 +90,8 @@ public class OrtakFunction {
     public static TelephonyManager tm;
     public static String imei;
 
-    public  static  ProgressDialog dialog;
+    public static ProgressDialog dialog;
+
     @SuppressLint("WrongConstant")
     public static void getTtoken(final Context context, final String username, final String password, final String tenantId) {
         db = HaliYikamaDatabase.getInstance(context);
@@ -100,7 +101,7 @@ public class OrtakFunction {
         final TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (checkSelfPermission(context,Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+            if (checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
                 if (telephonyManager != null) {
                     try {
                         imei = telephonyManager.getImei();
@@ -110,15 +111,15 @@ public class OrtakFunction {
                     }
                 }
             } else {
-                ActivityCompat.requestPermissions((Activity)context, new String[]{Manifest.permission.READ_PHONE_STATE}, 1010);
+                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_PHONE_STATE}, 1010);
             }
         } else {
-            if (ActivityCompat.checkSelfPermission((Activity)context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission((Activity) context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
                 if (telephonyManager != null) {
                     imei = telephonyManager.getDeviceId();
                 }
             } else {
-                ActivityCompat.requestPermissions((Activity)context, new String[]{Manifest.permission.READ_PHONE_STATE}, 1010);
+                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_PHONE_STATE}, 1010);
             }
         }
 
@@ -153,7 +154,7 @@ public class OrtakFunction {
                                     if (Integer.valueOf(String.valueOf(finalyeniKayit)) > 0) {
                                         tokenControl(context);
                                         if (authorization != null)
-                                            ((LoginActivity) context).getCurrentUserFromService();
+                                            ((LoginActivity) context).getCurrentUserFromService(tenantId);
 
 
                                     }
@@ -198,10 +199,8 @@ public class OrtakFunction {
                 headers.put("Accept", "application/json");
                 headers.put("Content-Type", "application/x-www-form-urlencoded");
                 headers.put("Authorization", "Basic " + base64);
-                headers.put("tenant-id", "test");
+                headers.put("tenant-id", tenantId);
                 headers.put("Connection", "keep-alive");
-
-
 
 
                 //   headers.put("imei-number ", imei);
@@ -234,19 +233,33 @@ public class OrtakFunction {
 
 
     public static void permission_control(Context context, Activity activity) {
-        Boolean hasCallPermission = ActivityCompat.checkSelfPermission(context,
-                Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context,
-                Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context,
-                Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context,
-                Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context,
-                Manifest.permission.SYSTEM_ALERT_WINDOW) == PackageManager.PERMISSION_GRANTED;
-        if (!hasCallPermission)
+
+
+        Boolean hasCallPermission =
+                ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED
+                        /*  && ActivityCompat.checkSelfPermission(context,Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED-*/ &&
+                        ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(context, Manifest.permission.SYSTEM_ALERT_WINDOW) == PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_ADMIN) == PackageManager.PERMISSION_GRANTED;
+
+        //   ActivityCompat.requestPermissions((Activity)context, new String[]{Manifest.permission.READ_PHONE_STATE}, 1010);
+
+
+        if (!hasCallPermission) {
+
+
             ActivityCompat.requestPermissions(activity,
-                    new String[]{Manifest.permission.CALL_PHONE,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.CALL_PHONE,
                             Manifest.permission.READ_CALL_LOG,
-                            Manifest.permission.ACTIVITY_RECOGNITION,
+                            //  Manifest.permission.ACTIVITY_RECOGNITION,
                             Manifest.permission.READ_PHONE_STATE,
-                            Manifest.permission.SYSTEM_ALERT_WINDOW}, 1);
+                            Manifest.permission.SYSTEM_ALERT_WINDOW,
+                            Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN}, 123);
+        }
 
 
     }

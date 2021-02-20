@@ -62,4 +62,9 @@ public interface SiparisDao {
     @Query("UPDATE SIPARIS SET musteriId = :musteriId WHERE mid = :mid")
     int updateSiparisId(Long mid, Long musteriId);
 
+    @Query("UPDATE SIPARIS SET  senkronEdildi = :senkronEdildi WHERE mid = :mid")
+    int updateSiparisSenkronDurum(Long mid ,Boolean senkronEdildi);
+
+
+
 }

@@ -28,7 +28,7 @@
                 android:layout_weight="0.5"
                 android:hint="Şube"
                 android:inputType="text"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
 
             <Spinner

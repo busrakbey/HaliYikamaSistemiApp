@@ -14,6 +14,7 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.OlcuBirim;
+import com.example.haliyikamaapp.Model.Entity.Siparis;
 import com.example.haliyikamaapp.Model.Entity.SiparisDetay;
 import com.example.haliyikamaapp.Model.Entity.Urun;
 import com.example.haliyikamaapp.R;
@@ -27,6 +28,7 @@ public class SiparisDetayAdapter extends RecyclerView.Adapter<SiparisDetayAdapte
     private List<SiparisDetay> data;
     private Context mContext;
 
+    List<Siparis> siparisList;
 
     public SiparisDetayAdapter(Context mContext, List<SiparisDetay> data) {
         this.data = data;
@@ -64,13 +66,20 @@ public class SiparisDetayAdapter extends RecyclerView.Adapter<SiparisDetayAdapte
         holder.siparis_detay_toplam_tutar_item2.setText("Toplam Tutar: " + String.valueOf(data.get(position).getMiktar() * data.get(position).getBirimFiyat()));
 
 
+
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent musteri = new Intent(mContext, SiparisDetayKayitActivity.class);
                 musteri.putExtra("siparisDetayMid", String.valueOf(data.get(position).getMid()));
                 musteri.putExtra("siparisMid", String.valueOf(data.get(position).getMustId()));
-                musteri.putExtra("subeId" , String.valueOf(db.siparisDao().getSiparisForSiparisId(data.get(position).getSiparisId()).get(0).getSubeId()));
+
+                if(data.get(position).getSiparisId()!= null)
+                     siparisList = db.siparisDao().getSiparisForSiparisId(data.get(position).getSiparisId());
+                else
+                    siparisList = db.siparisDao().getSiparisForMid(data.get(position).getSiparisMid());
+
+                musteri.putExtra("subeId" , String.valueOf(siparisList.get(0).getSubeId()));
               //  musteri.putExtra("subeMid" , String.valueOf(data.get(position).getSubeMid()));
                 musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.getApplicationContext().startActivity(musteri);

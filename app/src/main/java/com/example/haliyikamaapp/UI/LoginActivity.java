@@ -28,6 +28,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.Permissions;
+import com.example.haliyikamaapp.Model.Entity.S_User;
 import com.example.haliyikamaapp.Model.Entity.Urun;
 import com.example.haliyikamaapp.Model.Entity.User;
 import com.example.haliyikamaapp.R;
@@ -145,7 +146,8 @@ public class LoginActivity extends AppCompatActivity {
                 else {
 
                     if (InternetKontrol())
-                        OrtakFunction.getTtoken(LoginActivity.this, username_edittext.getText().toString(), password_edittext.getText().toString(), tenantId_edittext.getText().toString());
+                        OrtakFunction.getTtoken(LoginActivity.this, username_edittext.getText().toString(),
+                                password_edittext.getText().toString(), tenantId_edittext.getText().toString());
                     else {
                         Intent i = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(i);
@@ -190,7 +192,7 @@ public class LoginActivity extends AppCompatActivity {
 
     String gelenUserList;
 
-    public void getCurrentUserFromService() {
+    public void getCurrentUserFromService(final String tenantId) {
 
         RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
         final ProgressDialog progressDoalog;
@@ -219,6 +221,7 @@ public class LoginActivity extends AppCompatActivity {
                             List<User> gelenUser = Arrays.asList(gson.fromJson(gelenUserList, User.class));
                             Boolean userVarMi = false;
                             gelenUser.get(0).setPassword(password_edittext.getText().toString());
+                            gelenUser.get(0).setTenantId(tenantId);
                             for (User item : db.userDao().getUserAll()) {
                                 if (item.getId() == gelenUser.get(0).getId()) {
                                     gelenUser.get(0).setMid(item.getMid());
@@ -292,6 +295,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (db.userDao().getUserAll().size() > 0 && internetKontrol == true) {
             List<User> currentUserList = db.userDao().getUserAll();
+         //   String currentUserTenantId = db.sUserDao().g
             OrtakFunction.getTtoken(LoginActivity.this, currentUserList.get(0).getUserName(), currentUserList.get(0).getPassword(), currentUserList.get(0).getTenantId());
         }
     }

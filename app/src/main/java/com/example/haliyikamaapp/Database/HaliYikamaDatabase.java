@@ -15,6 +15,7 @@ import com.example.haliyikamaapp.Model.Dao.AuthTokenDao;
 import com.example.haliyikamaapp.Model.Dao.BolgeDao;
 import com.example.haliyikamaapp.Model.Dao.GorevFormBilgileriDao;
 import com.example.haliyikamaapp.Model.Dao.GorevlerDao;
+import com.example.haliyikamaapp.Model.Dao.HesapDao;
 import com.example.haliyikamaapp.Model.Dao.MusteriDao;
 import com.example.haliyikamaapp.Model.Dao.MusteriIletisimDao;
 import com.example.haliyikamaapp.Model.Dao.MusteriTuruDao;
@@ -37,6 +38,7 @@ import com.example.haliyikamaapp.Model.Entity.AuthToken;
 import com.example.haliyikamaapp.Model.Entity.Bolge;
 import com.example.haliyikamaapp.Model.Entity.GorevFomBilgileri;
 import com.example.haliyikamaapp.Model.Entity.Gorevler;
+import com.example.haliyikamaapp.Model.Entity.Hesap;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.Model.Entity.MusteriIletisim;
 import com.example.haliyikamaapp.Model.Entity.MusteriTuru;
@@ -58,10 +60,14 @@ import com.example.haliyikamaapp.Model.Entity.User;
 import com.example.haliyikamaapp.Model.Entity.UserPermissions;
 
 
-@Database(entities = {Musteri.class, Siparis.class, SiparisDetay.class, Urun.class, UrunSube.class, UrunFiyat.class, STenant.class,
-        MusteriIletisim.class, OlcuBirim.class, AuthToken.class, Sube.class, MusteriTuru.class,
+@Database(entities = {Musteri.class, Siparis.class, SiparisDetay.class, Urun.class,
+        UrunSube.class, UrunFiyat.class, STenant.class,
+        MusteriIletisim.class, OlcuBirim.class, AuthToken.class,
+        Sube.class, MusteriTuru.class,
         Gorevler.class, GorevFomBilgileri.class,
-        S_IL.class, S_ILCE.class, Bolge.class, User.class, Permissions.class, SubPermissions.class, S_User.class, UserPermissions.class, Sms.class} ,
+        S_IL.class, S_ILCE.class, Bolge.class, User.class,
+        Permissions.class, SubPermissions.class, S_User.class,
+        UserPermissions.class, Sms.class, Hesap.class} ,
         version = 1, exportSchema = false)
 public abstract class HaliYikamaDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "SATIS_OTOMASYON_DB";
@@ -91,7 +97,7 @@ public abstract class HaliYikamaDatabase extends RoomDatabase {
     public  abstract SUserDao sUserDao();
     public  abstract UserPermissionsDao userPermissionsDao();
     public  abstract SmsDao smsDao();
-
+    public  abstract HesapDao hesapDao();
 
 
 
