@@ -247,7 +247,6 @@ public class MusteriFragment extends Fragment {
     }
 
     Musteri gelenMusteri;
-
     public void postMusteriListFromService(final Musteri musteri) {
         progressDoalog.show();
         Call<Musteri> call;

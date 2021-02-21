@@ -21,10 +21,10 @@ public class Hesap {
     public Long id;
 
     @ColumnInfo(name = "createdDate")
-    public Timestamp createdDate;
+    public String createdDate;
 
     @ColumnInfo(name = "modifiedDate")
-    public Timestamp modifiedDate;
+    public String modifiedDate;
 
     @ColumnInfo(name = "subeId")
     public Long subeId;
@@ -59,6 +59,9 @@ public class Hesap {
     @ColumnInfo(name = "senkronEdildi")
     public Boolean senkronEdildi;
 
+    @ColumnInfo(name = "ekleyenKullanicii")
+    public String ekleyenKullanicii;
+
     @NonNull
     public Long getMid() {
         return mid;
@@ -84,19 +87,19 @@ public class Hesap {
         this.id = id;
     }
 
-    public Timestamp getCreatedDate() {
+    public String getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(Timestamp createdDate) {
+    public void setCreatedDate(String createdDate) {
         this.createdDate = createdDate;
     }
 
-    public Timestamp getModifiedDate() {
+    public String getModifiedDate() {
         return modifiedDate;
     }
 
-    public void setModifiedDate(Timestamp modifiedDate) {
+    public void setModifiedDate(String modifiedDate) {
         this.modifiedDate = modifiedDate;
     }
 
@@ -186,5 +189,13 @@ public class Hesap {
 
     public void setSenkronEdildi(Boolean senkronEdildi) {
         this.senkronEdildi = senkronEdildi;
+    }
+
+    public String getEkleyenKullanicii() {
+        return ekleyenKullanicii;
+    }
+
+    public void setEkleyenKullanicii(String ekleyenKullanicii) {
+        this.ekleyenKullanicii = ekleyenKullanicii;
     }
 }

@@ -194,8 +194,12 @@ public class HesapKayitActivity extends AppCompatActivity {
 
                 } else if (position > 0) {
                     seciliDetayNeden = detay_neden_spinner.getSelectedItem().toString();
+                    yeni_detay_edittext.setVisibility(View.GONE);
+
                 } else {
                     seciliDetayNeden = null;
+                    yeni_detay_edittext.setVisibility(View.GONE);
+
 
                 }
 

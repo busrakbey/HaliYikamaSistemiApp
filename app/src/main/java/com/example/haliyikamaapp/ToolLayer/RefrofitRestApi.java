@@ -1,6 +1,7 @@
 package com.example.haliyikamaapp.ToolLayer;
 
 import com.example.haliyikamaapp.Model.Entity.AuthToken;
+import com.example.haliyikamaapp.Model.Entity.Hesap;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.Model.Entity.MusteriTuru;
 import com.example.haliyikamaapp.Model.Entity.Permissions;
@@ -123,6 +124,13 @@ public interface RefrofitRestApi {
 
     @PUT()
     Call<S_User> putUpdateUser (@Url String url, @Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body S_User user);
+
+    @POST("hy/hesap/list/")
+    Call<String> getHesapList (@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Header("Content-Type") String content,  @Body String object);
+
+    @POST("hy/hesap")
+    Call<Hesap> postHesap (@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body Hesap hesap);
+
 
 }
 

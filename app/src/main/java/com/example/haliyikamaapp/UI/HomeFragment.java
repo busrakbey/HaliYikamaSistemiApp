@@ -1,6 +1,7 @@
 package com.example.haliyikamaapp.UI;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.view.LayoutInflater;
@@ -24,7 +25,7 @@ import java.util.List;
 
 public class HomeFragment extends Fragment {
     Toolbar toolbar;
-    CardView siparis_button, musteri_button, ayarlar_button, musteri_gorevlerim_button;
+    CardView siparis_button, musteri_button, ayarlar_button, musteri_gorevlerim_button, hesap_cardview, kaynak_cardview;
     TextView toplam_musteri_tw, toplam_siparis_tw;
     HaliYikamaDatabase db;
 
@@ -51,6 +52,9 @@ public class HomeFragment extends Fragment {
         siparis_button = (CardView) view.findViewById(R.id.siparis_cardview);
         musteri_gorevlerim_button = (CardView) view.findViewById(R.id.mus_gorevlerim_cardview);
         ayarlar_button = (CardView) view.findViewById(R.id.ayarlar_cardview);
+        hesap_cardview = (CardView) view.findViewById(R.id.hesap_cardview);
+        kaynak_cardview = (CardView) view.findViewById(R.id.kaynaklar_cardview);
+
 
         musteri_button.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("RestrictedApi")
@@ -112,6 +116,33 @@ public class HomeFragment extends Fragment {
 
             }
         });
+
+        hesap_cardview.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("RestrictedApi")
+
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), HesapActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
+        ayarlar_button.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onClick(View view) {
+
+                Fragment selectedFragment = new AyarlarFragment();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        selectedFragment).commit();
+                ((MainActivity) getActivity()).initToolBar("Ayarlar");
+                ((MainActivity) getActivity()).ekleButon.setVisibility(View.GONE);
+
+
+            }
+        });
+
 
         toplam_musteri_tw = (TextView) view.findViewById(R.id.toplam_kayit_musteri);
         toplam_siparis_tw = (TextView) view.findViewById(R.id.toplam_kayit_siparis);

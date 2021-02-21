@@ -15,6 +15,10 @@ public interface HesapDao {
     @Query("SELECT * FROM HESAP order by tarih desc")
     List<Hesap> getHesapAll();
 
+    @Query("SELECT * FROM HESAP where senkronEdildi = 0")
+    List<Hesap> getSenkronEdilmeyenAll();
+
+
     @Insert
     long setHesap(Hesap hesap);
 
@@ -40,10 +44,12 @@ public interface HesapDao {
     @Query("SELECT * FROM HESAP where id = :id")
     List<Hesap> getHesapForHesapId(Long id);
 
-    @Query("SELECT detayNeden FROM HESAP order by detayNeden asc")
+    @Query("SELECT * FROM HESAP order by detayNeden asc")
     List<Hesap> getHesapDetayNedenAll();
 
-    List<Hesap> getSenkronEdilmeyenAll();
+    @Query("UPDATE HESAP SET id = :id , senkronEdildi = :senkronEdildiMi  WHERE mid = :mid")
+    int updateHesapQuery(Long mid, Long id, Boolean senkronEdildiMi);
+
 
 
 
