@@ -26,11 +26,18 @@ public class Hesap {
     @ColumnInfo(name = "modifiedDate")
     public String modifiedDate;
 
+    @ColumnInfo(name = "kaynakAdi")
+    public String kaynakAdi;
+
     @ColumnInfo(name = "subeId")
     public Long subeId;
 
     @ColumnInfo(name = "subeMid")
     public Long subeMid;
+
+
+    @ColumnInfo(name = "subeAdi")
+    public String subeAdi;
 
     @ColumnInfo(name = "kaynakId")
     public Long kaynakId;
@@ -53,14 +60,15 @@ public class Hesap {
     @ColumnInfo(name = "aciklama")
     public String aciklama;
 
+
     @ColumnInfo(name = "tenantId")
     public String tenantId;
 
     @ColumnInfo(name = "senkronEdildi")
     public Boolean senkronEdildi;
 
-    @ColumnInfo(name = "ekleyenKullanicii")
-    public String ekleyenKullanicii;
+    @ColumnInfo(name = "ekleyenKullanici")
+    public String ekleyenKullanici;
 
     @NonNull
     public Long getMid() {
@@ -192,10 +200,34 @@ public class Hesap {
     }
 
     public String getEkleyenKullanicii() {
-        return ekleyenKullanicii;
+        return ekleyenKullanici;
     }
 
     public void setEkleyenKullanicii(String ekleyenKullanicii) {
-        this.ekleyenKullanicii = ekleyenKullanicii;
+        this.ekleyenKullanici = ekleyenKullanicii;
+    }
+
+    public String getSubeAdi() {
+        return subeAdi;
+    }
+
+    public void setSubeAdi(String subeAdi) {
+        this.subeAdi = subeAdi;
+    }
+
+    public String getEkleyenKullanici() {
+        return ekleyenKullanici;
+    }
+
+    public void setEkleyenKullanici(String ekleyenKullanici) {
+        this.ekleyenKullanici = ekleyenKullanici;
+    }
+
+    public String getKaynakAdi() {
+        return kaynakAdi;
+    }
+
+    public void setKaynakAdi(String kaynakAdi) {
+        this.kaynakAdi = kaynakAdi;
     }
 }

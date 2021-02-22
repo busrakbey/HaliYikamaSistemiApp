@@ -44,13 +44,11 @@ public interface HesapDao {
     @Query("SELECT * FROM HESAP where id = :id")
     List<Hesap> getHesapForHesapId(Long id);
 
-    @Query("SELECT * FROM HESAP order by detayNeden asc")
-    List<Hesap> getHesapDetayNedenAll();
+    @Query("SELECT detayNeden FROM HESAP where detayNeden != '' group by detayNeden order by detayNeden asc")
+    List<String> getHesapDetayNedenAll();
 
     @Query("UPDATE HESAP SET id = :id , senkronEdildi = :senkronEdildiMi  WHERE mid = :mid")
     int updateHesapQuery(Long mid, Long id, Boolean senkronEdildiMi);
-
-
 
 
 

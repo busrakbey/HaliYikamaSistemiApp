@@ -24,28 +24,21 @@
             android:layout_weight="0.3"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/hesap_sube_item"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Şube"
-                android:textColor="@color/mr_toolbar3"
-                android:textSize="@dimen/text_size_small" />
-
 
             <TextView
-                android:id="@+id/hesap_tarih_item"
+                android:id="@+id/kaynak_plaka_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="21.12.2020"
-                android:textColor="@color/mr_toolbar2"
+                android:textColor="@color/mr_toolbar3"
                 android:textSize="@dimen/text_size_normal"
-                android:textStyle="normal" />
+                android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/hesap_kaynak_item"
+                android:id="@+id/kaynak_marka_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:text="21.12.2020"
                 android:textColor="@color/mr_toolbar3"
                 android:textSize="@dimen/text_size_normal"
@@ -83,18 +76,6 @@
                 android:orientation="horizontal">
 
 
-                <TextView
-                    android:id="@+id/hesap_islem_turu_item"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="0.1"
-                    android:text="300 TL"
-                    android:textColor="@color/mr_toolbar"
-                    android:textSize="@dimen/text_size_medium"
-                    android:textStyle="bold" />
-
-
                 <ImageView
                     android:id="@+id/tl_image"
                     android:layout_width="match_parent"
@@ -109,24 +90,15 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/hesap_tutar_item"
+                android:id="@+id/kaynak_adi_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
                 android:text="SİPARİŞ ALINDI"
-                android:textColor="@color/mr_toolbar2"
+                android:textColor="@color/mr_toolbar"
                 android:textSize="@dimen/text_size_medium"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/hesap_islem_kaynagi_item"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:layout_weight="0.5"
-                android:text="Merkez Şubesi"
-                android:textColor="@color/mr_toolbar3"
-                android:textSize="@dimen/text_size_small" />
         </LinearLayout>
 
 

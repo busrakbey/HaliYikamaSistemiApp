@@ -91,6 +91,9 @@
 
         <activity android:name=".UI.HesapKayitActivity"></activity>
 
+        <activity android:name=".UI.KaynakActivity"></activity>
+
+
 
 
 

@@ -51,6 +51,7 @@
                 android:id="@+id/harcama_tarih"
                 style="@style/modifiedEditText"
                 android:hint="Tarih (*)"
+                android:clickable="true"
                 android:inputType="number" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -67,7 +68,7 @@
                     android:id="@+id/harcama_tutar"
                     style="@style/modifiedEditText"
                     android:hint="Tutar (*)"
-                    android:inputType="text" />
+                    android:inputType="numberDecimal" />
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
@@ -83,19 +84,41 @@
         </com.google.android.material.textfield.TextInputLayout>
 
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/parent"
+        <LinearLayout
+            android:id="@+id/yeni_detay_linear"
             android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/signup_text_margin_top"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:visibility="gone">
 
-            <EditText
-                android:id="@+id/harcama_detay_ekle"
-                style="@style/modifiedEditText"
-                android:clickable="true"
-                android:hint="Yeni Detay Ekle" />
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/parent"
+                android:layout_width="0dp"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:layout_weight="0.9"
+                android:visibility="visible">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <EditText
+                    android:id="@+id/harcama_detay_ekle"
+                    style="@style/modifiedEditText"
+                    android:layout_width="match_parent"
+                    android:clickable="true"
+                    android:hint="Yeni Detay Ekle" />
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ImageView
+                android:id="@+id/yeni_detay_ekle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@drawable/floating_button_check_task">
+
+            </ImageView>
+
+        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"

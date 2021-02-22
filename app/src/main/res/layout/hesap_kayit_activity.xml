@@ -45,18 +45,6 @@
                 android:textStyle="bold"
                 app:fontFamily="@font/segoeuib" />
 
-            <ImageView
-                android:id="@+id/toolbar_right_subtitle"
-                android:layout_width="45dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:layout_marginRight="10dp"
-                android:padding="5dp"
-                android:scaleType="centerCrop"
-                android:singleLine="true"
-                android:src="@drawable/user_profile"
-                android:text="Start a new Journey"
-                android:textSize="16dp" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 

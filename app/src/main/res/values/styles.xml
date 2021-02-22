@@ -103,6 +103,19 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+
+    <style name="harcamaButton" parent="viewParent">
+        <item name="android:background">@drawable/yeni_harcama_button</item>
+        <item name="android:textColor">@color/whiteTextColor</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="paraGirisButton" parent="viewParent">
+        <item name="android:background">@drawable/yeni_para_giris_button</item>
+        <item name="android:textColor">@color/whiteTextColor</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="mr_dialog_title_textview">
         <item name="android:textColor">@color/text</item>
         <item name="android:textSize">@dimen/mr_dialog_title_text</item>

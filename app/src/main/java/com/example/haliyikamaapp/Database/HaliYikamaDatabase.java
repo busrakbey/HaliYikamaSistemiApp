@@ -16,6 +16,7 @@ import com.example.haliyikamaapp.Model.Dao.BolgeDao;
 import com.example.haliyikamaapp.Model.Dao.GorevFormBilgileriDao;
 import com.example.haliyikamaapp.Model.Dao.GorevlerDao;
 import com.example.haliyikamaapp.Model.Dao.HesapDao;
+import com.example.haliyikamaapp.Model.Dao.KaynakDao;
 import com.example.haliyikamaapp.Model.Dao.MusteriDao;
 import com.example.haliyikamaapp.Model.Dao.MusteriIletisimDao;
 import com.example.haliyikamaapp.Model.Dao.MusteriTuruDao;
@@ -39,6 +40,7 @@ import com.example.haliyikamaapp.Model.Entity.Bolge;
 import com.example.haliyikamaapp.Model.Entity.GorevFomBilgileri;
 import com.example.haliyikamaapp.Model.Entity.Gorevler;
 import com.example.haliyikamaapp.Model.Entity.Hesap;
+import com.example.haliyikamaapp.Model.Entity.Kaynak;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.Model.Entity.MusteriIletisim;
 import com.example.haliyikamaapp.Model.Entity.MusteriTuru;
@@ -67,7 +69,7 @@ import com.example.haliyikamaapp.Model.Entity.UserPermissions;
         Gorevler.class, GorevFomBilgileri.class,
         S_IL.class, S_ILCE.class, Bolge.class, User.class,
         Permissions.class, SubPermissions.class, S_User.class,
-        UserPermissions.class, Sms.class, Hesap.class} ,
+        UserPermissions.class, Sms.class, Hesap.class, Kaynak.class} ,
         version = 1, exportSchema = false)
 public abstract class HaliYikamaDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "SATIS_OTOMASYON_DB";
@@ -98,7 +100,7 @@ public abstract class HaliYikamaDatabase extends RoomDatabase {
     public  abstract UserPermissionsDao userPermissionsDao();
     public  abstract SmsDao smsDao();
     public  abstract HesapDao hesapDao();
-
+    public  abstract KaynakDao kaynakDao();
 
 
 
