@@ -44,7 +44,6 @@ public interface KaynakDao {
     @Query("SELECT * FROM KAYNAK where id = :id")
     List<Kaynak> getkaynakForkaynakId(Long id);
 
-  
 
     @Query("UPDATE KAYNAK SET id = :id , senkronEdildi = :senkronEdildiMi  WHERE mid = :mid")
     int updatekaynakQuery(Long mid, Long id, Boolean senkronEdildiMi);

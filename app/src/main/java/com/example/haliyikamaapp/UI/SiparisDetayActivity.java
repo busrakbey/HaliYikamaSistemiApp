@@ -64,7 +64,7 @@ public class SiparisDetayActivity extends AppCompatActivity {
         setContentView(R.layout.siparis_detay_activity);
         initToolBar();
         init_item();
-       // getSiparisDetayListFromService();
+        // getSiparisDetayListFromService();
         //get_list();
 
     }
@@ -92,8 +92,8 @@ public class SiparisDetayActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent i = new Intent(SiparisDetayActivity.this, SiparisDetayKayitActivity.class);
                 i.putExtra("siparisMid", siparisMid);
-                i.putExtra("subeId" , subeId);
-                i.putExtra("subeMid" , subeMid);
+                i.putExtra("subeId", subeId);
+                i.putExtra("subeMid", subeMid);
                 finish();
                 startActivity(i);
             }
@@ -101,7 +101,12 @@ public class SiparisDetayActivity extends AppCompatActivity {
     }
 
     public void get_list() {
-        final List<SiparisDetay> kisiler = db.siparisDetayDao().getSiparisDetayForMustId(Long.valueOf(siparisMid));
+        final List<SiparisDetay> kisiler;
+        if (siparisId != null)
+            kisiler = db.siparisDetayDao().getSiparisDetayForSiparisId(Long.valueOf(siparisId));
+        else
+            kisiler = db.siparisDetayDao().getSiparisDetayForMustId(Long.valueOf(siparisMid));
+
 
         siparis_detay_adapter = new SiparisDetayAdapter(SiparisDetayActivity.this, kisiler);
         recyclerView.setHasFixedSize(true);
@@ -213,8 +218,6 @@ public class SiparisDetayActivity extends AppCompatActivity {
         super.onResume();
         get_list();
     }
-
-
 
 
 }

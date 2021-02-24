@@ -93,6 +93,8 @@
 
         <activity android:name=".UI.KaynakActivity"></activity>
 
+        <activity android:name=".UI.KaynakKayitActivity"></activity>
+
 
 
 

@@ -63,15 +63,15 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
         ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
         int color1 = generator.getRandomColor();
         int color2 = generator.getColor("user@gmail.com");
-        int color = generator.getColor(data.get(position));
+        int color = generator.getColor(itemsFiltered.get(position));
         TextDrawable.IBuilder builder = TextDrawable.builder()
                 .beginConfig()
                 .withBorder(1)
                 .endConfig()
                 .rect();
-        if (!data.get(position).getMusteriAdi().trim().equalsIgnoreCase("")) {
+        if (!itemsFiltered.get(position).getMusteriAdi().trim().equalsIgnoreCase("")) {
             TextDrawable ic1 = TextDrawable.builder()
-                    .buildRound((data.get(position).getMusteriAdi().substring(0, 1).toUpperCase()), color);
+                    .buildRound((itemsFiltered.get(position).getMusteriAdi().substring(0, 1).toUpperCase()), color);
             holder.isimBasHarfi_item.setImageDrawable(ic1);
         }
 
@@ -80,8 +80,8 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
             @Override
             public void onClick(View view) {
                 Intent musteri = new Intent(mContext, MusteriKayitActivity.class);
-                musteri.putExtra("musteriMid", String.valueOf(data.get(position).getMid()));
-                musteri.putExtra("musteriId", String.valueOf(data.get(position).getId()));
+                musteri.putExtra("musteriMid", String.valueOf(itemsFiltered.get(position).getMid()));
+                musteri.putExtra("musteriId", String.valueOf(itemsFiltered.get(position).getId()));
                 musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.getApplicationContext().startActivity(musteri);
             }
@@ -90,7 +90,7 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
         holder.whatsapp_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String url = "https://api.whatsapp.com/send?phone=+90" + data.get(position).getTelefonNumarasi() + "&text=Merhabalar! ...";
+                String url = "https://api.whatsapp.com/send?phone=+90" + itemsFiltered.get(position).getTelefonNumarasi() + "&text=Merhabalar! ...";
                 try {
                     PackageManager pm = mContext.getApplicationContext().getPackageManager();
                     pm.getPackageInfo("com.whatsapp", PackageManager.GET_ACTIVITIES);
@@ -109,8 +109,8 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
             @Override
             public void onClick(View view) {
                 Intent musteri = new Intent(mContext, MusteriKayitActivity.class);
-                musteri.putExtra("musteriMid", String.valueOf(data.get(position).getMid()));
-                musteri.putExtra("musteriId", String.valueOf(data.get(position).getId()));
+                musteri.putExtra("musteriMid", String.valueOf(itemsFiltered.get(position).getMid()));
+                musteri.putExtra("musteriId", String.valueOf(itemsFiltered.get(position).getId()));
                 musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.getApplicationContext().startActivity(musteri);
             }
@@ -120,7 +120,7 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
             @Override
             public void onClick(View view) {
                 Intent musteri = new Intent(mContext, SiparisKayitActivity.class);
-                musteri.putExtra("musteriMid", String.valueOf(data.get(position).getMid()));
+                musteri.putExtra("musteriMid", String.valueOf(itemsFiltered.get(position).getMid()));
                 musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.getApplicationContext().startActivity(musteri);
             }
@@ -129,11 +129,11 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
             @Override
             public void onClick(View view) {
 
-                if(!data.get(position).getTelefonNumarasi().equalsIgnoreCase(""))
+                if(!itemsFiltered.get(position).getTelefonNumarasi().equalsIgnoreCase(""))
                 {
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_DIAL);
-                    intent.setData(Uri.parse("tel: " + data.get(position).getTelefonNumarasi()));
+                    intent.setData(Uri.parse("tel: " + itemsFiltered.get(position).getTelefonNumarasi()));
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.getApplicationContext().startActivity(intent);
                 }else {
@@ -141,7 +141,7 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
                     while (telefonun_rehberi.moveToNext()) {
                         String isim = telefonun_rehberi.getString(telefonun_rehberi.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                         String numara = telefonun_rehberi.getString(telefonun_rehberi.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        if (isim.equalsIgnoreCase(data.get(position).getMusteriAdi() + " " + data.get(position).getMusteriSoyadi())) {
+                        if (isim.equalsIgnoreCase(itemsFiltered.get(position).getMusteriAdi() + " " + itemsFiltered.get(position).getMusteriSoyadi())) {
                             Intent intent = new Intent();
                             intent.setAction(Intent.ACTION_DIAL); // Action for what intent called for
                             intent.setData(Uri.parse("tel: " + numara)); // Data with intent respective action on intent
@@ -160,12 +160,12 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
             @Override
             public void onClick(View view) {
                 Musteri musteri = new Musteri();
-                musteri.tcKimlikNo = data.get(position).getTcKimlikNo();
-                musteri.vergiKimlikNo = data.get(position).getVergiKimlikNo();
-                musteri.telefonNumarasi = data.get(position).getTelefonNumarasi();
-                musteri.musteriTuru = data.get(position).getMusteriTuru();
-                musteri.musteriAdi = data.get(position).getMusteriAdi();
-                musteri.musteriSoyadi = data.get(position).getMusteriSoyadi();
+                musteri.tcKimlikNo = itemsFiltered.get(position).getTcKimlikNo();
+                musteri.vergiKimlikNo = itemsFiltered.get(position).getVergiKimlikNo();
+                musteri.telefonNumarasi = itemsFiltered.get(position).getTelefonNumarasi();
+                musteri.musteriTuru = itemsFiltered.get(position).getMusteriTuru();
+                musteri.musteriAdi = itemsFiltered.get(position).getMusteriAdi();
+                musteri.musteriSoyadi = itemsFiltered.get(position).getMusteriSoyadi();
              //   ((MainActivity)mContext).postMusteriListFromService(musteri);
             }
         });

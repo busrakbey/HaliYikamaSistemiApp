@@ -362,6 +362,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
                     }
 
+                    if (toolbarTextView.getText().toString().equalsIgnoreCase("Sipariş")) {
+                        SiparisFragment fragment = (SiparisFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                        fragment.siparisAdapter.getFilter().filter(queryString);
+
+                    }
+
 
                     return false;
                 }
@@ -371,6 +377,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     if (toolbarTextView.getText().toString().equalsIgnoreCase("Müşteri")) {
                         MusteriFragment fragment = (MusteriFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
                         fragment.adapter.getFilter().filter(queryString);
+
+                    }
+
+                    if (toolbarTextView.getText().toString().equalsIgnoreCase("Sipariş")) {
+                        SiparisFragment fragment = (SiparisFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                        fragment.siparisAdapter.getFilter().filter(queryString);
 
                     }
                     return false;

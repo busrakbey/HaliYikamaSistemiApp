@@ -1,6 +1,7 @@
 package com.example.haliyikamaapp.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.Kaynak;
 import com.example.haliyikamaapp.R;
+import com.example.haliyikamaapp.UI.KaynakKayitActivity;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -50,6 +52,16 @@ public class KaynakAdapter extends RecyclerView.Adapter<KaynakAdapter.MyViewHold
         holder.kaynak_marka_item.setText(data.get(position).getMarka() != null ?data.get(position).getMarka() : null );
         holder.kaynak_adi_item.setText(data.get(position).getKaynakAdi() != null ? data.get(position).getKaynakAdi() : null);
         holder.kaynak_plaka_item.setText(data.get(position).getPlakaNo() != null ? data.get(position).getPlakaNo() : null);
+
+        holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent musteri = new Intent(mContext, KaynakKayitActivity.class);
+                musteri.putExtra("kaynakId", String.valueOf(data.get(position).getMid()));
+                musteri.putExtra("kaynakMid", String.valueOf(data.get(position).getId()));
+                mContext.getApplicationContext().startActivity(musteri);
+            }
+        });
 
 
     }

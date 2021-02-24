@@ -134,6 +134,9 @@ public interface RefrofitRestApi {
 
     @GET("hy/kaynak")
     Call<List<Kaynak>> getKaynakList (@Header("Authorization") String auth, @Header("tenant-id") String tenantId,@Header("Content-Type") String content);
+
+    @POST("hy/kaynak/")
+    Call<Kaynak> postKaynak (@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Header("Content-Type") String content, @Body Kaynak kaynak);
 }
 
 

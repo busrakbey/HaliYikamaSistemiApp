@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <LinearLayout
@@ -13,6 +13,25 @@
         android:orientation="vertical"
         android:padding="10dp">
         <!-- Title layout -->
+        <LinearLayout
+            android:id="@+id/gorev_araca_yukle_linear"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@color/beyaz"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <Spinner
+                android:id="@+id/gorev_kaynak_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:textColor="@color/text" />
+
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -71,6 +90,14 @@
                 android:textColor="@color/text" />
 
             <EditText
+                android:id="@+id/gorev_teslim_edilecek_not"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:hint="Notlar"
+                android:textColor="@color/text" />
+
+            <EditText
                 android:id="@+id/gorev_tahsil_edilen_tutar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -84,7 +111,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:hint="Tahsilat Tutarı"
+                android:hint="Tahsilat Tutarı(*)"
+                android:textColor="@color/text" />
+
+            <CheckBox
+                android:id="@+id/gorev_hesap_kapat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Hesabı Kapat"
                 android:textColor="@color/text" />
 
         </LinearLayout>
