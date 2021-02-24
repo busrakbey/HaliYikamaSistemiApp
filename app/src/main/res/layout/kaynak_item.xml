@@ -29,9 +29,10 @@
                 android:id="@+id/kaynak_plaka_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
                 android:text="21.12.2020"
                 android:textColor="@color/mr_toolbar3"
-                android:textSize="@dimen/text_size_normal"
+                android:textSize="@dimen/text_size_medium"
                 android:textStyle="bold" />
 
             <TextView
@@ -42,7 +43,8 @@
                 android:text="21.12.2020"
                 android:textColor="@color/mr_toolbar3"
                 android:textSize="@dimen/text_size_normal"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
         </LinearLayout>
 
@@ -95,7 +97,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
                 android:text="SİPARİŞ ALINDI"
-                android:textColor="@color/mr_toolbar"
+                android:textColor="@color/mr_toolbar3"
                 android:textSize="@dimen/text_size_medium"
                 android:textStyle="bold" />
 

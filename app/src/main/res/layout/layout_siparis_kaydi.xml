@@ -45,16 +45,29 @@
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/parent"
-            android:layout_marginTop="@dimen/signup_text_margin_top">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
             <Spinner
                 android:id="@+id/sube_adi"
                 style="@style/modifiedEditText"
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
                 android:hint="Şube"
                 android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
+
+            <Spinner
+                android:id="@+id/siparis_kaynak_spinner"
+                style="@style/modifiedEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:hint="Şube"
+                android:inputType="text" />
+        </LinearLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/parent"
@@ -84,18 +97,19 @@
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/parent"
-            android:layout_marginTop="@dimen/signup_text_margin_top">
+            android:layout_marginTop="@dimen/signup_text_margin_top"
+            android:visibility="gone">
 
             <EditText
                 android:id="@+id/siparis_aciklama"
                 style="@style/modifiedEditText"
-                android:inputType="textMultiLine"
                 android:gravity="top|left"
+                android:hint="Açıklama"
+                android:inputType="textMultiLine"
                 android:lines="8"
                 android:maxLines="12"
                 android:minLines="1"
-                android:scrollbars="vertical"
-                android:hint="Açıklama" />
+                android:scrollbars="vertical" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout

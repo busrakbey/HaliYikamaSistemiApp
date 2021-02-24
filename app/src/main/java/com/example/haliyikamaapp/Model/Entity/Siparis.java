@@ -60,6 +60,9 @@ public class Siparis {
     @ColumnInfo(name = "processInstanceId")
     public Long processInstanceId;
 
+    @ColumnInfo(name = "kaynakId")
+    public Long kaynakId;
+
     @ColumnInfo(name = "barkod")
     public String barkod;
 
@@ -203,12 +206,19 @@ public class Siparis {
         this.processInstanceId = processInstanceId;
     }
 
-
     public String getBarkod() {
         return barkod;
     }
 
     public void setBarkod(String barkod) {
         this.barkod = barkod;
+    }
+
+    public Long getKaynakId() {
+        return kaynakId;
+    }
+
+    public void setKaynakId(Long kaynakId) {
+        this.kaynakId = kaynakId;
     }
 }

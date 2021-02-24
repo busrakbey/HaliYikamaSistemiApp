@@ -28,6 +28,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.haliyikamaapp.AutoCompleteAdapter.MusteriAutoCompleteAdapter;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
+import com.example.haliyikamaapp.Model.Entity.Kaynak;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.Model.Entity.Siparis;
 import com.example.haliyikamaapp.Model.Entity.Sms;
@@ -49,7 +50,7 @@ import java.util.List;
 public class SiparisKayitActivity extends AppCompatActivity {
     Toolbar toolbar;
     FloatingActionButton ekleButon;
-    Spinner sube_spinner;
+    Spinner sube_spinner, kaynak_spinner;
     EditText tarih_edittw, tutar_edittw, aciklama_edittw;
     AutoCompleteTextView musteri_edittw;
     Button kayit_ilerle_button, kayit_tamamla_button;
@@ -62,6 +63,9 @@ public class SiparisKayitActivity extends AppCompatActivity {
     public List<String> subeListString;
     Sube secilenSube;
     String gelenSubeId, gelenSubeMid, gelenMusteriId;
+    Kaynak secili_kaynak;
+    List<Kaynak> kaynakList;
+    List<String> kaynakListString;
 
 
     @SuppressLint("RestrictedApi")
@@ -114,6 +118,9 @@ public class SiparisKayitActivity extends AppCompatActivity {
         kayit_ilerle_button = (Button) findViewById(R.id.musteri_kayit_button);
         kayit_tamamla_button = (Button) findViewById(R.id.musteri_tamamla_button);
         teslim_alinacak_checkbox = (CheckBox) findViewById(R.id.siparis_teslim_alinacakmi);
+        kaynak_spinner = (Spinner) findViewById(R.id.siparis_kaynak_spinner);
+        kaynakList = new ArrayList<Kaynak>();
+        kaynakListString = new ArrayList<String>();
 
 
         Calendar calendar = Calendar.getInstance();
@@ -211,6 +218,38 @@ public class SiparisKayitActivity extends AppCompatActivity {
 
 
                 }
+            }
+        });
+
+        kaynakList.add(null);
+        kaynakList = db.kaynakDao().getkaynakAll();
+        kaynakListString.add("Kaynak");
+        for (Kaynak item : kaynakList) {
+            kaynakListString.add(item.getKaynakAdi());
+        }
+
+        ArrayAdapter<String> dataAdapter_kaynak= new ArrayAdapter<String>(SiparisKayitActivity.this, android.R.layout.simple_spinner_item, kaynakListString);
+        dataAdapter_kaynak.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        kaynak_spinner.setAdapter(dataAdapter_kaynak);
+        kaynak_spinner.setSelection(0);
+
+        kaynak_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position > 0) {
+                    String valInfo = kaynakListString.get(position);
+                    if (valInfo != null) {
+                        secili_kaynak = kaynakList.get(position - 1);
+                    }
+                } else {
+
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
 

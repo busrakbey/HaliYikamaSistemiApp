@@ -50,8 +50,8 @@ public class KaynakAdapter extends RecyclerView.Adapter<KaynakAdapter.MyViewHold
 
 
         holder.kaynak_marka_item.setText(data.get(position).getMarka() != null ?data.get(position).getMarka() : null );
-        holder.kaynak_adi_item.setText(data.get(position).getKaynakAdi() != null ? data.get(position).getKaynakAdi() : null);
-        holder.kaynak_plaka_item.setText(data.get(position).getPlakaNo() != null ? data.get(position).getPlakaNo() : null);
+        holder.kaynak_adi_item.setText(data.get(position).getKaynakTuru() != null ? data.get(position).getKaynakTuru() : null);
+        holder.kaynak_plaka_item.setText(data.get(position).getKaynakAdi() != null ? data.get(position).getKaynakAdi() : null);
 
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override

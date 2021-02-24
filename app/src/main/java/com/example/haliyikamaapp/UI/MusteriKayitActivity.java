@@ -80,6 +80,7 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
     List<String> ilceStringList, musteriTuruStringList;
     int selected_il_index = 0, selected_ilce_index = 0;
     Long secili_il_id=null, secili_ilce_id=null;
+    String editModeGelenIlceAdi = null;
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -313,8 +314,12 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
             }
 
             for (S_ILCE item : ilceler) {
-                if (item != null && item.getId() != null && updateKayitList.get(0).getIlceId()!= null && item.getId().toString().equalsIgnoreCase(updateKayitList.get(0).getIlceId().toString()))
+                if (item != null && item.getId() != null && updateKayitList.get(0).getIlceId()!= null &&
+                        item.getId().toString().equalsIgnoreCase(updateKayitList.get(0).getIlceId().toString())) {
                     ilce_spinner.setSelection(ilceStringList.indexOf(item.getAdi()));
+                    editModeGelenIlceAdi = item.getAdi();
+                }
+
             }
 
 
@@ -577,7 +582,12 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
                         ArrayAdapter<String> dataAdapter_ilce = new ArrayAdapter<String>(MusteriKayitActivity.this, android.R.layout.simple_spinner_item, ilceStringList);
                         dataAdapter_ilce.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
                         ilce_spinner.setAdapter(dataAdapter_ilce);
+                        if(editModeGelenIlceAdi == null)
                         ilce_spinner.setSelection(0);
+                        else {
+                            ilce_spinner.setSelection(ilceStringList.indexOf(editModeGelenIlceAdi));
+
+                        }
 
                     }
                 } else {
