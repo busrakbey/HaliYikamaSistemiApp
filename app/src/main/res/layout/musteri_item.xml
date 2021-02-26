@@ -108,14 +108,15 @@
             android:layout_marginRight="5dp"
             android:orientation="horizontal">
 
-            <ImageView
+            <Button
                 android:id="@+id/new_siparis"
                 android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="12dp"
-                android:src="@drawable/new_siparis"
-                android:visibility="gone" />
+                android:layout_height="wrap_content"
+                android:backgroundTint="#57CFDFF0"
+                android:drawableLeft="@drawable/new_order"
+                android:text="Sipariş"
+                android:textSize="@dimen/loginCardRadius"
+                android:visibility="visible" />
 
             <ImageView
                 android:id="@+id/edit_musteri"

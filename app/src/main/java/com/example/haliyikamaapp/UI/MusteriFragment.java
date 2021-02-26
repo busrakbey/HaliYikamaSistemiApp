@@ -69,6 +69,7 @@ public class MusteriFragment extends Fragment {
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         init_item(view);
+        senkronEdilmeyenKayitlariGonder();
         getMusteriListFromService();
 
 
@@ -112,7 +113,7 @@ public class MusteriFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-        SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(mContext) {
+       /* SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(mContext) {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
                 final int position = viewHolder.getAdapterPosition();
@@ -150,10 +151,10 @@ public class MusteriFragment extends Fragment {
                     }
                 });*/
 
-            }
+           /* }
         };
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeToDeleteCallback);
-        itemTouchhelper.attachToRecyclerView(recyclerView);
+        itemTouchhelper.attachToRecyclerView(recyclerView);*/
 
 
     }
@@ -170,12 +171,6 @@ public class MusteriFragment extends Fragment {
     void getMusteriListFromService() {
 
         RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
-        final ProgressDialog progressDoalog;
-        progressDoalog = new ProgressDialog(getContext());
-        progressDoalog.setMessage("Lütfen bekleyiniz..");
-        progressDoalog.setTitle("SİSTEM");
-        progressDoalog.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
-        progressDoalog.show();
         Call<List<Musteri>> call = refrofitRestApi.getMusteriList(OrtakFunction.authorization, OrtakFunction.tenantId);
         call.enqueue(new Callback<List<Musteri>>() {
             @Override
@@ -189,41 +184,40 @@ public class MusteriFragment extends Fragment {
                     progressDoalog.dismiss();
                     gelenMusteriList = response.body();
                     if (gelenMusteriList != null && gelenMusteriList.size() > 0) {
-                        updateMusteriList = new ArrayList<Musteri>();
-                        final List<Musteri> musteriList = db.musteriDao().getMusteriAll();
-                        for (Musteri item : musteriList) {
+                        Boolean yeniKayitMi = true;
+                        if (db.musteriDao().getMusteriAll().size() == 0)
+                            db.musteriDao().setMusteriList(gelenMusteriList);
+                        else {
+
                             for (Musteri i : gelenMusteriList) {
-                                if (i.getId() == item.getId())
-                                    updateMusteriList.add(i);
+
+                                i.setSenkronEdildi(true);
+                                for (Musteri all : db.musteriDao().getMusteriAll()) {
+
+                                    if (all.getId() != null && all.getId().toString().equalsIgnoreCase(i.getId().toString())) {
+                                        yeniKayitMi = false;
+                                        i.setMid(all.getMid());
+                                        db.musteriDao().updateMusteri(i);
+                                    }
+                                }
+
+                                if (yeniKayitMi)
+                                    db.musteriDao().setMusteri(i);
                             }
                         }
-                        if (gelenMusteriList != null && gelenMusteriList.size() > 0)
-                            gelenMusteriList.removeAll(updateMusteriList);
-                        final List<Long> kayitList = db.musteriDao().setMusteriList(gelenMusteriList);
-
-                        for (Musteri item : updateMusteriList) {
-                            int result = db.musteriDao().updateMusteriAllColumnQuery(item.getId(), item.getMusteriAdi(), item.getMusteriSoyadi(), item.getMusteriTuru(), item.getTelefonNumarasi(),
-                                    item.getVergiKimlikNo(), item.getTcKimlikNo());
-                        }
-                        //   db.musteriDao().updateMusteriList(updateMusteriList);
-                        mActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                if (gelenMusteriList.size() != kayitList.size())
-                                    MessageBox.showAlert(getContext(), "Müşteri listesi alınırken hata oluştu.", false);
-                                else
-                                    get_list();
-                                senkronEdilmeyenKayitlariGonder();
 
 
-                            }
-                        });
+
+                             get_list();
 
 
-                    } else
-                        MessageBox.showAlert(getContext(), "Kayıt bulunamamıştır..", false);
+
+
+                    }
+
+
                 }
+
             }
 
             @Override
@@ -247,15 +241,16 @@ public class MusteriFragment extends Fragment {
     }
 
     Musteri gelenMusteri;
+
     public void postMusteriListFromService(final Musteri musteri) {
         progressDoalog.show();
         Call<Musteri> call;
-        final Long musteriMid =  musteri.getMid();
+        final Long musteriMid = musteri.getMid();
         musteri.setMid(null);
         if (musteri.getId() != null)
             call = refrofitRestApi.putMusteriList("hy/musteri/" + musteri.getId().toString(), OrtakFunction.authorization, OrtakFunction.tenantId, musteri);
         else
-            call = refrofitRestApi.postMusteriList( OrtakFunction.authorization, OrtakFunction.tenantId, musteri);
+            call = refrofitRestApi.postMusteriList(OrtakFunction.authorization, OrtakFunction.tenantId, musteri);
 
         call.enqueue(new Callback<Musteri>() {
             @Override
@@ -270,10 +265,12 @@ public class MusteriFragment extends Fragment {
                     gelenMusteri = response.body();
                     if (gelenMusteri != null) {
 
-                        db.musteriDao().updateMusteriQuery(musteriMid, gelenMusteri.getId(),true);
+                        db.musteriDao().updateMusteriQuery(musteriMid, gelenMusteri.getId(), true);
                         mActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+
+
 
                              /*   if (gelenMusteriList.size() != kayitList.size())
                                     MessageBox.showAlert(MusteriKayitActivity.this, "Müşteri listesi senkron edilirken hata oluştu.", false);

@@ -9,6 +9,7 @@ import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
@@ -55,9 +56,9 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final Musteri myListData = data.get(position);
-        holder.adiSoyadi_item.setText(itemsFiltered.get(position).getMusteriAdi() + " " + itemsFiltered.get(position).getMusteriSoyadi());
+        holder.adiSoyadi_item.setText(itemsFiltered.get(position).getMusteriAdi() + " " + (itemsFiltered.get(position).getMusteriSoyadi() != null ? itemsFiltered.get(position).getMusteriSoyadi() : null));
         holder.telefonNo_item.setText(itemsFiltered.get(position).getTelefonNumarasi());
-        holder.musteri_turu_item.setText(itemsFiltered.get(position).getMusteriTuru() != null ? itemsFiltered.get(position).getMusteriTuru() : ""  + ( itemsFiltered.get(position).getBolge() != null ?  " | " + itemsFiltered.get(position).getBolge() : ""));
+        holder.musteri_turu_item.setText((itemsFiltered.get(position).getAdres() != null ? itemsFiltered.get(position).getAdres() : "") + " / "  + ( itemsFiltered.get(position).getBolge() != null ?  itemsFiltered.get(position).getBolge() : ""));
 
 
         ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
@@ -121,6 +122,9 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
             public void onClick(View view) {
                 Intent musteri = new Intent(mContext, SiparisKayitActivity.class);
                 musteri.putExtra("musteriMid", String.valueOf(itemsFiltered.get(position).getMid()));
+                musteri.putExtra("musteriId", String.valueOf(itemsFiltered.get(position).getId()));
+                musteri.putExtra("subeId", String.valueOf(itemsFiltered.get(position).getSubeId()));
+                musteri.putExtra("subeMid", String.valueOf(itemsFiltered.get(position).getSubeMid()));
                 musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.getApplicationContext().startActivity(musteri);
             }
@@ -230,7 +234,8 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
 
         RelativeLayout relativeLayout;
         public TextView adiSoyadi_item, tarih_item, telefonNo_item,musteri_turu_item;
-        ImageView isimBasHarfi_item, edit_musteri, new_siparis_button, telefon_et_button,senkron_et_button, whatsapp_button;
+        ImageView isimBasHarfi_item, edit_musteri, telefon_et_button,senkron_et_button, whatsapp_button;
+        Button new_siparis_button;
 
 
         public MyViewHolder(View itemView) {
@@ -239,7 +244,7 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
             this.adiSoyadi_item = (TextView) itemView.findViewById(R.id.adi_soyad_item);
             this.telefonNo_item = (TextView) itemView.findViewById(R.id.telefon_no_item);
             this.edit_musteri = (ImageView) itemView.findViewById(R.id.edit_musteri);
-            this.new_siparis_button = (ImageView) itemView.findViewById(R.id.new_siparis);
+            this.new_siparis_button = (Button) itemView.findViewById(R.id.new_siparis);
             this.telefon_et_button = (ImageView) itemView.findViewById(R.id.telefon_button);
             this.senkron_et_button =  (ImageView) itemView.findViewById(R.id.senkron_musteri);
             this.musteri_turu_item = (TextView) itemView.findViewById(R.id.musteri_turu_item);

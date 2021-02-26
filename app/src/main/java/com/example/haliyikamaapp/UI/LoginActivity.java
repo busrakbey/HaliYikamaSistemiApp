@@ -192,7 +192,7 @@ public class LoginActivity extends AppCompatActivity {
 
     String gelenUserList;
 
-    public void getCurrentUserFromService(final String tenantId) {
+    public void getCurrentUserFromService(final String tenantId, final String password) {
 
         RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
         final ProgressDialog progressDoalog;
@@ -204,7 +204,7 @@ public class LoginActivity extends AppCompatActivity {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setDateFormat("M/d/yy hh:mm a");
         final Gson gson = gsonBuilder.create();
-        Call<String> call = refrofitRestApi.getCurrentUserList(OrtakFunction.authorization, OrtakFunction.tenantId);
+        Call<String> call = refrofitRestApi.getCurrentUserList(OrtakFunction.authorization, OrtakFunction.tenantId, "application/json");
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -220,18 +220,19 @@ public class LoginActivity extends AppCompatActivity {
                         try {
                             List<User> gelenUser = Arrays.asList(gson.fromJson(gelenUserList, User.class));
                             Boolean userVarMi = false;
-                            gelenUser.get(0).setPassword(password_edittext.getText().toString());
+                            gelenUser.get(0).setPassword(password);
                             gelenUser.get(0).setTenantId(tenantId);
                             for (User item : db.userDao().getUserAll()) {
                                 if (item.getId() == gelenUser.get(0).getId()) {
                                     gelenUser.get(0).setMid(item.getMid());
-                                    gelenUser.get(0).setPassword(item.getPassword());
+                                    gelenUser.get(0).setPassword(password);
                                     db.userDao().updateUserList(gelenUser);
                                     userVarMi = true;
                                 }
                             }
                             if (!userVarMi) {
                                 db.userDao().deleteUserAll();
+                                gelenUser.get(0).setPassword(password);
                                 db.userDao().setUserList(gelenUser);
                             }
 

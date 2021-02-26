@@ -209,7 +209,7 @@ public class KaynakActivity extends AppCompatActivity {
                     db.kaynakDao().deletekaynakAll();
                     gelenKaynakList = response.body();
 
-                    db.kaynakDao().setkaynakList(gelenKaynakList);
+                   // db.kaynakDao().setkaynakList(gelenKaynakList);
                     for (Kaynak i : gelenKaynakList) {
 
                         i.setSenkronEdildi(true);

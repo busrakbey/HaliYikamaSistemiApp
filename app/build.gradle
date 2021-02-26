@@ -71,6 +71,10 @@ dependencies {
     implementation 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
 
     implementation 'com.twilio.sdk:twilio:7.+'
+    implementation 'org.honorato.multistatetogglebutton:multistatetogglebutton:0.2.2'
+    implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
+
+
 
 
 

@@ -56,12 +56,18 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
     private ProgressDialog mBluetoothConnectProgressDialog;
     private BluetoothSocket mBluetoothSocket;
     BluetoothDevice mBluetoothDevice;
+    String gelenSiparisId, gelenSiparisMid, gelenSubeAdi;
 
     @Override
     public void onCreate(Bundle mSavedInstanceState) {
         super.onCreate(mSavedInstanceState);
         setContentView(R.layout.bluetooth_activity);
         mScan = (Button) findViewById(R.id.Scan);
+
+        gelenSiparisId = getIntent().getStringExtra("siparisId");
+        gelenSiparisMid = getIntent().getStringExtra("siparisMid");
+        gelenSubeAdi = getIntent().getStringExtra("subeAdi");
+
         mScan.setOnClickListener(new View.OnClickListener() {
             public void onClick(View mView) {
                 mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -87,7 +93,7 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
         mPrint = (Button) findViewById(R.id.mPrint);
         mPrint.setOnClickListener(new View.OnClickListener() {
             public void onClick(View mView) {
-                barkodYazici(null, "ZUMRUT - BETA HALI YIKAMA");
+                barkodYazici(gelenSiparisId != null ? gelenSiparisId : gelenSiparisMid, gelenSubeAdi);
             }
         });
 
@@ -256,7 +262,7 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
         return null;
     }
 
-    public void barkodYazici(Long siparisId, final String subeAdi) {
+    public void barkodYazici(String siparisId, final String subeAdi) {
 
         OutputStream os = null;
         try {

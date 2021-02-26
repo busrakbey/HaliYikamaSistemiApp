@@ -15,17 +15,21 @@ public class Gorevler {
     @ColumnInfo(name = "mustId")
     Long mustId;
 
-    @ColumnInfo(name = "id")
-    public Long id;
+    @ColumnInfo(name = "taskId")
+    public Long taskId;
 
-    @ColumnInfo(name = "name")
-    public String name;
+    @ColumnInfo(name = "taskName")
+    public String taskName;
 
-    @ColumnInfo(name = "description")
-    public String description;
+    @ColumnInfo(name = "taskDescription")
+    public String taskDescription;
+
+    @ColumnInfo(name = "taskDefKey")
+    public String taskDefKey;
 
     @ColumnInfo(name = "priority")
     public String priority;
+
 
     @ColumnInfo(name = "owner")
     public String owner;
@@ -33,20 +37,18 @@ public class Gorevler {
     @ColumnInfo(name = "assignee")
     public String assignee;
 
-    @ColumnInfo(name = "processInstanceId")
-    public Long processInstanceId;
+    @ColumnInfo(name = "procInstId")
+    public Long procInstId;
 
     @ColumnInfo(name = "executionId")
     public Long executionId;
 
-    @ColumnInfo(name = "processDefinitionId")
-    public String processDefinitionId;
+    @ColumnInfo(name = "procDefId")
+    public String procDefId;
 
-    @ColumnInfo(name = "createTime")
-    public String createTime;
+    @ColumnInfo(name = "taskCreateTime")
+    public String taskCreateTime;
 
-    @ColumnInfo(name = "endTime")
-    public String endTime;
 
     @ColumnInfo(name = "taskDefinitionKey")
     public String taskDefinitionKey;
@@ -54,8 +56,8 @@ public class Gorevler {
     @ColumnInfo(name = "dueDate")
     public String dueDate;
 
-    @ColumnInfo(name = "category")
-    public String category;
+    @ColumnInfo(name = "taskCategory")
+    public String taskCategory;
 
     @ColumnInfo(name = "parentTaskId")
     public Long parentTaskId;
@@ -72,11 +74,41 @@ public class Gorevler {
     @ColumnInfo(name = "subeId")
     public Long subeId;
 
+    @ColumnInfo(name = "kaynakId")
+    public Long kaynakId;
+
     @ColumnInfo(name = "musteriId")
     public Long musteriId;
 
     @ColumnInfo(name = "teslimAlinacak")
     public String teslimAlinacak;
+
+    @ColumnInfo(name = "siparisTarihi")
+    public String siparisTarihi;
+
+    @ColumnInfo(name = "siparisDurumu")
+    public String siparisDurumu;
+
+    @ColumnInfo(name = "kaynakAdi")
+    public String kaynakAdi;
+
+    @ColumnInfo(name = "musteriAdi")
+    public String musteriAdi;
+
+    @ColumnInfo(name = "musteriSoyadi")
+    public String musteriSoyadi;
+
+    @ColumnInfo(name = "musteriTuru")
+    public String musteriTuru;
+
+    @ColumnInfo(name = "telefonNumarasi")
+    public String telefonNumarasi;
+
+    @ColumnInfo(name = "subeAdi")
+    public String subeAdi;
+
+    @ColumnInfo(name = "siparisToplamTutar")
+    public Double siparisToplamTutar;
 
     @ColumnInfo(name = "claimTime")
     public String claimTime;
@@ -96,14 +128,6 @@ public class Gorevler {
     @ColumnInfo(name = "senkronEdildi")
     public Boolean senkronEdildi;
 
-    public Boolean getSenkronEdildi() {
-        return senkronEdildi;
-    }
-
-    public void setSenkronEdildi(Boolean senkronEdildi) {
-        this.senkronEdildi = senkronEdildi;
-    }
-
     @NonNull
     public Long getMid() {
         return mid;
@@ -121,28 +145,37 @@ public class Gorevler {
         this.mustId = mustId;
     }
 
-    public Long getId() {
-        return id;
+    public Long getTaskId() {
+        return taskId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setTaskId(Long taskId) {
+        this.taskId = taskId;
     }
 
-    public String getName() {
-        return name;
+    public String getTaskCreateTime() {
+        return taskCreateTime;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTaskCreateTime(String taskCreateTime) {
+        this.taskCreateTime = taskCreateTime;
     }
 
-    public String getDescription() {
-        return description;
+
+    public String getTaskDescription() {
+        return taskDescription;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setTaskDescription(String taskDescription) {
+        this.taskDescription = taskDescription;
+    }
+
+    public String getTaskDefKey() {
+        return taskDefKey;
+    }
+
+    public void setTaskDefKey(String taskDefKey) {
+        this.taskDefKey = taskDefKey;
     }
 
     public String getPriority() {
@@ -151,6 +184,14 @@ public class Gorevler {
 
     public void setPriority(String priority) {
         this.priority = priority;
+    }
+
+    public String getTaskName() {
+        return taskName;
+    }
+
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
     }
 
     public String getOwner() {
@@ -169,12 +210,12 @@ public class Gorevler {
         this.assignee = assignee;
     }
 
-    public Long getProcessInstanceId() {
-        return processInstanceId;
+    public Long getProcInstId() {
+        return procInstId;
     }
 
-    public void setProcessInstanceId(Long processInstanceId) {
-        this.processInstanceId = processInstanceId;
+    public void setProcInstId(Long procInstId) {
+        this.procInstId = procInstId;
     }
 
     public Long getExecutionId() {
@@ -185,28 +226,20 @@ public class Gorevler {
         this.executionId = executionId;
     }
 
-    public String getProcessDefinitionId() {
-        return processDefinitionId;
+    public String getProcDefId() {
+        return procDefId;
     }
 
-    public void setProcessDefinitionId(String processDefinitionId) {
-        this.processDefinitionId = processDefinitionId;
+    public void setProcDefId(String procDefId) {
+        this.procDefId = procDefId;
     }
 
     public String getCreateTime() {
-        return createTime;
+        return taskCreateTime;
     }
 
     public void setCreateTime(String createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
+        this.taskCreateTime = createTime;
     }
 
     public String getTaskDefinitionKey() {
@@ -225,12 +258,12 @@ public class Gorevler {
         this.dueDate = dueDate;
     }
 
-    public String getCategory() {
-        return category;
+    public String getTaskCategory() {
+        return taskCategory;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setTaskCategory(String taskCategory) {
+        this.taskCategory = taskCategory;
     }
 
     public Long getParentTaskId() {
@@ -273,6 +306,14 @@ public class Gorevler {
         this.subeId = subeId;
     }
 
+    public Long getKaynakId() {
+        return kaynakId;
+    }
+
+    public void setKaynakId(Long kaynakId) {
+        this.kaynakId = kaynakId;
+    }
+
     public Long getMusteriId() {
         return musteriId;
     }
@@ -287,6 +328,78 @@ public class Gorevler {
 
     public void setTeslimAlinacak(String teslimAlinacak) {
         this.teslimAlinacak = teslimAlinacak;
+    }
+
+    public String getSiparisTarihi() {
+        return siparisTarihi;
+    }
+
+    public void setSiparisTarihi(String siparisTarihi) {
+        this.siparisTarihi = siparisTarihi;
+    }
+
+    public String getSiparisDurumu() {
+        return siparisDurumu;
+    }
+
+    public void setSiparisDurumu(String siparisDurumu) {
+        this.siparisDurumu = siparisDurumu;
+    }
+
+    public String getKaynakAdi() {
+        return kaynakAdi;
+    }
+
+    public void setKaynakAdi(String kaynakAdi) {
+        this.kaynakAdi = kaynakAdi;
+    }
+
+    public String getMusteriAdi() {
+        return musteriAdi;
+    }
+
+    public void setMusteriAdi(String musteriAdi) {
+        this.musteriAdi = musteriAdi;
+    }
+
+    public String getMusteriSoyadi() {
+        return musteriSoyadi;
+    }
+
+    public void setMusteriSoyadi(String musteriSoyadi) {
+        this.musteriSoyadi = musteriSoyadi;
+    }
+
+    public String getMusteriTuru() {
+        return musteriTuru;
+    }
+
+    public void setMusteriTuru(String musteriTuru) {
+        this.musteriTuru = musteriTuru;
+    }
+
+    public String getTelefonNumarasi() {
+        return telefonNumarasi;
+    }
+
+    public void setTelefonNumarasi(String telefonNumarasi) {
+        this.telefonNumarasi = telefonNumarasi;
+    }
+
+    public String getSubeAdi() {
+        return subeAdi;
+    }
+
+    public void setSubeAdi(String subeAdi) {
+        this.subeAdi = subeAdi;
+    }
+
+    public Double getSiparisToplamTutar() {
+        return siparisToplamTutar;
+    }
+
+    public void setSiparisToplamTutar(Double siparisToplamTutar) {
+        this.siparisToplamTutar = siparisToplamTutar;
     }
 
     public String getClaimTime() {
@@ -329,6 +442,12 @@ public class Gorevler {
         this.projectName = projectName;
     }
 
+    public Boolean getSenkronEdildi() {
+        return senkronEdildi;
+    }
 
+    public void setSenkronEdildi(Boolean senkronEdildi) {
+        this.senkronEdildi = senkronEdildi;
+    }
 }
 

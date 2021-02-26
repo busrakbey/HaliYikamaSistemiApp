@@ -304,8 +304,13 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
 
 
             for (Sube item : db.subeDao().getSubeAll()) {
-                if (item != null && item.getId() != null && updateKayitList.get(0).getSubeId()!= null && item.getId().toString().equalsIgnoreCase(updateKayitList.get(0).getSubeId().toString()))
+                if (item != null && item.getId() != null && updateKayitList.get(0).getSubeId()!= null &&
+                        item.getId().toString().equalsIgnoreCase(updateKayitList.get(0).getSubeId().toString())) {
                     sube_spinner.setSelection(subeListString.indexOf(item.getSubeAdi()));
+                    secili_sube_id = updateKayitList.get(0).getSubeId();
+                    secili_sube_mid = updateKayitList.get(0).getSubeMid();
+
+                }
             }
 
             for (Bolge item : db.bolgeDao().getBolgeAll()) {
@@ -318,6 +323,7 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
                         item.getId().toString().equalsIgnoreCase(updateKayitList.get(0).getIlceId().toString())) {
                     ilce_spinner.setSelection(ilceStringList.indexOf(item.getAdi()));
                     editModeGelenIlceAdi = item.getAdi();
+                    secili_ilce_id = updateKayitList.get(0).getIlceId();
                 }
 
             }
@@ -358,9 +364,9 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
         }
         Intent i = new Intent(MusteriKayitActivity.this, SiparisKayitActivity.class);
         i.putExtra("musteriMid", gelenMusteriMid != null ? gelenMusteriMid : String.valueOf(yeniKayitMusteriMid));
-        i.putExtra("musteriId", gelenMusteriId);
-        i.putExtra("subeId" , secili_sube_id);
-        i.putExtra("subeMid" , secili_sube_mid);
+        i.putExtra("musteriId", gelenMusteriId != null ? String.valueOf(gelenMusteriId) : null);
+        i.putExtra("subeId" , secili_sube_id != null ? String.valueOf(secili_sube_id) : null);
+        i.putExtra("subeMid" , secili_sube_mid != null ? String.valueOf(secili_sube_mid) : null);
         startActivity(i);
     }
 

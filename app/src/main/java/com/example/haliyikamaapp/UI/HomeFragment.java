@@ -41,7 +41,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // initToolBar(view);
+         //initToolBar(view);
         set_item(view);
 
 
@@ -60,12 +60,12 @@ public class HomeFragment extends Fragment {
             @SuppressLint("RestrictedApi")
             @Override
             public void onClick(View view) {
-                Fragment selectedFragment = new MusteriFragment();
+             /*   Fragment selectedFragment = new MusteriFragment();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         selectedFragment).commit();
                 ((MainActivity) getActivity()).initToolBar("Müşteri");
                 ((MainActivity) getActivity()).ekleButon.setVisibility(View.VISIBLE);
-                ((MainActivity) getActivity()).click_ekle_button("Müşteri");
+                ((MainActivity) getActivity()).click_ekle_button("Müşteri");*/
                 ((MainActivity) getActivity()).bottomNavigationView.setSelectedItemId(R.id.nav_musteri);
 
             }
@@ -75,12 +75,12 @@ public class HomeFragment extends Fragment {
             @SuppressLint("RestrictedApi")
             @Override
             public void onClick(View view) {
-                Fragment selectedFragment = new SiparisFragment();
+                /*Fragment selectedFragment = new SiparisFragment();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         selectedFragment).commit();
                 ((MainActivity) getActivity()).initToolBar("Sipariş");
                 ((MainActivity) getActivity()).ekleButon.setVisibility(View.VISIBLE);
-                ((MainActivity) getActivity()).click_ekle_button("Sipariş");
+                ((MainActivity) getActivity()).click_ekle_button("Sipariş");*/
                 ((MainActivity) getActivity()).bottomNavigationView.setSelectedItemId(R.id.nav_siparis);
 
 
@@ -92,11 +92,11 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
-                Fragment selectedFragment = new MusteriGorevlerimFragment();
+               /* Fragment selectedFragment = new MusteriGorevlerimFragment();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         selectedFragment).commit();
                 ((MainActivity) getActivity()).initToolBar("Görevlerim");
-                ((MainActivity) getActivity()).ekleButon.setVisibility(View.VISIBLE);
+                ((MainActivity) getActivity()).ekleButon.setVisibility(View.VISIBLE);*/
                 ((MainActivity) getActivity()).bottomNavigationView.setSelectedItemId(R.id.nav_musterigorevlerim);
 
             }

@@ -36,6 +36,9 @@ public class Siparis {
     @ColumnInfo(name = "siparisTarihi")
     public String siparisTarihi;
 
+    @ColumnInfo(name = "teslimTarihi")
+    public String teslimTarihi;
+
     @ColumnInfo(name = "siparisTutar")
     public Double siparisTutar;
 
@@ -63,11 +66,23 @@ public class Siparis {
     @ColumnInfo(name = "kaynakId")
     public Long kaynakId;
 
+    @ColumnInfo(name = "kaynakMid")
+    public Long kaynakMid;
+
     @ColumnInfo(name = "barkod")
     public String barkod;
 
     @ColumnInfo(name = "senkronEdildi")
     public Boolean senkronEdildi;
+
+
+    public String getTeslimTarihi() {
+        return teslimTarihi;
+    }
+
+    public void setTeslimTarihi(String teslimTarihi) {
+        this.teslimTarihi = teslimTarihi;
+    }
 
     public Boolean getSenkronEdildi() {
         return senkronEdildi;
@@ -220,5 +235,13 @@ public class Siparis {
 
     public void setKaynakId(Long kaynakId) {
         this.kaynakId = kaynakId;
+    }
+
+    public Long getKaynakMid() {
+        return kaynakMid;
+    }
+
+    public void setKaynakMid(Long kaynakMid) {
+        this.kaynakMid = kaynakMid;
     }
 }

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:mstb="http://schemas.android.com/tools">
+
+
+
+    <RelativeLayout
+        android:id="@+id/search_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:background="#3F51B5"
+        android:padding="@dimen/activity_horizontal_margin">
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search_view"
+            style="@style/SearchAutoCompleteTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/tamamla_shape_bk"
+            app:queryHint="Görev Ara" />
+    </RelativeLayout>
+
+    <RadioGroup
+
+        android:id="@+id/tarih_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:orientation="horizontal"
+        android:layout_below="@id/search_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <RadioButton
+            android:id="@+id/filtre_tarih_bugun"
+            android:layout_width="wrap_content"
+            android:layout_height="34dp"
+            android:background="@drawable/radio_flat_selector"
+            android:button="@android:color/transparent"
+            android:checked="true"
+            android:gravity="center"
+            android:paddingLeft="16dp"
+            android:paddingTop="3dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="3dp"
+            android:text="  Bugün  "
+            android:textColor="@drawable/radio_flat_text_selector"
+            android:textStyle="bold" />
+
+        <RadioButton
+            android:id="@+id/filtre_tarih_yarin"
+            android:layout_width="wrap_content"
+            android:layout_height="34dp"
+            android:background="@drawable/radio_flat_selector"
+            android:button="@android:color/transparent"
+            android:gravity="center"
+            android:paddingLeft="16dp"
+            android:paddingTop="3dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="3dp"
+            android:text="İleri Tarih"
+            android:textColor="@drawable/radio_flat_text_selector"
+            android:textStyle="bold" />
+
+        <com.example.haliyikamaapp.ToolLayer.MultiSelectionSpinner
+            android:id="@+id/spinner_gorev_durum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="34dp"
+            android:background="@drawable/radio_flat_selector"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginLeft="15dp" />
+
+    </RadioGroup>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/musterigorevlerim_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tarih_radio_group"
+        android:layout_marginTop="10dp"
+        android:clickable="true"
+        android:scrollbars="vertical">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+
+</RelativeLayout>

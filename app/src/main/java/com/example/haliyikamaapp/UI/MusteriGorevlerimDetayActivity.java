@@ -146,8 +146,8 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
         }
 
 
-        if ((gorevList != null && gorevList.size() > 0) && (!gorevList.get(0).getName().equalsIgnoreCase("Araca Yükle")
-                || !gorevList.get(0).getName().equalsIgnoreCase("Yikama"))) {
+        if ((gorevList != null && gorevList.size() > 0) && (!gorevList.get(0).getTaskName().equalsIgnoreCase("Araca Yükle")
+                || !gorevList.get(0).getTaskName().equalsIgnoreCase("Yikama"))) {
             List<GorevFomBilgileri> formBilgiList = db.gorevFomBilgileriDao().getGorevId(Long.valueOf(gorevId));
             for (GorevFomBilgileri item : formBilgiList) {
                 if (item.getId().equalsIgnoreCase("notlar")) {
@@ -156,10 +156,7 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
                     if (notGirilecekMi == true && item.getRequired() == true)
                         notZorunluMu = true;
                 }
-                if (item.getId().equalsIgnoreCase("urunListesi")) {
-                    urunListesiVarMi = true;
-                    urun_item = item;
-                }
+
                 if (item.getId().equalsIgnoreCase("urunListesi")) {
                     urunEkleButton.setVisibility(View.VISIBLE);
                     urunListesiVarMi = true;
@@ -502,7 +499,7 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
         JSONObject disObje = new JSONObject();
         final JSONArray urunArray = new JSONArray();
 
-        if (gorevlerList != null && gorevlerList.size() != 0 && gorevlerList.get(0).getName().equalsIgnoreCase("TeslimAl")) {
+        if (gorevlerList != null && gorevlerList.size() != 0 && gorevlerList.get(0).getTaskName().equalsIgnoreCase("TeslimAl")) {
             disObje.put("notlar", gorevNotu);
             if (siparisDetayList != null && siparisDetayList.size() > 0)
                 for (SiparisDetay item : siparisDetayList) {

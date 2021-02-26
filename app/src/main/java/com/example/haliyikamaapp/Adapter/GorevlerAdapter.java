@@ -15,7 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.Gorevler;
+import com.example.haliyikamaapp.Model.Entity.Musteri;
+import com.example.haliyikamaapp.Model.Entity.Siparis;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.UI.MusteriGorevlerimDetayActivity;
 
@@ -30,7 +33,7 @@ public class GorevlerAdapter extends RecyclerView.Adapter<GorevlerAdapter.MyView
 
     private List<Gorevler> data;
     private Context mContext;
-
+    HaliYikamaDatabase db;
 
     public GorevlerAdapter(Context mContext, List<Gorevler> data) {
         this.data = data;
@@ -45,23 +48,38 @@ public class GorevlerAdapter extends RecyclerView.Adapter<GorevlerAdapter.MyView
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
+        db = HaliYikamaDatabase.getInstance(mContext);
+
         final Gorevler myListData = data.get(position);
-        if(data.get(position).getStartTime() != null) {
-            Timestamp stamp = new Timestamp(Long.valueOf(data.get(position).getStartTime()));
+        if(data.get(position).getSiparisTarihi() != null) {
+            Timestamp stamp = new Timestamp(Long.valueOf(data.get(position).getSiparisTarihi()));
             DateFormat f = new SimpleDateFormat("dd.MM.yyyy HH:mm");
             Date date = new Date(stamp.getTime());
             holder.tarih_item.setText(f.format(date));
         }
 
-        holder.siparis_tutari_item.setText(data.get(position).getDescription());
-        holder.sipariş_durumu_item.setText(data.get(position).getCategory());
+        holder.siparis_tutari_item.setText(data.get(position).getTaskDescription());
+        holder.sipariş_durumu_item.setText(data.get(position).getTaskCategory());
+
+        List<Musteri> musteriList = db.musteriDao().getMusteriForId(data.get(position).getMusteriId());
+        holder.adres_item.setText(musteriList.size() > 0 ? ((musteriList.get(0).getAdres() != null ? musteriList.get(0).getAdres() : "") + " / "
+                + (musteriList.get(0).getBolge() != null ?  musteriList.get(0).getBolge() : "")) : "");
+
+        List<Siparis> siparisList = db.siparisDao().getSiparisForSiparisId(data.get(position).getSiparisId());
+
+        holder.adres_item2.setText(siparisList.size() > 0 ? siparisList.get(0).getAciklama() : "");
+
+        holder.sube_item.setText(data.get(position).getSubeAdi());
+        holder.musteri_adi.setText(data.get(position).getMusteriAdi() + " " + (data.get(position).getMusteriSoyadi() != null ? data.get(position).getMusteriSoyadi() : ""));
+        holder.siparis_tutari_item.setText(data.get(position).getSiparisToplamTutar() != null ? String.valueOf(data.get(position).getSiparisToplamTutar()) : null);
+
 
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent musteri = new Intent(mContext, MusteriGorevlerimDetayActivity.class);
                 musteri.putExtra("gorevMid" , String.valueOf(data.get(position).getMid()));
-                musteri.putExtra("gorevId" , String.valueOf(data.get(position).getId()));
+                musteri.putExtra("gorevId" , String.valueOf(data.get(position).getTaskId()));
                 musteri.putExtra("siparisId" , String.valueOf(data.get(position).getSiparisId()));
                 musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.getApplicationContext().startActivity(musteri);
@@ -96,7 +114,7 @@ public class GorevlerAdapter extends RecyclerView.Adapter<GorevlerAdapter.MyView
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         RelativeLayout relativeLayout;
-        public TextView tarih_item, sipariş_durumu_item, siparis_tutari_item, sube_item;
+        public TextView tarih_item, sipariş_durumu_item, siparis_tutari_item, sube_item, adres_item, musteri_adi, adres_item2;
 
 
         public MyViewHolder(View itemView) {
@@ -105,6 +123,10 @@ public class GorevlerAdapter extends RecyclerView.Adapter<GorevlerAdapter.MyView
             this.siparis_tutari_item = (TextView) itemView.findViewById(R.id.siparis_tutari_item);
             this.sipariş_durumu_item = (TextView) itemView.findViewById(R.id.siparis_durum_item);
             this.sube_item = (TextView) itemView.findViewById(R.id.siparis_sube_item);
+            this.adres_item = (TextView) itemView.findViewById(R.id.siparis_adres_item);
+            this.adres_item2 = (TextView) itemView.findViewById(R.id.siparis_adres_item2);
+
+            this.musteri_adi = (TextView) itemView.findViewById(R.id.siparis_musteri_adi);
 
             relativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayout);
         }

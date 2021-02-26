@@ -15,7 +15,7 @@ import static androidx.room.OnConflictStrategy.IGNORE;
 
 @Dao
 public interface MusteriDao {
-    @Query("SELECT * FROM MUSTERI")
+    @Query("SELECT * FROM MUSTERI order by musteriAdi asc ")
     List<Musteri> getMusteriAll();
 
     @Query("SELECT * FROM MUSTERI where senkronEdildi = 0")

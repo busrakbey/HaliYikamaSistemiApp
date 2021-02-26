@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,10 +63,11 @@ public class SiparisKayitActivity extends AppCompatActivity {
     Musteri secilenMusteri;
     public List<String> subeListString;
     Sube secilenSube;
-    String gelenSubeId, gelenSubeMid, gelenMusteriId;
+    String gelenSubeId, gelenSubeMid, gelenMusteriId, seciliSubeAdi;
     Kaynak secili_kaynak;
     List<Kaynak> kaynakList;
     List<String> kaynakListString;
+    ImageView siparisBarkodYazdirButton;
 
 
     @SuppressLint("RestrictedApi")
@@ -121,6 +123,7 @@ public class SiparisKayitActivity extends AppCompatActivity {
         kaynak_spinner = (Spinner) findViewById(R.id.siparis_kaynak_spinner);
         kaynakList = new ArrayList<Kaynak>();
         kaynakListString = new ArrayList<String>();
+        siparisBarkodYazdirButton = (ImageView) findViewById(R.id.siparis_barkod_yazdir);
 
 
         Calendar calendar = Calendar.getInstance();
@@ -142,6 +145,17 @@ public class SiparisKayitActivity extends AppCompatActivity {
                         }, year, month, dayOfMonth);
                 datePickerDialog.show();
 
+            }
+        });
+
+        siparisBarkodYazdirButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent bluetooth = new Intent(SiparisKayitActivity.this,BluetoothActivity.class);
+                bluetooth.putExtra("siparisId" , gelenSiparisId != null ? gelenSiparisId : null);
+                bluetooth.putExtra("siparisMid" , gelenSiparisMid != null ? gelenSiparisMid : null);
+                bluetooth.putExtra("subeAdi", seciliSubeAdi);
+                startActivity(bluetooth);
             }
         });
 
@@ -168,11 +182,12 @@ public class SiparisKayitActivity extends AppCompatActivity {
 
         final List<Sube> subeList = db.subeDao().getSubeAll();
         subeListString = new ArrayList<String>();
-        subeListString.add("Şube Seçiniz..");
+        subeListString.add("Şube");
         for (Sube item : subeList)
             subeListString.add(item.getSubeAdi());
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, subeListString);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sube_spinner.setEnabled(false);
         sube_spinner.setAdapter(adapter);
         sube_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -268,10 +283,13 @@ public class SiparisKayitActivity extends AppCompatActivity {
         if (gelenSubeMid != null) {
             sube_spinner.setEnabled(false);
             allSube = db.subeDao().getSubeForMid(Long.valueOf(gelenSubeMid));
+            seciliSubeAdi = allSube.get(0).getSubeAdi();
         }
         if (gelenSubeId != null) {
             sube_spinner.setEnabled(false);
             allSube = db.subeDao().getSubeForId(Long.valueOf(gelenSubeId));
+            seciliSubeAdi = allSube.get(0).getSubeAdi();
+
         }
         if (allSube != null && allSube.size() > 0)
             sube_spinner.setSelection(subeListString.indexOf(allSube.get(0).getSubeAdi()));

@@ -48,7 +48,7 @@
                 app:fontFamily="@font/segoeuib" />
 
             <ImageView
-                android:id="@+id/toolbar_right_subtitle"
+                android:id="@+id/siparis_barkod_yazdir"
                 android:layout_width="45dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
@@ -56,7 +56,7 @@
                 android:padding="5dp"
                 android:scaleType="centerCrop"
                 android:singleLine="true"
-                android:src="@drawable/user_profile"
+                android:src="@drawable/printer"
                 android:text="Start a new Journey"
                 android:textSize="16dp" />
         </LinearLayout>
