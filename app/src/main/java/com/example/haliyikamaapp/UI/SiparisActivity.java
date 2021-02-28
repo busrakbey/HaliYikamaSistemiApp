@@ -1,27 +1,32 @@
 package com.example.haliyikamaapp.UI;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.haliyikamaapp.Adapter.SiparisAdapter;
-import com.example.haliyikamaapp.Adapter.SwipeToDeleteCallback;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.Model.Entity.Siparis;
@@ -30,12 +35,11 @@ import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
 import com.example.haliyikamaapp.ToolLayer.OrtakFunction;
 import com.example.haliyikamaapp.ToolLayer.RefrofitRestApi;
+import com.example.haliyikamaapp.ToolLayer.SwipeHelper;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,54 +49,82 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class SiparisFragment extends Fragment {
+public class SiparisActivity extends AppCompatActivity {
     RelativeLayout relativeLayout;
     RecyclerView recyclerView;
     HaliYikamaDatabase db;
     SiparisAdapter siparisAdapter;
     Snackbar snackbar;
-    Activity mActivity;
-    Context mContext;
+    Toolbar toolbar;
+
     ProgressDialog progressDoalog;
     RefrofitRestApi refrofitRestApi;
     String gelenMusteriId, gelenMusteriMid, gelenSiparisId, allSiparis;
 
 
-    @Nullable
+    @SuppressLint("RestrictedApi")
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_siparis, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().setStatusBarColor(getResources().getColor(R.color.whiteCardColor));
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+        setContentView(R.layout.siparis_activity);
+        initToolBar();
+        init_item();
+        get_list();
+        swipe_item();
+        //ilIlceSpinnerList();
+
+
+
+
+
+
+    }
+
+    public void initToolBar() {
+        try {
+
+            toolbar = (Toolbar) findViewById(R.id.toolbar);
+            toolbar.setNavigationIcon(R.drawable.left);
+            TextView toolbarTextView = (TextView) findViewById(R.id.toolbar_title);
+            toolbarTextView.setText("Sipariş");
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
     }
 
 
-    @Override
-    public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-
-        init_item(view);
-        senkronEdilmeyenKayitlariGonder();
-
-       // getSiparisListFromService();
-
-        //get_list();
-
-
-    }
-
-    void init_item(View view) {
-        relativeLayout = (RelativeLayout) view.findViewById(R.id.relativeLayout);
-        db = HaliYikamaDatabase.getInstance(getContext());
-        recyclerView = (RecyclerView) view.findViewById(R.id.siparis_recyclerview);
+    void init_item() {
+        relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
+        db = HaliYikamaDatabase.getInstance(SiparisActivity.this);
+        recyclerView = (RecyclerView)findViewById(R.id.siparis_recyclerview);
         refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
-        progressDoalog = new ProgressDialog(getContext());
+        progressDoalog = new ProgressDialog(SiparisActivity.this);
         progressDoalog.setMessage("Lütfen bekleyiniz..");
         progressDoalog.setTitle("SİSTEM");
         progressDoalog.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setSelectedItemId(R.id.nav_musteri);
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
 
-        gelenMusteriId = mActivity.getIntent().getStringExtra("musteriId");
-        gelenMusteriMid = mActivity.getIntent().getStringExtra("musteriMid");
-        gelenSiparisId = mActivity.getIntent().getStringExtra("siparisId");
+        gelenMusteriId = getIntent().getStringExtra("musteriId");
+        gelenMusteriMid = getIntent().getStringExtra("musteriMid");
+        gelenSiparisId = getIntent().getStringExtra("siparisId");
 
     }
 
@@ -130,11 +162,11 @@ public class SiparisFragment extends Fragment {
             siparisler = db.siparisDao().getSiparisForSiparisId(Long.valueOf(gelenSiparisId));
         } else
             siparisler = db.siparisDao().getSiparisAll();
-        siparisAdapter = new SiparisAdapter(getContext(), siparisler);
+        siparisAdapter = new SiparisAdapter(SiparisActivity.this, siparisler);
         siparisAdapter.notifyDataSetChanged();
 
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(SiparisActivity.this));
         recyclerView.setAdapter(siparisAdapter);
         siparisAdapter.notifyDataSetChanged();
 
@@ -174,7 +206,7 @@ public class SiparisFragment extends Fragment {
             public void onResponse(Call<List<Siparis>> call, Response<List<Siparis>> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                    // MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
+                    // MessageBox.showAlert(SiparisActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -183,7 +215,7 @@ public class SiparisFragment extends Fragment {
                     if (gelenSiparisList != null && gelenSiparisList.size() > 0) {
 
 
-                        mActivity.runOnUiThread(new Runnable() {
+                        SiparisActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 for (final Siparis item : gelenSiparisList) {
@@ -204,14 +236,14 @@ public class SiparisFragment extends Fragment {
                                         public void onResponse(Call<List<SiparisDetay>> call, Response<List<SiparisDetay>> response) {
                                             if (!response.isSuccessful()) {
                                                 progressDoalog.dismiss();
-                                                //  MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
+                                                //  MessageBox.showAlert(SiparisActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
                                                 return;
                                             }
                                             if (response.isSuccessful()) {
                                                 progressDoalog.dismiss();
                                                 gelenSiparisDetayList2 = response.body();
 
-                                                mActivity.runOnUiThread(new Runnable() {
+                                                SiparisActivity.this.runOnUiThread(new Runnable() {
                                                     @Override
                                                     public void run() {
 
@@ -241,7 +273,7 @@ public class SiparisFragment extends Fragment {
                                         @Override
                                         public void onFailure(Call<List<SiparisDetay>> call, Throwable t) {
                                             progressDoalog.dismiss();
-                                            MessageBox.showAlert(getContext(), "Hata Oluştu.. " + t.getMessage(), false);
+                                            MessageBox.showAlert(SiparisActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
                                         }
                                     });
 
@@ -254,7 +286,7 @@ public class SiparisFragment extends Fragment {
 
 
                     } /*else
-                        MessageBox.showAlert(getContext(), "Kayıt bulunamamıştır..", false);*/
+                        MessageBox.showAlert(SiparisActivity.this, "Kayıt bulunamamıştır..", false);*/
                 }
                 get_list();
             }
@@ -262,22 +294,13 @@ public class SiparisFragment extends Fragment {
             @Override
             public void onFailure(Call<List<Siparis>> call, Throwable t) {
                 progressDoalog.dismiss();
-                MessageBox.showAlert(getContext(), "Hata Oluştu.. " + t.getMessage(), false);
+                MessageBox.showAlert(SiparisActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
 
 
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        if (context instanceof Activity) {
-            mActivity = (Activity) context;
-            mContext = (Context) context;
-        }
-    }
 
 
     Siparis gelenSiparis;
@@ -293,7 +316,7 @@ public class SiparisFragment extends Fragment {
             public void onResponse(Call<Siparis> call, Response<Siparis> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                    // MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
+                    // MessageBox.showAlert(SiparisActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -302,7 +325,7 @@ public class SiparisFragment extends Fragment {
                     if (gelenSiparis != null) {
 
                         db.siparisDao().updateSiparisQuery(siparisMid, gelenSiparis.getId(), true);
-                        mActivity.runOnUiThread(new Runnable() {
+                        SiparisActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 // db.siparisDao().getSiparisAll()
@@ -333,7 +356,7 @@ public class SiparisFragment extends Fragment {
             @Override
             public void onFailure(Call<Siparis> call, Throwable t) {
                 progressDoalog.dismiss();
-                MessageBox.showAlert(getContext(), "Hata Oluştu.. " + t.getMessage(), false);
+                MessageBox.showAlert(SiparisActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
     }
@@ -370,7 +393,7 @@ public class SiparisFragment extends Fragment {
             public void onResponse(Call<String> call, Response<String> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                    // MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
+                    // MessageBox.showAlert(SiparisActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -379,7 +402,7 @@ public class SiparisFragment extends Fragment {
                     if (gelenSiparisDetayList != null) {
 
 
-                        mActivity.runOnUiThread(new Runnable() {
+                        SiparisActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
 
@@ -390,7 +413,7 @@ public class SiparisFragment extends Fragment {
                                     public void onResponse(Call<List<SiparisDetay>> call, Response<List<SiparisDetay>> response) {
                                         if (!response.isSuccessful()) {
                                             progressDoalog.dismiss();
-                                            //MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
+                                            //MessageBox.showAlert(SiparisActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
                                             return;
                                         }
                                         if (response.isSuccessful()) {
@@ -419,7 +442,7 @@ public class SiparisFragment extends Fragment {
                                                     } else
                                                         db.siparisDetayDao().setSiparisDetay(item);
                                                 }
-                                                mActivity.runOnUiThread(new Runnable() {
+                                                SiparisActivity.this.runOnUiThread(new Runnable() {
                                                     @Override
                                                     public void run() {
 
@@ -429,14 +452,14 @@ public class SiparisFragment extends Fragment {
 
 
                                             } else
-                                                MessageBox.showAlert(getContext(), "Kayıt bulunamamıştır..", false);
+                                                MessageBox.showAlert(SiparisActivity.this, "Kayıt bulunamamıştır..", false);
                                         }
                                     }
 
                                     @Override
                                     public void onFailure(Call<List<SiparisDetay>> call, Throwable t) {
                                         progressDoalog.dismiss();
-                                        MessageBox.showAlert(getContext(), "Hata Oluştu.. " + t.getMessage(), false);
+                                        MessageBox.showAlert(SiparisActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
                                     }
                                 });
 
@@ -452,11 +475,94 @@ public class SiparisFragment extends Fragment {
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 progressDoalog.dismiss();
-                MessageBox.showAlert(getContext(), "Hata Oluştu.. " + t.getMessage(), false);
+                MessageBox.showAlert(SiparisActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
 
     }
+
+    void swipe_item(){
+        SwipeHelper swipeHelper = new SwipeHelper(SiparisActivity.this, recyclerView, false) {
+            @Override
+            public void instantiateUnderlayButton(final RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons) {
+
+
+                underlayButtons.add(new SwipeHelper.UnderlayButton(
+                        "Düzenle",
+
+                        AppCompatResources.getDrawable(
+                                SiparisActivity.this,
+                                android.R.drawable.ic_menu_edit
+                        ),
+                        Color.parseColor("#FF9800"), Color.parseColor("#FFFFFF"),
+                        new SwipeHelper.UnderlayButtonClickListener() {
+                            @Override
+                            public void onClick(int pos) {
+                                final int position = viewHolder.getAdapterPosition();
+
+                                Intent musteri = new Intent(SiparisActivity.this, SiparisKayitActivity.class);
+                                musteri.putExtra("siparisMid", String.valueOf(siparisAdapter.getData().get(position).getMid()));
+                                musteri.putExtra("siparisId", String.valueOf(siparisAdapter.getData().get(position).getId()));
+                                musteri.putExtra("musteriMid", String.valueOf(siparisAdapter.getData().get(position).getMusteriMid()));
+                                musteri.putExtra("siparisId", String.valueOf(siparisAdapter.getData().get(position).getId()));
+                                musteri.putExtra("musteriId", String.valueOf(siparisAdapter.getData().get(position).getMusteriId()));
+
+                                musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                SiparisActivity.this.getApplicationContext().startActivity(musteri);
+                            }
+                        }
+                ));
+
+
+
+
+
+
+            }
+        };
+
+
+    }
+
+
+
+
+    public BottomNavigationView.OnNavigationItemSelectedListener navListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @SuppressLint("RestrictedApi")
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+
+                    Fragment selectedFragment = null;
+                    Intent i = null;
+                    switch (item.getItemId()) {
+                       /* case R.id.nav_home:
+                            i = new Intent(SiparisActivity.this, MainActivity.class);
+                            i.putExtra("gelenPage", "anasayfa");
+                            startActivity(i);
+                            break;*/
+                        case R.id.nav_musteri:
+                            i = new Intent(SiparisActivity.this, MainActivity.class);
+                            i.putExtra("gelenPage", "müşteri");
+                            startActivity(i);
+                            break;
+                        /*case R.id.nav_siparis:
+                            i = new Intent(SiparisActivity.this, MainActivity.class);
+                            i.putExtra("gelenPage", "sipariş");
+                            startActivity(i);
+                            break;*/
+                        case R.id.nav_musterigorevlerim:
+                            i = new Intent(SiparisActivity.this, MainActivity.class);
+                            i.putExtra("gelenPage", "müşteri_görevlerim");
+                            startActivity(i);
+                            break;
+                    }
+                  /* getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                            selectedFragment).commit();*/
+                    return true;
+                }
+            };
 
 
 }

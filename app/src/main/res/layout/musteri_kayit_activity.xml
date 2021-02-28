@@ -106,7 +106,8 @@
                         android:gravity="center"
                         android:onClick="siparisOlusturOnClick"
                         android:text="Yeni Sipariş"
-                        android:textColor="@color/beyaz" />
+                        android:textColor="@color/beyaz"
+                        android:visibility="gone" />
 
 
                     <Button
@@ -114,7 +115,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.4"
-                        android:background="@color/orange_300"
+                        android:background="#FFB355"
                         android:gravity="center"
                         android:onClick="siparisListeleOnClick"
                         android:text="SİPARİŞ GEÇMİŞİ"

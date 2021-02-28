@@ -14,6 +14,21 @@ public interface GorevlerDao {
     @Query("SELECT * FROM GOREVLER")
     List<Gorevler> getGorevAll();
 
+    @Query("SELECT * FROM GOREVLER where siparisDurumu in (:siparisDurumu)")
+    List<Gorevler> getGorevForSiparisDurumu(List<String> siparisDurumu);
+
+    @Query("SELECT g.* FROM GOREVLER g JOIN MUSTERI m ON g.musteriId = m.id  where  " +
+            "(m.musteriAdi LIKE :parameter || '%' or m.bolge LIKE  :parameter || '%' or m.telefonNumarasi LIKE '%' ||" +
+            " :parameter || '%') and (siparisDurumu in (:siparisDurumu)) and (siparisTarihi <= :siparisTarihi)")
+    List<Gorevler> getGorevQueryPrameter(String parameter,List<String> siparisDurumu, String siparisTarihi);
+
+
+    @Query("SELECT g.* FROM GOREVLER g JOIN MUSTERI m ON g.musteriId = m.id  where  " +
+            "(m.musteriAdi LIKE :parameter || '%' or m.bolge LIKE  :parameter || '%' or m.telefonNumarasi LIKE '%' ||" +
+            " :parameter || '%') and (siparisDurumu in (:siparisDurumu)) and (siparisTarihi > :siparisTarihi)")
+    List<Gorevler> getQueryIleriTarih(String parameter,List<String> siparisDurumu, String siparisTarihi);
+
+
     @Insert
     void setGorev(Gorevler musteri);
 

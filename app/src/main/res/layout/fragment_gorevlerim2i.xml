@@ -7,7 +7,7 @@
 
 
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/search_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,14 +15,33 @@
         android:background="#3F51B5"
         android:padding="@dimen/activity_horizontal_margin">
 
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/search_view"
-            style="@style/SearchAutoCompleteTextView"
-            android:layout_width="match_parent"
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/search_view"
+                android:layout_weight="0.8"
+                style="@style/SearchAutoCompleteTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tamamla_shape_bk"
+                app:queryHint="Görev Ara">
+
+            </androidx.appcompat.widget.SearchView>
+
+        <ImageView
+            android:id="@+id/toolbar_right_subtitle2"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/tamamla_shape_bk"
-            app:queryHint="Görev Ara" />
-    </RelativeLayout>
+            android:layout_marginStart="10dp"
+
+            android:layout_marginTop="-3dp"
+            android:layout_weight="0.2"
+            android:padding="5dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/user_icon"
+            android:textSize="16dp"
+            android:visibility="visible" />
+
+    </LinearLayout>
 
     <RadioGroup
 
@@ -74,12 +93,14 @@
 
         <com.example.haliyikamaapp.ToolLayer.MultiSelectionSpinner
             android:id="@+id/spinner_gorev_durum"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minHeight="34dp"
+
+            android:layout_marginLeft="15dp"
             android:background="@drawable/radio_flat_selector"
-            android:textColor="@color/colorPrimary"
-            android:layout_marginLeft="15dp" />
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:minHeight="34dp"
+            android:textColor="@color/colorPrimary" />
+
 
     </RadioGroup>
 

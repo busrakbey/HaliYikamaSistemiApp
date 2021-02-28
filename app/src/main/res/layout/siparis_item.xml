@@ -162,14 +162,15 @@
                 android:layout_width="25dp"
                 android:layout_height="30dp"
                 android:layout_marginRight="8dp"
-                android:src="@drawable/edit_icon" />
+                android:src="@drawable/edit_icon"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/senkron_siparis"
                 android:layout_width="40dp"
                 android:layout_height="30dp"
                 android:src="@drawable/start_icon"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
 
 

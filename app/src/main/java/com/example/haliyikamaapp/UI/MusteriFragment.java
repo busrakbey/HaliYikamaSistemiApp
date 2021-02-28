@@ -4,9 +4,13 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 
+import android.provider.ContactsContract;
+import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +20,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -33,6 +38,7 @@ import com.example.haliyikamaapp.ToolLayer.MessageBox;
 import com.example.haliyikamaapp.ToolLayer.OrtakFunction;
 import com.example.haliyikamaapp.ToolLayer.RSOperator;
 import com.example.haliyikamaapp.ToolLayer.RefrofitRestApi;
+import com.example.haliyikamaapp.ToolLayer.SwipeHelper;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -86,6 +92,7 @@ public class MusteriFragment extends Fragment {
         progressDoalog.setMessage("Lütfen bekleyiniz..");
         progressDoalog.setTitle("SİSTEM");
         progressDoalog.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
+        swipe_item();
 
 
     }
@@ -95,10 +102,10 @@ public class MusteriFragment extends Fragment {
             try {
 
                 item.setMustId(null);
-                item.setxKoor(null);
-                item.setyKoor(null);
+               /* item.setxKoor(Double.NaN);
+                item.setyKoor(Double.NaN);*/
                 item.setSenkronEdildi(null);
-                item.setSubeId(null);
+               // item.setSubeId(null);
                 postMusteriListFromService(item);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -177,7 +184,7 @@ public class MusteriFragment extends Fragment {
             public void onResponse(Call<List<Musteri>> call, Response<List<Musteri>> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                    MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
+                  //  //  MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -247,6 +254,10 @@ public class MusteriFragment extends Fragment {
         Call<Musteri> call;
         final Long musteriMid = musteri.getMid();
         musteri.setMid(null);
+        musteri.setMusteriSoyadi(" - ");
+        musteri.setxKoor(null);
+        musteri.setyKoor(null);
+        musteri.setSubeMid(null);
         if (musteri.getId() != null)
             call = refrofitRestApi.putMusteriList("hy/musteri/" + musteri.getId().toString(), OrtakFunction.authorization, OrtakFunction.tenantId, musteri);
         else
@@ -257,7 +268,7 @@ public class MusteriFragment extends Fragment {
             public void onResponse(Call<Musteri> call, Response<Musteri> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                    MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
+                    //  MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -292,6 +303,94 @@ public class MusteriFragment extends Fragment {
                 MessageBox.showAlert(getContext(), "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
+    }
+
+    void swipe_item(){
+        SwipeHelper swipeHelper = new SwipeHelper(getContext(), recyclerView, false) {
+            @Override
+            public void instantiateUnderlayButton(final RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons) {
+
+
+                underlayButtons.add(new SwipeHelper.UnderlayButton(
+                        "Ara",
+
+                        AppCompatResources.getDrawable(
+                                getContext(),
+                                android.R.drawable.ic_menu_call
+                        ),
+                        Color.parseColor("#FF0000"), Color.parseColor("#FFFFFF"),
+                        new SwipeHelper.UnderlayButtonClickListener() {
+                            @Override
+                            public void onClick(int pos) {
+                                final int position = viewHolder.getAdapterPosition();
+
+                                if (!adapter.getData().get(position).getTelefonNumarasi().equalsIgnoreCase("")) {
+                                    Intent intent = new Intent();
+                                    intent.setAction(Intent.ACTION_DIAL);
+                                    intent.setData(Uri.parse("tel: " + adapter.getData().get(position).getTelefonNumarasi()));
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    mContext.getApplicationContext().startActivity(intent);
+                                }
+                            }
+                        }
+                ));
+
+
+                underlayButtons.add(new SwipeHelper.UnderlayButton(
+                        "Düzenle",
+
+                        AppCompatResources.getDrawable(
+                                getContext(),
+                                android.R.drawable.ic_menu_edit
+                        ),
+                        Color.parseColor("#FF9800"), Color.parseColor("#FFFFFF"),
+                        new SwipeHelper.UnderlayButtonClickListener() {
+                            @Override
+                            public void onClick(int pos) {
+                                final int position = viewHolder.getAdapterPosition();
+
+                                Intent musteri = new Intent(mContext, MusteriKayitActivity.class);
+                                musteri.putExtra("musteriMid", String.valueOf(adapter.getData().get(position).getMid()));
+                                musteri.putExtra("musteriId", String.valueOf(adapter.getData().get(position).getId()));
+                                musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                mContext.getApplicationContext().startActivity(musteri);
+                            }
+                        }
+                ));
+
+                underlayButtons.add(new SwipeHelper.UnderlayButton(
+                        " Yeni Sipariş ",
+
+                        AppCompatResources.getDrawable(
+                                getContext(),
+                               android.R.drawable.ic_menu_add
+                        ),
+                        Color.parseColor("#D8D8D8"), Color.parseColor("#FFFFFF"),
+                        new SwipeHelper.UnderlayButtonClickListener() {
+                            @Override
+                            public void onClick(int pos) {
+                                final int position = viewHolder.getAdapterPosition();
+
+                                if (adapter.getData().get(position).getId() != null) {
+                                    Intent musteri = new Intent(mContext, SiparisKayitActivity.class);
+                                    musteri.putExtra("musteriMid", String.valueOf(adapter.getData().get(position).getMid()));
+                                    musteri.putExtra("musteriId", String.valueOf(adapter.getData().get(position).getId()));
+                                    musteri.putExtra("subeId", String.valueOf(adapter.getData().get(position).getSubeId()));
+                                    musteri.putExtra("subeMid", String.valueOf(adapter.getData().get(position).getSubeMid()));
+                                    musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    mContext.getApplicationContext().startActivity(musteri);
+                                }
+                            }
+                        }
+                ));
+
+
+              
+
+            }
+        };
+
+
     }
 
 

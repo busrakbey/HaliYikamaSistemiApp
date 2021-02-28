@@ -1,9 +1,19 @@
 package com.example.haliyikamaapp.UI;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
@@ -27,6 +37,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.Bolge;
@@ -38,6 +49,7 @@ import com.example.haliyikamaapp.Model.Entity.Siparis;
 import com.example.haliyikamaapp.Model.Entity.SiparisDetay;
 import com.example.haliyikamaapp.Model.Entity.Sube;
 import com.example.haliyikamaapp.R;
+import com.example.haliyikamaapp.ToolLayer.GPSTracker;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
 import com.example.haliyikamaapp.ToolLayer.OrtakFunction;
 import com.example.haliyikamaapp.ToolLayer.RefrofitRestApi;
@@ -46,6 +58,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -81,6 +94,9 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
     int selected_il_index = 0, selected_ilce_index = 0;
     Long secili_il_id=null, secili_ilce_id=null;
     String editModeGelenIlceAdi = null;
+    ImageView konum_button;
+    GPSTracker mGPS;
+    double latitude  ,longitude; // latitude
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -95,8 +111,11 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
         setContentView(R.layout.musteri_kayit_activity);
         init_item();
         initToolBar();
-        ilIlceSpinnerList();
+        //ilIlceSpinnerList();
         subeAndBolgeSpinner();
+
+
+
 
 
 
@@ -142,6 +161,29 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
         kapi_no_edittw = (EditText) findViewById(R.id.kapi_no);
         il_spinner = (Spinner) findViewById(R.id.il);
         ilce_spinner = (Spinner) findViewById(R.id.ilce);
+        konum_button = (ImageView) findViewById(R.id.musteri_konum_button);
+        mGPS = new GPSTracker(this);
+
+        konum_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mGPS.canGetLocation ){
+                    mGPS.getLocation();
+                    if(mGPS.location != null) {
+                        mGPS.getAdress();
+                        adres_edittw.setText(mGPS.getAdress().get(0).getAddressLine(0));
+                        longitude = mGPS.getLongitude();
+                        latitude = mGPS.getLatitude();
+
+                    }
+                    //  text.setText("Lat"+mGPS.getLatitude()+"Lon"+mGPS.getLongitude());
+                }else{
+                    // text.setText("Unabletofind");
+                    System.out.println("Konum bulunamadı.");
+                }
+
+            }
+        });
         if (gelenMusteriMid == null) {
             tel_no_edittw.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
@@ -199,8 +241,7 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
     }
 
     void yeni_musteri_kayit() {
-        if (adi_edittw.getText().toString().trim().equalsIgnoreCase("")
-                || soyadi_edittw.getText().toString().trim().equalsIgnoreCase("")) {
+        if (adi_edittw.getText().toString().trim().equalsIgnoreCase("")) {
             MessageBox.showAlert(MusteriKayitActivity.this, "Lütfen bilgileri eksizksiz bir şekilde giriniz.", false);
 
         } else {
@@ -222,6 +263,8 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
             musteri.setKapiNo(kapi_no_edittw.getText().toString());
             musteri.setId(musteriId);
             musteri.setSubeMid(secili_sube_mid);
+            musteri.setxKoor( String.valueOf(longitude) );
+            musteri.setyKoor(String.valueOf(latitude) );
 
 
             new Thread(new Runnable() {
@@ -378,13 +421,10 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
         }
 
 
-
-
-
         List<Siparis> siparisList2 = db.siparisDao().getSiparisForMusterIid(gelenMusteriId != null ? Long.valueOf(gelenMusteriId) : 0L);
         List<Siparis> siparisList = db.siparisDao().getSiparisForMusteriMid(gelenMusteriMid != null ? Long.valueOf(gelenMusteriMid) : yeniKayitMusteriMid);
         if (siparisList2 != null && siparisList2.size() > 0) {
-            Intent i = new Intent(MusteriKayitActivity.this, MainActivity.class);
+            Intent i = new Intent(MusteriKayitActivity.this, SiparisActivity.class);
             i.putExtra("gelenPage", "sipariş");
             i.putExtra("musteriId" , gelenMusteriId);
             i.putExtra("musteriMid" , gelenMusteriMid != null ? Long.valueOf(gelenMusteriMid) : yeniKayitMusteriMid);
@@ -392,7 +432,7 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
         }
 
          else if  (siparisList != null && siparisList.size() > 0) {
-            Intent i = new Intent(MusteriKayitActivity.this, MainActivity.class);
+            Intent i = new Intent(MusteriKayitActivity.this, SiparisActivity.class);
             i.putExtra("gelenPage", "sipariş");
             i.putExtra("musteriId" , gelenMusteriId);
             i.putExtra("musteriMid" , gelenMusteriMid != null ? Long.valueOf(gelenMusteriMid) : yeniKayitMusteriMid);
@@ -468,6 +508,7 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
                 android.R.layout.simple_spinner_item, musteriTuruStringList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         musteri_turu_spinner.setAdapter(dataAdapter);
+        musteri_turu_spinner.setSelection(musteriTuruStringList.indexOf("Şahıs"));
         musteri_turu_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
@@ -638,6 +679,11 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
 
 
     }
+
+
+
+
+
 
 
 

@@ -68,6 +68,7 @@ public class SiparisKayitActivity extends AppCompatActivity {
     List<Kaynak> kaynakList;
     List<String> kaynakListString;
     ImageView siparisBarkodYazdirButton;
+    EditText teslimEdilmeTarihi, teslimAlinmaTarihi;
 
 
     @SuppressLint("RestrictedApi")
@@ -124,6 +125,8 @@ public class SiparisKayitActivity extends AppCompatActivity {
         kaynakList = new ArrayList<Kaynak>();
         kaynakListString = new ArrayList<String>();
         siparisBarkodYazdirButton = (ImageView) findViewById(R.id.siparis_barkod_yazdir);
+        teslimAlinmaTarihi = (EditText) findViewById(R.id.siparis_teslim_alinma_tarihi);
+        teslimEdilmeTarihi = (EditText) findViewById(R.id.siparis_teslim_tarihi);
 
 
         Calendar calendar = Calendar.getInstance();
@@ -141,6 +144,24 @@ public class SiparisKayitActivity extends AppCompatActivity {
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                                 tarih_edittw.setText(day + "." + Integer.valueOf(month + 1) + "." + year);
+                            }
+                        }, year, month, dayOfMonth);
+                datePickerDialog.show();
+
+            }
+        });
+
+        teslimAlinmaTarihi.setText(dayOfMonth + "." + Integer.valueOf(month + 1) + "." + year);
+        teslimAlinmaTarihi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                datePickerDialog = new DatePickerDialog(SiparisKayitActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                                teslimAlinmaTarihi.setText(day + "." + Integer.valueOf(month + 1) + "." + year);
                             }
                         }, year, month, dayOfMonth);
                 datePickerDialog.show();
@@ -321,6 +342,8 @@ public class SiparisKayitActivity extends AppCompatActivity {
         siparis.setSiparisDurumu(teslim_alinacak_checkbox.isChecked() ?  "Teslim Alınacak" : "" );
         siparis.setId(gelenSiparisId != null  ? Long.valueOf(gelenSiparisId) : null);
         siparis.setSenkronEdildi(false);
+        siparis.setTeslimAlinmaTarihi(teslimAlinmaTarihi.getText().toString());
+        siparis.setTeslimTarihi(teslimAlinmaTarihi.getText().toString());
 
         new Thread(new Runnable() {
             @Override

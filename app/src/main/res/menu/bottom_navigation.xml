@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+
+
     <item
-        android:id="@+id/nav_home"
-        android:icon="@drawable/home"
-        android:title="Home" />
+        android:id="@+id/nav_musterigorevlerim"
+        android:icon="@drawable/mus_gorevlerim"
+        android:title="Görev" />
     <item
         android:id="@+id/nav_musteri"
         android:icon="@drawable/profile"
         android:title="Müşteri" />
+
+
     <item
-        android:id="@+id/nav_siparis"
+        android:id="@+id/nav_ozet"
         android:icon="@drawable/siparis"
-        android:title="Sipariş" />
+        android:title="Özet" />
+
     <item
-        android:id="@+id/nav_musterigorevlerim"
-        android:icon="@drawable/mus_gorevlerim"
-        android:title="Görevlerim" />
+        android:id="@+id/nav_diger"
+        android:icon="@drawable/nav_other"
+        android:title="Diğer" />
+
 </menu>

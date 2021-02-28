@@ -14,25 +14,6 @@
         android:padding="10dp">
         <!-- Title layout -->
         <LinearLayout
-            android:id="@+id/gorev_araca_yukle_linear"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:layout_weight="1"
-            android:background="@color/beyaz"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <Spinner
-                android:id="@+id/gorev_kaynak_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:textColor="@color/text" />
-
-        </LinearLayout>
-
-        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
@@ -52,6 +33,25 @@
                 android:textSize="23sp"
                 android:textStyle="bold"
                 tools:text="Görev Tamamla" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/gorev_araca_yukle_linear"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@color/beyaz"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <Spinner
+                android:id="@+id/gorev_kaynak_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:textColor="@color/text" />
 
         </LinearLayout>
 
@@ -95,7 +95,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:hint="Notlar"
-                android:textColor="@color/text" />
+                android:textColor="@color/text"
+                android:textSize="@dimen/mr_dialog_title_text" />
 
             <EditText
                 android:id="@+id/gorev_tahsil_edilen_tutar"
@@ -104,7 +105,8 @@
                 android:layout_margin="10dp"
                 android:enabled="false"
                 android:hint="Tahsil Edilecek Tutar"
-                android:textColor="@color/text" />
+                android:textColor="@color/text"
+                android:textSize="@dimen/mr_dialog_title_text" />
 
             <EditText
                 android:id="@+id/gorev_tahsilat_tutari"
@@ -112,7 +114,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:hint="Tahsilat Tutarı(*)"
-                android:textColor="@color/text" />
+                android:textColor="@color/text"
+                android:textSize="@dimen/mr_dialog_title_text" />
 
             <CheckBox
                 android:id="@+id/gorev_hesap_kapat"

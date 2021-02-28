@@ -18,6 +18,7 @@
         android:icon="@drawable/user_profile"
         android:orderInCategory="2"
         android:title="Settings"
+        android:visible="false"
         app:showAsAction="always">
 
     <menu>

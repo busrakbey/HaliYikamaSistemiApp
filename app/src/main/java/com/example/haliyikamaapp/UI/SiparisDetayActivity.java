@@ -73,7 +73,7 @@ public class SiparisDetayActivity extends AppCompatActivity {
         db = HaliYikamaDatabase.getInstance(SiparisDetayActivity.this);
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-        bottomNav.setSelectedItemId(R.id.nav_siparis);
+        //bottomNav.setSelectedItemId(R.id.nav_siparis);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
 
@@ -94,6 +94,7 @@ public class SiparisDetayActivity extends AppCompatActivity {
                 i.putExtra("siparisMid", siparisMid);
                 i.putExtra("subeId", subeId);
                 i.putExtra("subeMid", subeMid);
+
                 finish();
                 startActivity(i);
             }
@@ -102,7 +103,7 @@ public class SiparisDetayActivity extends AppCompatActivity {
 
     public void get_list() {
         final List<SiparisDetay> kisiler;
-        if (siparisId != null)
+        if (siparisId != null && !siparisId.equalsIgnoreCase("null"))
             kisiler = db.siparisDetayDao().getSiparisDetayForSiparisId(Long.valueOf(siparisId));
         else
             kisiler = db.siparisDetayDao().getSiparisDetayForMustId(Long.valueOf(siparisMid));
@@ -112,7 +113,7 @@ public class SiparisDetayActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(SiparisDetayActivity.this));
         recyclerView.setAdapter(siparis_detay_adapter);
-        SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(SiparisDetayActivity.this) {
+       /* SwipeToDeleteCallback swipeToDeleteCallback = new SwipeToDeleteCallback(SiparisDetayActivity.this) {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
                 final int position = viewHolder.getAdapterPosition();
@@ -146,11 +147,10 @@ public class SiparisDetayActivity extends AppCompatActivity {
                 });*/
 
 
-            }
+           /* }
         };
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeToDeleteCallback);
-        itemTouchhelper.attachToRecyclerView(recyclerView);
-
+        itemTouchhelper.attachToRecyclerView(recyclerView);*/
 
     }
 
@@ -164,21 +164,21 @@ public class SiparisDetayActivity extends AppCompatActivity {
                     Fragment selectedFragment = null;
                     Intent i = null;
                     switch (item.getItemId()) {
-                        case R.id.nav_home:
+                     /*   case R.id.nav_home:
                             i = new Intent(SiparisDetayActivity.this, MainActivity.class);
                             i.putExtra("gelenPage", "anasayfa");
                             startActivity(i);
-                            break;
+                            break;*/
                         case R.id.nav_musteri:
                             i = new Intent(SiparisDetayActivity.this, MainActivity.class);
                             i.putExtra("gelenPage", "müşteri");
                             startActivity(i);
                             break;
-                        case R.id.nav_siparis:
+                      /*  case R.id.nav_siparis:
                             i = new Intent(SiparisDetayActivity.this, MainActivity.class);
                             i.putExtra("gelenPage", "sipariş");
                             startActivity(i);
-                            break;
+                            break;*/
                         case R.id.nav_musterigorevlerim:
                             i = new Intent(SiparisDetayActivity.this, MainActivity.class);
                             i.putExtra("gelenPage", "müşteri_görevlerim");

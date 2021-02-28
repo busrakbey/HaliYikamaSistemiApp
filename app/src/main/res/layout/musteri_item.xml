@@ -45,7 +45,7 @@
 
             <TextView
                 android:id="@+id/adi_soyad_item"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
                 android:text="Adı Soyadı "
@@ -57,6 +57,7 @@
                 android:id="@+id/musteri_turu_item"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
                 android:layout_weight="0.2"
                 android:textColor="@color/mr_toolbar3"
                 android:textSize="@dimen/text_size_normal" />
@@ -65,7 +66,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
 
                 <TextView
@@ -85,7 +87,8 @@
                     android:layout_weight="0.1"
                     android:src="@drawable/telephone"
 
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:visibility="gone" />
 
                 <ImageView
                     android:id="@+id/telefon_whatsapp"
@@ -96,7 +99,8 @@
                     android:layout_weight="0.6"
                     android:src="@drawable/whatsapp_icon"
 
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:visibility="gone" />
 
 
             </LinearLayout>
@@ -116,7 +120,7 @@
                 android:drawableLeft="@drawable/new_order"
                 android:text="Sipariş"
                 android:textSize="@dimen/loginCardRadius"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/edit_musteri"

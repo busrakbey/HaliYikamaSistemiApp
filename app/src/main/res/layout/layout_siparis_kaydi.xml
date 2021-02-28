@@ -33,9 +33,17 @@
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
         <com.google.android.material.textfield.TextInputLayout
             style="@style/parent"
-            android:layout_marginTop="@dimen/signup_text_margin_top">
+            android:layout_width="0dp"
+            android:layout_marginTop="@dimen/signup_text_margin_top"
+            android:layout_weight="0.5">
 
             <AutoCompleteTextView
                 android:id="@+id/musteri_autocomplete"
@@ -44,6 +52,23 @@
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/parent"
+            android:layout_width="0dp"
+            android:layout_marginTop="@dimen/signup_text_margin_top"
+            android:layout_weight="0.5">
+
+            <EditText
+                android:id="@+id/siparis_tarihi"
+                style="@style/modifiedEditText"
+                android:clickable="true"
+                android:hint="Sipariş Tarihi"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+    </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -82,10 +107,11 @@
                 android:layout_weight="0.5">
 
                 <EditText
-                    android:id="@+id/siparis_tarihi"
+                    android:id="@+id/siparis_teslim_alinma_tarihi"
                     style="@style/modifiedEditText"
                     android:clickable="true"
                     android:hint="Teslim Alınma Tarihi"
+                    android:drawableRight="@android:drawable/ic_menu_my_calendar"
                     android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -100,6 +126,7 @@
                     style="@style/modifiedEditText"
                     android:clickable="true"
                     android:hint="Teslim Edilme Tarihi"
+                    android:drawableRight="@android:drawable/ic_menu_my_calendar"
                     android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>

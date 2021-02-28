@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
                 android:text="BÜŞRA AKBEY"
-                android:textColor="@color/mr_toolbar2"
+                android:textColor="#325468"
                 android:textSize="@dimen/text_size_medium"
                 android:textStyle="bold" />
 
@@ -95,7 +95,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
                 android:text="SİPARİŞ ALINDI"
-                android:textColor="@color/mr_toolbar2"
+                android:textColor="#325468"
                 android:textSize="@dimen/text_size_medium"
                 android:textStyle="bold" />
 
@@ -106,7 +106,7 @@
                 android:layout_marginTop="2dp"
                 android:layout_weight="0.5"
                 android:text="Merkez Mah / PURSAKLAR"
-                android:textColor="@color/mr_toolbar3"
+                android:textColor="#325468"
                 android:textSize="@dimen/text_size_small" />
 
             <TextView
@@ -116,7 +116,7 @@
                 android:layout_marginTop="2dp"
                 android:layout_weight="0.5"
                 android:text="Merkez Mah / PURSAKLAR"
-                android:textColor="@color/my_amber"
+                android:textColor="#FF9800"
                 android:textSize="@dimen/text_size_small" />
 
             <LinearLayout

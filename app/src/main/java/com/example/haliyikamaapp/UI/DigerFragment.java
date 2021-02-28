@@ -3,7 +3,6 @@ package com.example.haliyikamaapp.UI;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +22,7 @@ import com.example.haliyikamaapp.R;
 import java.util.List;
 
 
-public class HomeFragment extends Fragment {
+public class DigerFragment extends Fragment {
     Toolbar toolbar;
     CardView siparis_button, musteri_button, ayarlar_button, musteri_gorevlerim_button, hesap_cardview, kaynak_cardview;
     TextView toplam_musteri_tw, toplam_siparis_tw;

@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Entity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -177,13 +178,13 @@ public class OrtakFunction {
                         dialog.dismiss();
                         if (error instanceof AuthFailureError) {
                             //Toast.makeText(context, "Kullanıcı adı veya parola hatalı ! " , Toast.LENGTH_SHORT).show();
-                            MessageBox.showAlert(context, "Kullanıcı adı veya parola hatalı !", false);
+                            MessageBox.showAlert(context, "Servis bağlantısında sorun oluştu. ", false);
 
                             Log.e("TAG", error.getMessage(), error);
 
                         } else {
                             // Toast.makeText(context, "Kullanıcı adı veya parola hatalı ! " , Toast.LENGTH_SHORT).show();
-                            MessageBox.showAlert(context, "Kullanıcı adı veya parola hatalı !", false);
+                            MessageBox.showAlert(context, "Servis bağlantısında sorun oluştu.", false);
 
                             Log.e("TAG", error.getMessage(), error);
                         }
@@ -337,7 +338,7 @@ public class OrtakFunction {
     }
 
 
-    public static void GetLocation(Activity activity, Context context) throws IOException {
+    public static List<Address> GetLocation(Activity activity, Context context) throws IOException {
 
         LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
 
@@ -347,7 +348,7 @@ public class OrtakFunction {
             ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
             }, 200);
 
-            return;
+            return null;
         } else {
 
 
@@ -377,12 +378,34 @@ public class OrtakFunction {
             Criteria criteria = new Criteria();
             String bestProvider = locationManager.getBestProvider(criteria, true);
             if (locationManager != null) {
-                Location location = locationManager.getLastKnownLocation(bestProvider);
+              //  Location location = locationManager.getLastKnownLocation(bestProvider);
+
+
+                List<String> providers = locationManager.getProviders(true);
+                Location location = null;
+                for (String provider : providers) {
+                    Location l = locationManager.getLastKnownLocation(provider);
+
+
+                    if (l == null) {
+                        continue;
+                    }
+                    if (location == null
+                            || l.getAccuracy() < location.getAccuracy()) {
+
+                        location = l;
+                    }
+                }
+                if (location == null) {
+                    return null;
+                }
+
+
 
                 if (location == null) {
                   /*  Toast.makeText(context, "GPS signal not found",
                             Toast.LENGTH_LONG).show();*/
-                    return;
+                    return null;
                 }
                 if (location != null) {
                     Log.e("location", "location--" + location);
@@ -404,9 +427,15 @@ public class OrtakFunction {
                 String knownName = addresses.get(0).getFeatureName();
 
                 Log.d("", "GetLocation: address " + address + " city " + city + " state " + state + " country " + country + " postalCode " + postalCode + " knownName " + knownName);
+                return addresses;
+
             }
         }
+        return null;
     }
+
+
+
 
 
 }

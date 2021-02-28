@@ -75,6 +75,10 @@ dependencies {
     implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
 
 
+    implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
+
+
+
 
 
 

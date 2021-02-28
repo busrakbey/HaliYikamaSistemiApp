@@ -46,6 +46,8 @@ public interface RefrofitRestApi {
     @GET("hy/musteri")
     Call<List<Musteri>> getMusteriList (@Header("Authorization") String auth, @Header("tenant-id") String tenantId);
 
+
+    @Headers({"Content-Type: application/json"})
     @POST("hy/musteri")
     Call<Musteri> postMusteriList (@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body Musteri musteri);
 
@@ -86,7 +88,7 @@ public interface RefrofitRestApi {
     @GET()  ////fw/process/taskFormData/15008"
     Call<String>  getGorevTamamlamakIcinGerekliFormList (@Url String url,@Header("Authorization") String auth, @Header("tenant-id") String tenantId,
                                                          @Header("Content-Type") String contentType, @Header("Accept") String accept  );
-
+    @Headers({"Content-Type: application/json"})
     @POST()  ////fw/process/completeTask/10013
     Call<String>  postGorevTamamla (@Url String url,@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body String gorevBilgileri);
 

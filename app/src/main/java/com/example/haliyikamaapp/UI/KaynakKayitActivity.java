@@ -141,21 +141,21 @@ public class KaynakKayitActivity extends AppCompatActivity {
                     Fragment selectedFragment = null;
                     Intent i = null;
                     switch (item.getItemId()) {
-                        case R.id.nav_home:
+                       /* case R.id.nav_home:
                             i = new Intent(KaynakKayitActivity.this, MainActivity.class);
                             i.putExtra("gelenPage", "anasayfa");
                             startActivity(i);
-                            break;
+                            break;*/
                         case R.id.nav_musteri:
                             i = new Intent(KaynakKayitActivity.this, MainActivity.class);
                             i.putExtra("gelenPage", "müşteri");
                             startActivity(i);
                             break;
-                        case R.id.nav_siparis:
+                      /*  case R.id.nav_siparis:
                             i = new Intent(KaynakKayitActivity.this, MainActivity.class);
                             i.putExtra("gelenPage", "sipariş");
                             startActivity(i);
-                            break;
+                            break;*/
                         case R.id.nav_musterigorevlerim:
                             i = new Intent(KaynakKayitActivity.this, MainActivity.class);
                             i.putExtra("gelenPage", "müşteri_görevlerim");

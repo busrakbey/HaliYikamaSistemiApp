@@ -1,7 +1,9 @@
 package com.example.haliyikamaapp.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +21,10 @@ import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.Gorevler;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.Model.Entity.Siparis;
+import com.example.haliyikamaapp.Model.Entity.SiparisDetay;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.UI.MusteriGorevlerimDetayActivity;
+import com.example.haliyikamaapp.UI.SiparisDetayActivity;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -46,6 +50,7 @@ public class GorevlerAdapter extends RecyclerView.Adapter<GorevlerAdapter.MyView
         return new MyViewHolder(itemView);
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         db = HaliYikamaDatabase.getInstance(mContext);
@@ -59,7 +64,23 @@ public class GorevlerAdapter extends RecyclerView.Adapter<GorevlerAdapter.MyView
         }
 
         holder.siparis_tutari_item.setText(data.get(position).getTaskDescription());
-        holder.sipariş_durumu_item.setText(data.get(position).getTaskCategory());
+        holder.sipariş_durumu_item.setText(data.get(position).getSiparisDurumu());
+
+        if (data.get(position).getSiparisDurumu() != null) {
+            if (data.get(position).getSiparisDurumu().equalsIgnoreCase("Teslim Alınacak"))
+                holder.sipariş_durumu_item.setTextColor(Color.parseColor("#c056d9"));
+
+            if (data.get(position).getSiparisDurumu().equalsIgnoreCase("Teslime Hazır"))
+                holder.sipariş_durumu_item.setTextColor(Color.parseColor("#5cee36"));
+
+
+            if (data.get(position).getSiparisDurumu().equalsIgnoreCase("Teslime Çıktı"))
+                holder.sipariş_durumu_item.setTextColor(Color.parseColor("#ea3732"));
+
+
+            if (data.get(position).getSiparisDurumu().equalsIgnoreCase("Yıkanacak"))
+                holder.sipariş_durumu_item.setTextColor(Color.parseColor("#f48024"));
+        }
 
         List<Musteri> musteriList = db.musteriDao().getMusteriForId(data.get(position).getMusteriId());
         holder.adres_item.setText(musteriList.size() > 0 ? ((musteriList.get(0).getAdres() != null ? musteriList.get(0).getAdres() : "") + " / "
@@ -67,7 +88,7 @@ public class GorevlerAdapter extends RecyclerView.Adapter<GorevlerAdapter.MyView
 
         List<Siparis> siparisList = db.siparisDao().getSiparisForSiparisId(data.get(position).getSiparisId());
 
-        holder.adres_item2.setText(siparisList.size() > 0 ? siparisList.get(0).getAciklama() : "");
+        holder.adres_item2.setText(siparisList.size() > 0 ? siparisList.get(0).getAciklama() : "Sipariş Notu Yok");
 
         holder.sube_item.setText(data.get(position).getSubeAdi());
         holder.musteri_adi.setText(data.get(position).getMusteriAdi() + " " + (data.get(position).getMusteriSoyadi() != null ? data.get(position).getMusteriSoyadi() : ""));
@@ -77,14 +98,41 @@ public class GorevlerAdapter extends RecyclerView.Adapter<GorevlerAdapter.MyView
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent musteri = new Intent(mContext, MusteriGorevlerimDetayActivity.class);
+              /*  Intent musteri = new Intent(mContext, MusteriGorevlerimDetayActivity.class);
                 musteri.putExtra("gorevMid" , String.valueOf(data.get(position).getMid()));
                 musteri.putExtra("gorevId" , String.valueOf(data.get(position).getTaskId()));
                 musteri.putExtra("siparisId" , String.valueOf(data.get(position).getSiparisId()));
                 musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.getApplicationContext().startActivity(musteri);
+                mContext.getApplicationContext().startActivity(musteri);*/
+
+
+                if (data.get(position).getTaskName().equalsIgnoreCase("TeslimAl")) {
+                    List<Siparis> siparisList = null;
+                    List<SiparisDetay> siparisDetayList = null;
+                    List<Gorevler> gorevlerList = db.gorevlerDao().getGorevForId(Long.valueOf(data.get(position).getTaskId()));
+                    if (gorevlerList.size() > 0) {
+                        siparisList = db.siparisDao().getSiparisForSiparisId(gorevlerList.get(0).getSiparisId());
+                        if (siparisList.size() > 0)
+                            siparisDetayList = db.siparisDetayDao().getSiparisDetayForSiparisId(siparisList.get(0).getId());
+                        if (siparisDetayList.size() == 0)
+                            siparisDetayList = db.siparisDetayDao().getSiparisDetayForSiparisMid(siparisList.get(0).getMid());
+
+                    }
+                    Intent i = new Intent(mContext, SiparisDetayActivity.class);
+                    // i.putExtra("gelenPage", "sipariş");
+                    i.putExtra("siparisId", String.valueOf(data.get(position).getSiparisId()));
+                    i.putExtra("subeMid", siparisList.get(0).getSubeMid() != null ? siparisList.get(0).getSubeMid().toString() : null);
+                    i.putExtra("subeId", siparisList.get(0).getSubeId() != null ? siparisList.get(0).getSubeId().toString() : null);
+                    i.putExtra("siparisMid", siparisList != null ? siparisList.get(0).getMid().toString() : null);
+                    mContext.getApplicationContext().startActivity(i);
+
+                }
+
             }
         });
+
+
+
 
 
     }

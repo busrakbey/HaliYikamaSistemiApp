@@ -39,6 +39,9 @@ public class Siparis {
     @ColumnInfo(name = "teslimTarihi")
     public String teslimTarihi;
 
+    @ColumnInfo(name = "teslimAlinmaTarihi")
+    public String teslimAlinmaTarihi;
+
     @ColumnInfo(name = "siparisTutar")
     public Double siparisTutar;
 
@@ -243,5 +246,13 @@ public class Siparis {
 
     public void setKaynakMid(Long kaynakMid) {
         this.kaynakMid = kaynakMid;
+    }
+
+    public String getTeslimAlinmaTarihi() {
+        return teslimAlinmaTarihi;
+    }
+
+    public void setTeslimAlinmaTarihi(String teslimAlinmaTarihi) {
+        this.teslimAlinmaTarihi = teslimAlinmaTarihi;
     }
 }

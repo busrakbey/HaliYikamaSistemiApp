@@ -239,7 +239,7 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
                             gorevTamamlamaNotu = gorev_teslim_et_notlar.getText().toString();
                             dialog.dismiss();
                             try {
-                                gorevTamamlaPostService(Long.valueOf(gorevId));
+                                gorevTamamlaPostService(Long.valueOf(gorevId),null);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -306,7 +306,7 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
                                 secili_kaynak.getId();
                                 dialog.dismiss();
                                 try {
-                                    gorevTamamlaPostService(Long.valueOf(gorevId));
+                                    gorevTamamlaPostService(Long.valueOf(gorevId),null);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -374,7 +374,7 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
                                 } else {
                                     dialog.dismiss();
                                     try {
-                                        gorevTamamlaPostService(Long.valueOf(gorevId));
+                                        gorevTamamlaPostService(Long.valueOf(gorevId),null);
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
@@ -438,21 +438,21 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
                     Fragment selectedFragment = null;
                     Intent i = null;
                     switch (item.getItemId()) {
-                        case R.id.nav_home:
+                       /* case R.id.nav_home:
                             i = new Intent(MusteriGorevlerimDetayActivity.this, MainActivity.class);
                             i.putExtra("gelenPage", "anasayfa");
                             startActivity(i);
-                            break;
+                            break;*/
                         case R.id.nav_musteri:
                             i = new Intent(MusteriGorevlerimDetayActivity.this, MainActivity.class);
                             i.putExtra("gelenPage", "müşteri");
                             startActivity(i);
                             break;
-                        case R.id.nav_siparis:
+                       /* case R.id.nav_siparis:
                             i = new Intent(MusteriGorevlerimDetayActivity.this, MainActivity.class);
                             i.putExtra("gelenPage", "sipariş");
                             startActivity(i);
-                            break;
+                            break;*/
                         case R.id.nav_musterigorevlerim:
                             i = new Intent(MusteriGorevlerimDetayActivity.this, MainActivity.class);
                             i.putExtra("gelenPage", "müşteri_görevlerim");
@@ -471,7 +471,7 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
             toolbar = (Toolbar) findViewById(R.id.toolbar);
             toolbar.setNavigationIcon(R.drawable.left);
             TextView toolbarTextView = (TextView) findViewById(R.id.toolbar_title);
-            toolbarTextView.setText("Görev Detayları");
+            toolbarTextView.setText("Ürün Listesi");
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -489,8 +489,7 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
 
 
     String gelenGorevList = null;
-
-    public void gorevTamamlaPostService(final Long gorevId) throws Exception {
+    public void gorevTamamlaPostService(final Long gorevId, final Long kaynakId) throws Exception {
         progressDoalog.show();
         RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
         GsonBuilder gsonBuilder = new GsonBuilder();
@@ -528,7 +527,7 @@ public class MusteriGorevlerimDetayActivity extends AppCompatActivity {
 
         }
 
-        if (secili_kaynak != null) {
+        if (secili_kaynak != null || kaynakId != null) {
             disObje.put("kaynak", secili_kaynak.getId() != null ? secili_kaynak.getId() : null);
 
 

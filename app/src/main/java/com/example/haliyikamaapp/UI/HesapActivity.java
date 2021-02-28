@@ -1,11 +1,13 @@
 package com.example.haliyikamaapp.UI;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +30,7 @@ import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
 import com.example.haliyikamaapp.ToolLayer.OrtakFunction;
 import com.example.haliyikamaapp.ToolLayer.RefrofitRestApi;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -51,6 +55,9 @@ public class HesapActivity extends AppCompatActivity {
     RefrofitRestApi refrofitRestApi;
     ProgressDialog progressDoalog;
     Button harcama_girisi_button, para_girisi_button;
+    BottomNavigationView bottomNavigationView;
+
+
 
 
     @Override
@@ -103,6 +110,8 @@ public class HesapActivity extends AppCompatActivity {
         progressDoalog.setMessage("Lütfen bekleyiniz..");
         progressDoalog.setTitle("SİSTEM");
         progressDoalog.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
+        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
 
         harcama_girisi_button = (Button) findViewById(R.id.harcama_girisi_button);
         para_girisi_button = (Button) findViewById(R.id.para_girisi_button);
@@ -294,5 +303,52 @@ public class HesapActivity extends AppCompatActivity {
             }
         });
     }
+
+    public BottomNavigationView.OnNavigationItemSelectedListener navListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @SuppressLint("RestrictedApi")
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+
+                    Fragment selectedFragment = null;
+                    Intent i = null;
+                    switch (item.getItemId()) {
+                     /*   case R.id.nav_home:
+                            i = new Intent(HesapActivity.this, MainActivity.class);
+                            i.putExtra("gelenPage", "anasayfa");
+                            startActivity(i);
+                            break;*/
+                        case R.id.nav_musteri:
+                            i = new Intent(HesapActivity.this, MainActivity.class);
+                            i.putExtra("gelenPage", "müşteri");
+                            startActivity(i);
+                            break;
+                      /*  case R.id.nav_siparis:
+                            i = new Intent(HesapActivity.this, MainActivity.class);
+                            i.putExtra("gelenPage", "sipariş");
+                            startActivity(i);
+                            break;*/
+                        case R.id.nav_musterigorevlerim:
+                            i = new Intent(HesapActivity.this, MainActivity.class);
+                            i.putExtra("gelenPage", "müşteri_görevlerim");
+                            startActivity(i);
+                            break;
+
+
+                        case R.id.nav_ozet:
+                            i = new Intent(HesapActivity.this, MainActivity.class);
+                            i.putExtra("gelenPage", "ozet");
+                            startActivity(i);
+                            break;
+
+
+
+                    }
+                  /* getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                            selectedFragment).commit();*/
+                    return true;
+                }
+            };
 
 }

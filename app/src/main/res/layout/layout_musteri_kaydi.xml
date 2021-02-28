@@ -214,10 +214,15 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
         <com.google.android.material.textfield.TextInputLayout
             style="@style/parent"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight="0.7"
             android:layout_marginTop="@dimen/signup_text_margin_top">
 
             <EditText
@@ -226,6 +231,15 @@
                 android:hint="Adres" />
         </com.google.android.material.textfield.TextInputLayout>
 
+
+            <ImageView
+                android:id="@+id/musteri_konum_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:src="@drawable/location"></ImageView>
+
+        </LinearLayout>
         <Button
             android:id="@+id/musteri_kayit_button"
             style="@style/loginButton"

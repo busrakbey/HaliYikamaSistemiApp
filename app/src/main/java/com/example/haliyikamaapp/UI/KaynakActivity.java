@@ -106,7 +106,7 @@ public class KaynakActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.kaynaklar_recyclerview);
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-        bottomNav.setSelectedItemId(R.id.nav_siparis);
+        //bottomNav.setSelectedItemId(R.id.nav_siparis);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
         yeni_kaynak_button = (FloatingActionButton) findViewById(R.id.btnAdd);
 
@@ -138,21 +138,21 @@ public class KaynakActivity extends AppCompatActivity {
                     Fragment selectedFragment = null;
                     Intent i = null;
                     switch (item.getItemId()) {
-                        case R.id.nav_home:
+                       /* case R.id.nav_home:
                             i = new Intent(KaynakActivity.this, MainActivity.class);
                             i.putExtra("gelenPage", "anasayfa");
                             startActivity(i);
-                            break;
+                            break;*/
                         case R.id.nav_musteri:
                             i = new Intent(KaynakActivity.this, MainActivity.class);
                             i.putExtra("gelenPage", "müşteri");
                             startActivity(i);
                             break;
-                        case R.id.nav_siparis:
+                        /*case R.id.nav_siparis:
                             i = new Intent(KaynakActivity.this, MainActivity.class);
                             i.putExtra("gelenPage", "sipariş");
                             startActivity(i);
-                            break;
+                            break;*/
                         case R.id.nav_musterigorevlerim:
                             i = new Intent(KaynakActivity.this, MainActivity.class);
                             i.putExtra("gelenPage", "müşteri_görevlerim");

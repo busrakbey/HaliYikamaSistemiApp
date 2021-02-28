@@ -162,7 +162,7 @@ public class LoginActivity extends AppCompatActivity {
     private void startAnimation() {
         ViewPropertyAnimator viewPropertyAnimator = iconImageView.animate();
         viewPropertyAnimator.x(50f);
-        viewPropertyAnimator.y(100f);
+        viewPropertyAnimator.y(80f);
         viewPropertyAnimator.setDuration(1000);
         viewPropertyAnimator.setListener(new Animator.AnimatorListener() {
             @Override
