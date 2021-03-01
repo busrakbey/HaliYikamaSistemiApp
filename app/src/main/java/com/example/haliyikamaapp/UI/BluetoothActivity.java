@@ -293,10 +293,10 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
             // os.write(new byte[]{0x1b, 'a', 0x01});
             change[2] = (byte) (0x3); //small
             os.write(change);
+            os.write(new byte[]{0x1B, 'a', 0x00});
             os.write(("URUN    FIYAT    MIKTAR   BIRIM   TUTAR \n").getBytes());
             os.write((" ----------------------------------------\n").getBytes());
 
-            os.write(new byte[]{0x1B, 'a', 0x00});
             HaliYikamaDatabase db = HaliYikamaDatabase.getInstance(getApplicationContext());
             List<Siparis> siparisList = db.siparisDao().getSiparisForSiparisId(Long.valueOf(gelenSiparisId));
             List<SiparisDetay> siparisDetayList = db.siparisDetayDao().getSiparisDetayForSiparisId(Long.valueOf(gelenSiparisId));
@@ -316,7 +316,7 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
                 if (item.getOlcuBirimId() != null)
                     os.write(db.olcuBirimDao().getOlcuBirimForId(item.getOlcuBirimId()).get(0).getOlcuBirimi().getBytes());
                 else
-                    os.write(("     ").getBytes());
+                    os.write(("  ").getBytes());
 
                 os.write(("     ").getBytes());
                 os.write((String.valueOf((item.getMiktar() != null ? item.getMiktar() : 0) * (item.getBirimFiyat() != null ? item.getBirimFiyat() : 0))).getBytes());
@@ -328,7 +328,7 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
 
 
             os.write(("\nToplam Urun: " + siparisDetayList.size()).getBytes());
-            os.write(("\nToplam Tutar: " + toplamTutar).getBytes());
+            os.write(("\nToplam Tutar: " + toplamTutar + " TL").getBytes());
 
 
             //This is printer specific code you can comment ==== > Start
