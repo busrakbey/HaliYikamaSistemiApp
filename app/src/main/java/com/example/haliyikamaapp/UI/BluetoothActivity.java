@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +29,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
+import com.example.haliyikamaapp.Model.Entity.Siparis;
+import com.example.haliyikamaapp.Model.Entity.SiparisDetay;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.ToolLayer.Utils;
 import com.google.zxing.BarcodeFormat;
@@ -41,7 +45,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.nio.ByteBuffer;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -93,9 +99,16 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
         mPrint = (Button) findViewById(R.id.mPrint);
         mPrint.setOnClickListener(new View.OnClickListener() {
             public void onClick(View mView) {
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 barkodYazici(gelenSiparisId != null ? gelenSiparisId : gelenSiparisMid, gelenSubeAdi);
             }
         });
+
 
         mDisc = (Button) findViewById(R.id.dis);
         mDisc.setOnClickListener(new View.OnClickListener() {
@@ -269,13 +282,56 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
             os = mBluetoothSocket
                     .getOutputStream();
             // os.write(new byte[] { 0x1b, 'a', 0x01 });
-            os.write(new byte[]{0x1b, 'a', 0x01});
-            os.write((subeAdi + "\n").getBytes());
-            os.write(createBarkocImage(111L));
-            //This is printer specific code you can comment ==== > Start
-
-            byte[] format = new byte[]{27, 33, 0};
             byte[] change = new byte[]{27, 33, 0};
+
+            os.write(new byte[]{0x1B, 'a', 0x01});
+            os.write(("    " + trEngCevir(subeAdi).toUpperCase() + " HALI YIKAMA " + "\n").getBytes());
+
+
+            os.write(createBarkocImage(Long.valueOf(gelenSiparisId)));
+
+            // os.write(new byte[]{0x1b, 'a', 0x01});
+            change[2] = (byte) (0x3); //small
+            os.write(change);
+            os.write(("URUN    FIYAT    MIKTAR   BIRIM   TUTAR \n").getBytes());
+            os.write((" ----------------------------------------\n").getBytes());
+
+            os.write(new byte[]{0x1B, 'a', 0x00});
+            HaliYikamaDatabase db = HaliYikamaDatabase.getInstance(getApplicationContext());
+            List<Siparis> siparisList = db.siparisDao().getSiparisForSiparisId(Long.valueOf(gelenSiparisId));
+            List<SiparisDetay> siparisDetayList = db.siparisDetayDao().getSiparisDetayForSiparisId(Long.valueOf(gelenSiparisId));
+
+            double toplamTutar = 0.0;
+            for (SiparisDetay item : siparisDetayList) {
+                if (item.getUrunId() != null)
+                    os.write(db.urunDao().getUrunForId(item.getUrunId()).get(0).getUrunAdi().getBytes());
+                else
+                    os.write(("     ").getBytes());
+
+                os.write(("   ").getBytes());
+                os.write((item.getBirimFiyat() != null ? item.getBirimFiyat().toString() : "    ").getBytes());
+                os.write(("     ").getBytes());
+                os.write((item.getMiktar() != null ? item.getMiktar().toString() : "    ").getBytes());
+                os.write(("      ").getBytes());
+                if (item.getOlcuBirimId() != null)
+                    os.write(db.olcuBirimDao().getOlcuBirimForId(item.getOlcuBirimId()).get(0).getOlcuBirimi().getBytes());
+                else
+                    os.write(("     ").getBytes());
+
+                os.write(("     ").getBytes());
+                os.write((String.valueOf((item.getMiktar() != null ? item.getMiktar() : 0) * (item.getBirimFiyat() != null ? item.getBirimFiyat() : 0))).getBytes());
+                os.write(("\n").getBytes());
+
+                toplamTutar = toplamTutar + (item.getMiktar() != null ? item.getMiktar() : 0) * (item.getBirimFiyat() != null ? item.getBirimFiyat() : 0);
+
+            }
+
+
+            os.write(("\nToplam Urun: " + siparisDetayList.size()).getBytes());
+            os.write(("\nToplam Tutar: " + toplamTutar).getBytes());
+
+
+            //This is printer specific code you can comment ==== > Start
 
 
             // Setting height
@@ -298,6 +354,26 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
         }
 
 
+    }
+
+    public String trEngCevir(String alinanMetin) {
+        //fonksiyona gelen kelimeyi alıyoruz
+        String metin = alinanMetin;
+        //sonuç için vir değişken belirledik
+        String sonuc = "";
+        //iki tane dizi oluşturuyoruz biri türkçe karakterler için diğeri ing
+        char[] ilkHarf = new char[]{'İ', 'ı', 'ü', 'Ü', 'ç', 'Ç', 'Ğ', 'ğ', 'Ş', 'ş', 'ö', 'Ö'};
+        char[] yeniHarf = new char[]{'I', 'i', 'u', 'U', 'c', 'C', 'G', 'g', 'S', 's', 'o', 'O',};
+        //for döngüsü açıp kelimenin harflerine tek tek bakıp
+        //tr varsa replace metodu ile değiştiriyoruz.
+        for (int sayac = 0; sayac < ilkHarf.length; sayac++) {
+            metin = metin.replace(ilkHarf[sayac], yeniHarf[sayac]);
+        }
+        //burada sonuc değişkenini kullanmasınızda olur
+        //direk sysout(metin) de denebilir
+        sonuc = metin;
+        return sonuc;
+        //  System.out.println(sonuc);
     }
 
 }

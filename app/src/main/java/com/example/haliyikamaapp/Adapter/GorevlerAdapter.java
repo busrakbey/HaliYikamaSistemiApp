@@ -46,8 +46,14 @@ public class GorevlerAdapter extends RecyclerView.Adapter<GorevlerAdapter.MyView
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.gorev_item, parent, false);
-        return new MyViewHolder(itemView);
+        if (parent == null) {
+            return  null;
+
+        }else {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.gorev_item, parent, false);
+
+            return new MyViewHolder(itemView);
+        }
     }
 
     @SuppressLint("ResourceAsColor")
@@ -124,6 +130,7 @@ public class GorevlerAdapter extends RecyclerView.Adapter<GorevlerAdapter.MyView
                     i.putExtra("subeMid", siparisList.get(0).getSubeMid() != null ? siparisList.get(0).getSubeMid().toString() : null);
                     i.putExtra("subeId", siparisList.get(0).getSubeId() != null ? siparisList.get(0).getSubeId().toString() : null);
                     i.putExtra("siparisMid", siparisList != null ? siparisList.get(0).getMid().toString() : null);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.getApplicationContext().startActivity(i);
 
                 }

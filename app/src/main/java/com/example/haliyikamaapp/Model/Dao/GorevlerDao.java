@@ -19,7 +19,7 @@ public interface GorevlerDao {
 
     @Query("SELECT g.* FROM GOREVLER g JOIN MUSTERI m ON g.musteriId = m.id  where  " +
             "(m.musteriAdi LIKE :parameter || '%' or m.bolge LIKE  :parameter || '%' or m.telefonNumarasi LIKE '%' ||" +
-            " :parameter || '%') and (siparisDurumu in (:siparisDurumu)) and (siparisTarihi <= :siparisTarihi)")
+            " :parameter || '%')  and (siparisTarihi < :siparisTarihi or siparisTarihi = :siparisTarihi) and (siparisDurumu in (:siparisDurumu))")
     List<Gorevler> getGorevQueryPrameter(String parameter,List<String> siparisDurumu, String siparisTarihi);
 
 

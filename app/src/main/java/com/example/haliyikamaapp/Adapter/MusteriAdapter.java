@@ -49,8 +49,16 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.musteri_item, parent, false);
-        return new MyViewHolder(itemView);
+
+        if (parent == null) {
+            return  null;
+
+        }else {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.musteri_item, parent, false);
+
+            return new MyViewHolder(itemView);
+        }
+
     }
 
     @Override

@@ -342,8 +342,8 @@ public class SiparisKayitActivity extends AppCompatActivity {
         siparis.setSiparisDurumu(teslim_alinacak_checkbox.isChecked() ?  "Teslim Alınacak" : "" );
         siparis.setId(gelenSiparisId != null  ? Long.valueOf(gelenSiparisId) : null);
         siparis.setSenkronEdildi(false);
-        siparis.setTeslimAlinmaTarihi(teslimAlinmaTarihi.getText().toString());
-        siparis.setTeslimTarihi(teslimAlinmaTarihi.getText().toString());
+        siparis.setTeslimAlmaTarihi(teslimAlinmaTarihi.getText().toString());
+        siparis.setTeslimEtmeTarihi(teslimAlinmaTarihi.getText().toString());
 
         new Thread(new Runnable() {
             @Override
@@ -370,6 +370,8 @@ public class SiparisKayitActivity extends AppCompatActivity {
                             } else {
                                 Intent i = new Intent(SiparisKayitActivity.this, SiparisDetayKayitActivity.class);
                                 i.putExtra("siparisMid", String.valueOf(finalYeniKayitSiparisMid));
+                                i.putExtra("subeId", gelenSubeId != null ? gelenSubeId : secilenSube.getId());
+                                i.putExtra("subeMid", gelenSubeMid != null ? gelenSubeMid : secilenSube.getMid());
                                 finish();
                                 startActivity(i);
                             }
@@ -383,8 +385,8 @@ public class SiparisKayitActivity extends AppCompatActivity {
                             } else {
                                 Intent i = new Intent(SiparisKayitActivity.this, SiparisDetayKayitActivity.class);
                                 i.putExtra("siparisMid", String.valueOf(finalYeniKayitSiparisMid));
-                                i.putExtra("subeId", secilenSube.getId());
-                                i.putExtra("subeMid", secilenSube.getMid());
+                                i.putExtra("subeId", gelenSubeId != null ? gelenSubeId : secilenSube.getId());
+                                i.putExtra("subeMid", gelenSubeMid != null ? gelenSubeMid : secilenSube.getMid());
                                 finish();
                                 startActivity(i);
                             }

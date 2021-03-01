@@ -36,11 +36,11 @@ public class Siparis {
     @ColumnInfo(name = "siparisTarihi")
     public String siparisTarihi;
 
-    @ColumnInfo(name = "teslimTarihi")
-    public String teslimTarihi;
+    @ColumnInfo(name = "teslimEtmeTarihi")
+    public String teslimEtmeTarihi;
 
-    @ColumnInfo(name = "teslimAlinmaTarihi")
-    public String teslimAlinmaTarihi;
+    @ColumnInfo(name = "teslimAlmaTarihi")
+    public String teslimAlmaTarihi;
 
     @ColumnInfo(name = "siparisTutar")
     public Double siparisTutar;
@@ -79,13 +79,6 @@ public class Siparis {
     public Boolean senkronEdildi;
 
 
-    public String getTeslimTarihi() {
-        return teslimTarihi;
-    }
-
-    public void setTeslimTarihi(String teslimTarihi) {
-        this.teslimTarihi = teslimTarihi;
-    }
 
     public Boolean getSenkronEdildi() {
         return senkronEdildi;
@@ -248,11 +241,19 @@ public class Siparis {
         this.kaynakMid = kaynakMid;
     }
 
-    public String getTeslimAlinmaTarihi() {
-        return teslimAlinmaTarihi;
+    public String getTeslimEtmeTarihi() {
+        return teslimEtmeTarihi;
     }
 
-    public void setTeslimAlinmaTarihi(String teslimAlinmaTarihi) {
-        this.teslimAlinmaTarihi = teslimAlinmaTarihi;
+    public void setTeslimEtmeTarihi(String teslimEtmeTarihi) {
+        this.teslimEtmeTarihi = teslimEtmeTarihi;
+    }
+
+    public String getTeslimAlmaTarihi() {
+        return teslimAlmaTarihi;
+    }
+
+    public void setTeslimAlmaTarihi(String teslimAlmaTarihi) {
+        this.teslimAlmaTarihi = teslimAlmaTarihi;
     }
 }

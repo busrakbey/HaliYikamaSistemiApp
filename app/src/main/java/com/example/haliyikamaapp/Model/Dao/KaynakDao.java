@@ -15,6 +15,9 @@ public interface KaynakDao {
     @Query("SELECT * FROM KAYNAK ")
     List<Kaynak> getkaynakAll();
 
+    @Query("SELECT * FROM KAYNAK where kaynakTuru = 'Araç' ")
+    List<Kaynak> getkaynakAllForArac();
+
     @Query("SELECT * FROM KAYNAK where senkronEdildi = 0")
     List<Kaynak> getSenkronEdilmeyenAll();
 

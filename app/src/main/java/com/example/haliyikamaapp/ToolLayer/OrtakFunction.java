@@ -32,6 +32,7 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
@@ -240,7 +241,13 @@ public class OrtakFunction {
             }
 
         };
-        request.setRetryPolicy(new DefaultRetryPolicy(1000, 2, 1));
+       // request.setRetryPolicy(new DefaultRetryPolicy(1000, 2, 1));
+            int socketTimeout = 5000;                                  // 5 seconds. You can change it
+            RetryPolicy policy = new DefaultRetryPolicy(socketTimeout,
+                    2,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        request.setRetryPolicy(policy);
+
         mQueue.add(request);
         dialog.show();
 

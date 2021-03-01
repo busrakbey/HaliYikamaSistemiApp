@@ -42,6 +42,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.haliyikamaapp.Adapter.MusteriAdapter;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.Bolge;
+import com.example.haliyikamaapp.Model.Entity.Kaynak;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.Model.Entity.MusteriTuru;
 import com.example.haliyikamaapp.Model.Entity.OlcuBirim;
@@ -186,6 +187,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         getUrunListFromService();
         siparis_islemleri();
+        getMusteriListFromService();
+        getKaynakListFromService();
 
 
     }
@@ -295,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                                     new GorevlerimFragment2()).commit();
                             toolbar.setVisibility(GONE);
-                               bottomNavigationView.setSelectedItemId(R.id.nav_musterigorevlerim);
+                            bottomNavigationView.setSelectedItemId(R.id.nav_musterigorevlerim);
 
                         } else {
                             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -825,7 +828,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void onResponse(Call<String> call, Response<String> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                   // MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                    // MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -840,13 +843,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                             if (item.getTeslimAlinacak() == null || item.getTeslimAlinacak() == false)
                                 db.siparisDao().updateSiparisProcessId(Long.valueOf(gelenObject.getString("processInstanceId")), item.getId(), "Yıkamada");
 
-                            MessageBox.showAlert(MainActivity.this, "Sipariş süreci başarılı bir şekilde başlatılmıştır.", false);
+                            //  MessageBox.showAlert(MainActivity.this, "Sipariş süreci başarılı bir şekilde başlatılmıştır.", false);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
-
-
 
 
                     } /*else
@@ -882,7 +882,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 public void onResponse(Call<String> call, Response<String> response) {
                     if (!response.isSuccessful()) {
                         progressDoalog.dismiss();
-                       // MessageBox.showAlert(MainActivity.this, "Ürüne ait bilgiler alınırken hata oluştu...", false);
+                        // MessageBox.showAlert(MainActivity.this, "Ürüne ait bilgiler alınırken hata oluştu...", false);
                         return;
                     }
                     if (response.isSuccessful()) {
@@ -1074,8 +1074,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onResponse(Call<List<UrunSube>> call, Response<List<UrunSube>> response) {
                 if (!response.isSuccessful()) {
-                  //  progressDoalog.dismiss();
-                  //  MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                    //  progressDoalog.dismiss();
+                    //  MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -1175,8 +1175,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         getSiparisListFromService();
 
-        for(Siparis item : db.siparisDao().getSiparisAll()){
-            if(item.processInstanceId == null){
+        for (Siparis item : db.siparisDao().getSiparisAll()) {
+            if (item.processInstanceId == null) {
                 postSiparisSureciBaslatService(item);
             }
         }
@@ -1184,6 +1184,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     Siparis gelenSiparis;
+
     public void postSiparisListFromService(final Siparis siparis, final Long siparisMid) {
         progressDoalog.show();
         siparis.setMid(null);
@@ -1196,7 +1197,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void onResponse(Call<Siparis> call, Response<Siparis> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                    // MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
+                    // MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -1211,14 +1212,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 // db.siparisDao().getSiparisAll()
                                 List<SiparisDetay> siparisdetayList = db.siparisDetayDao().getSiparisDetayForMustId(siparisMid);
 
-                                List<SiparisDetay> siparisdetayList2 = db.siparisDetayDao().getSiparisDetayForSiparisId(siparis.getId());
+                                // List<SiparisDetay> siparisdetayList2 = db.siparisDetayDao().getSiparisDetayForSiparisId( gelenSiparis.getId());
 
                                 if (siparisdetayList != null && siparisdetayList.size() > 0) {
                                     List<Siparis> gidecekSiparis = db.siparisDao().getSiparisForSiparisId(gelenSiparis.getId());
+                                    db.siparisDetayDao().updateSiparisId(siparisMid, gelenSiparis.getId());
                                     postSiparisDetayListFromService(siparisdetayList, gidecekSiparis);
-                                    for (SiparisDetay item : siparisdetayList) {
-                                        db.siparisDetayDao().updateSiparisId(siparisMid, siparis.getId());
-                                    }
+
+
                                 }
 
                                 /*if (siparisdetayList != null && siparisdetayList.size() > 0) {
@@ -1255,7 +1256,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         for (SiparisDetay item : siparisDetayList) {
             JsonObject object = new JsonObject();
             object.addProperty("id", item.getId());
-            object.addProperty("siparisId", item.getSiparisId());
+            object.addProperty("siparisId", gelenSiparis.get(0).getId());
             object.addProperty("urunId", item.getUrunId());
             object.addProperty("olcuBirimId", item.getOlcuBirimId());
             object.addProperty("birimFiyat", item.getBirimFiyat());
@@ -1273,7 +1274,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void onResponse(Call<String> call, Response<String> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                    // MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
+                    // MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -1286,14 +1287,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                             @Override
                             public void run() {
 
-
+                                final RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
                                 Call<List<SiparisDetay>> call = refrofitRestApi.getSiparisDetayList("hy/siparis/siparisUrunler/" + gelenSiparis.get(0).getId(), OrtakFunction.authorization, OrtakFunction.tenantId);
                                 call.enqueue(new Callback<List<SiparisDetay>>() {
                                     @Override
                                     public void onResponse(Call<List<SiparisDetay>> call, Response<List<SiparisDetay>> response) {
                                         if (!response.isSuccessful()) {
                                             progressDoalog.dismiss();
-                                            //MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
+                                            //MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
                                             return;
                                         }
                                         if (response.isSuccessful()) {
@@ -1374,7 +1375,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void onResponse(Call<List<Siparis>> call, Response<List<Siparis>> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                    // MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
+                    // MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -1404,7 +1405,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                         public void onResponse(Call<List<SiparisDetay>> call, Response<List<SiparisDetay>> response) {
                                             if (!response.isSuccessful()) {
                                                 progressDoalog.dismiss();
-                                                //  MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
+                                                //  MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
                                                 return;
                                             }
                                             if (response.isSuccessful()) {
@@ -1430,7 +1431,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                                         }
 
 
-
                                                     }
                                                 });
 
@@ -1441,7 +1441,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                         @Override
                                         public void onFailure(Call<List<SiparisDetay>> call, Throwable t) {
                                             progressDoalog.dismiss();
-                                            MessageBox.showAlert(  MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                                            MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
                                         }
                                     });
 
@@ -1454,7 +1454,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
 
                     } /*else
-                        MessageBox.showAlert(getContext(), "Kayıt bulunamamıştır..", false);*/
+                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);*/
                 }
 
             }
@@ -1462,7 +1462,135 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onFailure(Call<List<Siparis>> call, Throwable t) {
                 progressDoalog.dismiss();
-                MessageBox.showAlert(  MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+            }
+        });
+
+
+    }
+
+
+    List<Musteri> gelenMusteriList;
+
+    void getMusteriListFromService() {
+
+        RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
+        Call<List<Musteri>> call = refrofitRestApi.getMusteriList(OrtakFunction.authorization, OrtakFunction.tenantId);
+        call.enqueue(new Callback<List<Musteri>>() {
+            @Override
+            public void onResponse(Call<List<Musteri>> call, Response<List<Musteri>> response) {
+                if (!response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    //  //  MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                    return;
+                }
+                if (response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    gelenMusteriList = response.body();
+                    if (gelenMusteriList != null && gelenMusteriList.size() > 0) {
+                        Boolean yeniKayitMi = true;
+                        if (db.musteriDao().getMusteriAll().size() == 0)
+                            db.musteriDao().setMusteriList(gelenMusteriList);
+                        else {
+
+                            for (Musteri i : gelenMusteriList) {
+
+                                i.setSenkronEdildi(true);
+                                for (Musteri all : db.musteriDao().getMusteriAll()) {
+
+                                    if (all.getId() != null && all.getId().toString().equalsIgnoreCase(i.getId().toString())) {
+                                        yeniKayitMi = false;
+                                        i.setMid(all.getMid());
+                                        db.musteriDao().updateMusteri(i);
+                                    }
+                                }
+
+                                if (yeniKayitMi)
+                                    db.musteriDao().setMusteri(i);
+                            }
+                        }
+
+
+                    }
+
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Musteri>> call, Throwable t) {
+                progressDoalog.dismiss();
+                MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+            }
+        });
+    }
+
+
+    List<Kaynak> gelenKaynakList;
+
+    void getKaynakListFromService() {
+
+        final RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
+        progressDoalog.show();
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setDateFormat("M/d/yy hh:mm a");
+        final Gson gson = gsonBuilder.create();
+        JSONObject object = new JSONObject();
+        try {
+            object.put("pageSize", 99999);
+            object.put("pageNumber", 0);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Call<List<Kaynak>> call = refrofitRestApi.getKaynakList(OrtakFunction.authorization, OrtakFunction.tenantId, "application/json");
+        call.enqueue(new Callback<List<Kaynak>>() {
+            @Override
+            public void onResponse(Call<List<Kaynak>> call, Response<List<Kaynak>> response) {
+                if (!response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    // MessageBox.showAlert(KaynakActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                    return;
+                }
+                if (response.isSuccessful()) {
+                    Boolean yeniKayitMi = true;
+                    progressDoalog.dismiss();
+                    db.kaynakDao().deletekaynakAll();
+                    gelenKaynakList = response.body();
+
+                    // db.kaynakDao().setkaynakList(gelenKaynakList);
+                    for (Kaynak i : gelenKaynakList) {
+
+                        i.setSenkronEdildi(true);
+
+                        if (db.kaynakDao().getkaynakAll().size() == 0) {
+                            db.kaynakDao().setkaynak(i);
+
+                        } else {
+                            for (Kaynak all : db.kaynakDao().getkaynakAll()) {
+
+                                if (all.getId() != null && all.getId().toString().equalsIgnoreCase(i.getId().toString())) {
+                                    yeniKayitMi = false;
+                                    i.setMid(all.getMid());
+                                    db.kaynakDao().updatekaynak(i);
+                                }
+                            }
+
+                            if (yeniKayitMi)
+                                db.kaynakDao().setkaynak(i);
+
+                        }
+                    }
+
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call<List<Kaynak>> call, Throwable t) {
+                progressDoalog.dismiss();
+                MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
 

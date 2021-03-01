@@ -47,6 +47,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.haliyikamaapp.Adapter.GorevlerAdapter;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
@@ -107,6 +108,7 @@ public class GorevlerimFragment2 extends Fragment {
     Boolean hesapKapatCheckbox = false;
     String tahsilEdilecekTuar = "";
     List<SiparisDetay> siparisDetayList = null;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
 
     @Nullable
@@ -141,6 +143,24 @@ public class GorevlerimFragment2 extends Fragment {
         filtre_tarih_yarin = (RadioButton) view.findViewById(R.id.filtre_tarih_yarin);
         durumList = new ArrayList<String>();
         tarihRadioGrup = (RadioGroup) view.findViewById(R.id.tarih_radio_group);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_to_refresh_layout);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                try {
+                    ((MainActivity) getContext()).siparis_islemleri();
+                    getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
+                    get_list(durumList, searchviewText);
+                    swipeRefreshLayout.setRefreshing(false);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, R.color.colorAccent, R.color.colorPrimaryDark);
 
         tarihRadioGrup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -261,50 +281,51 @@ public class GorevlerimFragment2 extends Fragment {
                             public void onClick(int pos) {
                                 final int position = viewHolder.getAdapterPosition();
 
-                                if (gorevlerAdapter.getData().get(position).getTaskName().equalsIgnoreCase("Yikama")) {
-                                    try {
-                                        gorevTamamlaPostService(gorevlerAdapter.getData().get(position).getTaskId(), null, "Yikama");
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-
-                                if (gorevlerAdapter.getData().get(position).getTaskName().equalsIgnoreCase("Araca Yükle")) {
-                                    alert_dialog_gorev_tamamla("Araca Yükle", gorevlerAdapter.getData().get(position).getTaskId());
-                                }
-
-                                if (gorevlerAdapter.getData().get(position).getTaskName().equalsIgnoreCase("TeslimEt")) {
-                                    alert_dialog_gorev_tamamla("TeslimEt", gorevlerAdapter.getData().get(position).getTaskId());
-
-                                    List<GorevFomBilgileri> formDetay = db.gorevFomBilgileriDao().getGorevId(gorevlerAdapter.getData().get(position).getTaskId());
-                                    for (GorevFomBilgileri item : formDetay) {
-                                        if (item.getName().equalsIgnoreCase("Tahsil Edilecek Tutar"))
-                                            tahsilEdilecekTuar = item.getValue();
-                                    }
-                                }
-
-                                if (gorevlerAdapter.getData().get(position).getTaskName().equalsIgnoreCase("TeslimAl")) {
-
-                                    List<Gorevler> gorevlerList = db.gorevlerDao().getGorevForId(Long.valueOf(gorevlerAdapter.getData().get(position).getTaskId()));
-                                    if (gorevlerList.size() > 0) {
-                                        List<Siparis> siparisList = db.siparisDao().getSiparisForSiparisId(gorevlerList.get(0).getSiparisId());
-                                        if (siparisList.size() > 0) {
-                                            siparisDetayList = db.siparisDetayDao().getSiparisDetayForSiparisId(siparisList.get(0).getId());
-                                            if (siparisDetayList.size() == 0)
-                                                siparisDetayList = db.siparisDetayDao().getSiparisDetayForSiparisMid(siparisList.get(0).getMid());
+                                if (gorevlerAdapter.getData() != null) {
+                                    if (gorevlerAdapter.getData().get(position).getTaskName().equalsIgnoreCase("Yikama")) {
+                                        try {
+                                            gorevTamamlaPostService(gorevlerAdapter.getData().get(position).getTaskId(), null, "Yikama");
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
                                         }
                                     }
-                                    if (siparisDetayList == null || siparisDetayList.size() == 0) {
-                                        MessageBox.showAlert(getContext(), "Görevi tamamlamak için ürün eklemeniz lazım.", false);
-                                        return;
-                                    } else
 
-                                        alert_dialog_gorev_tamamla("TeslimAl", gorevlerAdapter.getData().get(position).getTaskId());
+                                    if (gorevlerAdapter.getData().get(position).getTaskName().equalsIgnoreCase("Araca Yükle")) {
+                                        alert_dialog_gorev_tamamla("Araca Yükle", gorevlerAdapter.getData().get(position).getTaskId());
+                                    }
 
+                                    if (gorevlerAdapter.getData().get(position).getTaskName().equalsIgnoreCase("TeslimEt")) {
+                                        alert_dialog_gorev_tamamla("TeslimEt", gorevlerAdapter.getData().get(position).getTaskId());
+
+                                        List<GorevFomBilgileri> formDetay = db.gorevFomBilgileriDao().getGorevId(gorevlerAdapter.getData().get(position).getTaskId());
+                                        for (GorevFomBilgileri item : formDetay) {
+                                            if (item.getName().equalsIgnoreCase("Tahsil Edilecek Tutar"))
+                                                tahsilEdilecekTuar = item.getValue();
+                                        }
+                                    }
+
+                                    if (gorevlerAdapter.getData().get(position).getTaskName().equalsIgnoreCase("TeslimAl")) {
+
+                                        List<Gorevler> gorevlerList = db.gorevlerDao().getGorevForId(Long.valueOf(gorevlerAdapter.getData().get(position).getTaskId()));
+                                        if (gorevlerList.size() > 0) {
+                                            List<Siparis> siparisList = db.siparisDao().getSiparisForSiparisId(gorevlerList.get(0).getSiparisId());
+                                            if (siparisList.size() > 0) {
+                                                siparisDetayList = db.siparisDetayDao().getSiparisDetayForSiparisId(siparisList.get(0).getId());
+                                                if (siparisDetayList.size() == 0)
+                                                    siparisDetayList = db.siparisDetayDao().getSiparisDetayForSiparisMid(siparisList.get(0).getMid());
+                                            }
+                                        }
+                                        if (siparisDetayList == null || siparisDetayList.size() == 0) {
+                                            MessageBox.showAlert(getContext(), "Görevi tamamlamak için ürün eklemeniz lazım.", false);
+                                            return;
+                                        } else
+
+                                            alert_dialog_gorev_tamamla("TeslimAl", gorevlerAdapter.getData().get(position).getTaskId());
+
+
+                                    }
 
                                 }
-
-
                             }
                         }
                 ));
@@ -329,7 +350,7 @@ public class GorevlerimFragment2 extends Fragment {
 
                                     if (musteriList.get(0).getxKoor() != null && musteriList.get(0).getyKoor() != null
                                             && Double.valueOf(musteriList.get(0).getxKoor()) > 0 && Double.valueOf(musteriList.get(0).getyKoor()) > 0) {
-                                        String geoUri = "http://maps.google.com/maps?q=loc:" + Double.valueOf(musteriList.get(0).getyKoor()) + "," + Double.valueOf(musteriList.get(0).getxKoor() )+ " (" + "" + ")";
+                                        String geoUri = "http://maps.google.com/maps?q=loc:" + Double.valueOf(musteriList.get(0).getyKoor()) + "," + Double.valueOf(musteriList.get(0).getxKoor()) + " (" + "" + ")";
                                         Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(geoUri));
                                         startActivity(intent);
                                     } else if (!musteriList.get(0).getAdres().equalsIgnoreCase("")) {
@@ -357,7 +378,7 @@ public class GorevlerimFragment2 extends Fragment {
 
                                 if (gorevlerAdapter.getData().get(position).getSiparisId() != null) {
                                     Intent bluetooth = new Intent(getContext(), BluetoothActivity.class);
-                                    bluetooth.putExtra("siparisId", gorevlerAdapter.getData().get(position).getSiparisId());
+                                    bluetooth.putExtra("siparisId", gorevlerAdapter.getData().get(position).getSiparisId().toString());
                                     bluetooth.putExtra("subeAdi", gorevlerAdapter.getData().get(position).getSubeAdi());
                                     startActivity(bluetooth);
                                 }
@@ -458,9 +479,9 @@ public class GorevlerimFragment2 extends Fragment {
 
         if ((siparisDurumu != null && siparisDurumu.size() > 0) || (searchViewText != null && !searchViewText.equalsIgnoreCase("")))
             if (tarihBugundeMi)
-                gorevlerList = db.gorevlerDao().getGorevQueryPrameter(searchViewText, siparisDurumu, dateFiltre);
-            else
                 gorevlerList = db.gorevlerDao().getQueryIleriTarih(searchViewText, siparisDurumu, dateFiltre);
+            else
+                gorevlerList = db.gorevlerDao().getGorevQueryPrameter(searchViewText, siparisDurumu, dateFiltre);
 
         else
             gorevlerList = db.gorevlerDao().getGorevAll();
@@ -514,7 +535,7 @@ public class GorevlerimFragment2 extends Fragment {
             public void onResponse(Call<String> call, Response<String> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                  //  MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
+                    //  MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -621,7 +642,7 @@ public class GorevlerimFragment2 extends Fragment {
             public void onResponse(Call<String> call, Response<String> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                 //   MessageBox.showAlert(mContext, "Servisle bağlantı sırasında hata oluştu...", false);
+                    //   MessageBox.showAlert(mContext, "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -658,7 +679,7 @@ public class GorevlerimFragment2 extends Fragment {
 
                             }
                         });
-                        get_list(null,null);
+                        get_list(null, null);
 
                     } else
                         MessageBox.showAlert(mContext, "Kayıt bulunamamıştır..", false);
@@ -688,9 +709,9 @@ public class GorevlerimFragment2 extends Fragment {
     public void onResume() {
         super.onResume();
 
-        ((MainActivity)getContext()).siparis_islemleri();
-       //durumList = new ArrayList<String>();
-       // get_list(null, null);
+        //((MainActivity)getContext()).siparis_islemleri();
+        //durumList = new ArrayList<String>();
+        // get_list(null, null);
     }
 
 
@@ -760,7 +781,7 @@ public class GorevlerimFragment2 extends Fragment {
             final List<String> kaynakListString = new ArrayList<String>();
             gorev_araca_yukle_linear.setVisibility(View.VISIBLE);
             kaynakList.add(null);
-            kaynakList = db.kaynakDao().getkaynakAll();
+            kaynakList = db.kaynakDao().getkaynakAllForArac();
             kaynakListString.add("Kaynak");
             for (Kaynak item : kaynakList) {
                 kaynakListString.add(item.getKaynakAdi());
@@ -877,8 +898,6 @@ public class GorevlerimFragment2 extends Fragment {
             dialog.show();
 
 
-
-
             kaydet_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -974,6 +993,11 @@ public class GorevlerimFragment2 extends Fragment {
                         db.siparisDao().updateSiparisDurumu(gorevId, )
                     }*/
                     MessageBox.showAlert(getContext(), "Görev başarıyla tamamlanmıştır..", false);
+                    try {
+                        getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
 
                 }

@@ -173,8 +173,6 @@ public class MusteriFragment extends Fragment {
     }
 
     List<Musteri> gelenMusteriList;
-    List<Musteri> updateMusteriList;
-
     void getMusteriListFromService() {
 
         RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
@@ -371,7 +369,7 @@ public class MusteriFragment extends Fragment {
                             public void onClick(int pos) {
                                 final int position = viewHolder.getAdapterPosition();
 
-                                if (adapter.getData().get(position).getId() != null) {
+                                if (adapter != null && adapter.getData().get(position).getId() != null) {
                                     Intent musteri = new Intent(mContext, SiparisKayitActivity.class);
                                     musteri.putExtra("musteriMid", String.valueOf(adapter.getData().get(position).getMid()));
                                     musteri.putExtra("musteriId", String.valueOf(adapter.getData().get(position).getId()));

@@ -138,7 +138,7 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
 
         if (subeId != null)
             allUrunSube = db.urunSubeDao().getUrunSubeId(Long.valueOf(subeId));
-        if (subeMid != null)
+        else if (subeMid != null)
             allUrunSube = db.urunSubeDao().getUrunSubeMid(Long.valueOf(subeMid));
 
         for (int i = 0; i < allUrunSube.size(); i++) {
@@ -230,6 +230,8 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
                                 } else {
                                     Intent i = new Intent(SiparisDetayKayitActivity.this, SiparisDetayKayitActivity.class);
                                     i.putExtra("siparisMid", siparisMid);
+                                    i.putExtra("subeId", subeId );
+                                    i.putExtra("subeMid", subeMid );
                                     finish();
                                     startActivity(i);
                                 }
@@ -246,6 +248,9 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
                                 } else {
                                     Intent i = new Intent(SiparisDetayKayitActivity.this, SiparisDetayKayitActivity.class);
                                     i.putExtra("siparisMid", siparisMid);
+                                    i.putExtra("siparisMid", siparisMid);
+                                    i.putExtra("subeId", subeId );
+                                    i.putExtra("subeMid", subeMid );
                                     finish();
                                     startActivity(i);
                                 }

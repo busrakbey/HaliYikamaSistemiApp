@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_to_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:mstb="http://schemas.android.com/tools">
 
-
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/search_layout"
@@ -116,5 +119,5 @@
 
     </androidx.recyclerview.widget.RecyclerView>
 
-
 </RelativeLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
