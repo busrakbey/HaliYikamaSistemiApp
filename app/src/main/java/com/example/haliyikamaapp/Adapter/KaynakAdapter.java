@@ -1,6 +1,8 @@
 package com.example.haliyikamaapp.Adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -16,7 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.Kaynak;
 import com.example.haliyikamaapp.R;
+import com.example.haliyikamaapp.ToolLayer.MessageBox;
+import com.example.haliyikamaapp.UI.KaynakActivity;
 import com.example.haliyikamaapp.UI.KaynakKayitActivity;
+import com.example.haliyikamaapp.UI.MainActivity;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -47,9 +52,10 @@ public class KaynakAdapter extends RecyclerView.Adapter<KaynakAdapter.MyViewHold
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final Kaynak myListData = data.get(position);
+        db = HaliYikamaDatabase.getInstance(mContext);
 
 
-        holder.kaynak_marka_item.setText(data.get(position).getMarka() != null ?data.get(position).getMarka() : null );
+        holder.kaynak_marka_item.setText(data.get(position).getMarka() != null ? data.get(position).getMarka() : null);
         holder.kaynak_adi_item.setText(data.get(position).getKaynakTuru() != null ? data.get(position).getKaynakTuru() : null);
         holder.kaynak_plaka_item.setText(data.get(position).getKaynakAdi() != null ? data.get(position).getKaynakAdi() : null);
 
@@ -60,6 +66,39 @@ public class KaynakAdapter extends RecyclerView.Adapter<KaynakAdapter.MyViewHold
                 musteri.putExtra("kaynakId", String.valueOf(data.get(position).getMid()));
                 musteri.putExtra("kaynakMid", String.valueOf(data.get(position).getId()));
                 mContext.getApplicationContext().startActivity(musteri);
+            }
+        });
+
+        if(data.get(position).getSecilenKaynakMi() != null && data.get(position).getSecilenKaynakMi() == true) {
+            holder.relativeLayout.setBackgroundResource(R.drawable.para_giris_shape_bk);
+        }
+
+
+        holder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            public boolean onLongClick(View arg0) {
+
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle("Sistem");
+                builder.setMessage("Kaynak seçilecektir. Devam etmek istiyor musunuz?");
+                builder.setNegativeButton("Hayır", null);
+                builder.setPositiveButton("Evet", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        int xx = db.kaynakDao().updateSecilenKaynakMiAll();
+                        int yy = db.kaynakDao().updateSecilenKaynakMi(data.get(position).getMid(), true);
+                        if (xx > 0 && yy > 0) {
+                            MessageBox.showAlert(mContext, "Kaynak seçimi başarılı bir şekilde gerçekleşmiştir.", false);
+                            ((KaynakActivity) mContext).get_list();
+                        }
+
+
+                    }
+                });
+                builder.show();
+
+
+                return true;
             }
         });
 
@@ -83,7 +122,6 @@ public class KaynakAdapter extends RecyclerView.Adapter<KaynakAdapter.MyViewHold
     public void restoreItem(Kaynak item, final int position) {
         data.add(position, item);
         notifyItemInserted(position);
-
 
 
     }

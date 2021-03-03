@@ -1,11 +1,14 @@
 package com.example.haliyikamaapp.UI;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +19,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -48,6 +52,7 @@ import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
 import com.example.haliyikamaapp.ToolLayer.OrtakFunction;
 import com.example.haliyikamaapp.ToolLayer.RefrofitRestApi;
+import com.example.haliyikamaapp.ToolLayer.SharedPreferencesSettings;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -75,6 +80,8 @@ public class YetkiliCihazlarActivity extends AppCompatActivity {
     View addView;
     LinearLayout switch_linear;
     Button yetki_kaydet_button;
+    ImageView yetki_ayarlar_button;
+    SharedPreferencesSettings sharedPreferencesSettings;
 
 
     @Override
@@ -127,8 +134,11 @@ public class YetkiliCihazlarActivity extends AppCompatActivity {
         progressDoalog.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
         switch_linear = (LinearLayout) findViewById(R.id.switch_linear);
         yetki_kaydet_button = (Button) findViewById(R.id.yetki_kaydet_button);
+        yetki_ayarlar_button = (ImageView) findViewById(R.id.yetki_ayarlar_button);
         userList = new ArrayList<S_User>();
         userListString = new ArrayList<String>();
+        sharedPreferencesSettings = new SharedPreferencesSettings();
+
 
         yetki_kaydet_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,6 +153,50 @@ public class YetkiliCihazlarActivity extends AppCompatActivity {
                         MessageBox.showAlert(YetkiliCihazlarActivity.this, "Lütfen kullanıcı bilgilerini eksiksiz bir şekilde giriniz.", false);
 
                 }
+
+            }
+        });
+
+        yetki_ayarlar_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                final AlertDialog.Builder mBuilder = new AlertDialog.Builder(YetkiliCihazlarActivity.this);
+                final View mView = getLayoutInflater().inflate(R.layout.siparis_gun_popup, null);
+                final EditText siparis_gun_parametresi = (EditText) mView.findViewById(R.id.siparis_gun_parametresi);
+                final TextView call_tittle = (TextView) mView.findViewById(R.id.call_tittle);
+                final Button vazgec_button = (Button) mView.findViewById(R.id.not_vazgec_button);
+                final Button kaydet_button = (Button) mView.findViewById(R.id.not_kaydet_button);
+
+
+
+                mBuilder.setView(mView);
+                final AlertDialog dialog = mBuilder.create();
+                call_tittle.setText("Sipariş Gün Ayarı");
+                dialog.show();
+                if(sharedPreferencesSettings.getValues(getApplicationContext(), "siparis_gun") != null
+                        && !sharedPreferencesSettings.getValues(getApplicationContext(), "siparis_gun").equals(""))
+                    siparis_gun_parametresi.setText(sharedPreferencesSettings.getValues(YetkiliCihazlarActivity.this, "siparis_gun").toString());
+
+
+                vazgec_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        finish();
+                    }
+                });
+
+                kaydet_button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        sharedPreferencesSettings.setSharedPreference(getApplicationContext(), "siparis_gun", siparis_gun_parametresi.getText().toString());
+                        MessageBox.showAlert(YetkiliCihazlarActivity.this, "Başarılı bir şekilde kaydedilmiştir.\n", false);
+                        dialog.dismiss();
+
+                    }
+                });
+
+
 
             }
         });

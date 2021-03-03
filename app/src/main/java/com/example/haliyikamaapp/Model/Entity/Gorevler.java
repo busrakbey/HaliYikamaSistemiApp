@@ -83,8 +83,14 @@ public class Gorevler {
     @ColumnInfo(name = "teslimAlinacak")
     public String teslimAlinacak;
 
-    @ColumnInfo(name = "siparisTarihi")
+     @ColumnInfo(name = "siparisTarihi")
     public String siparisTarihi;
+
+    @ColumnInfo(name = "teslimAlmaTarihi")
+    public String teslimAlmaTarihi;
+
+    @ColumnInfo(name = "teslimEtmeTarihi")
+    public String teslimEtmeTarihi;
 
     @ColumnInfo(name = "siparisDurumu")
     public String siparisDurumu;
@@ -127,6 +133,7 @@ public class Gorevler {
 
     @ColumnInfo(name = "senkronEdildi")
     public Boolean senkronEdildi;
+
 
     @NonNull
     public Long getMid() {
@@ -448,6 +455,22 @@ public class Gorevler {
 
     public void setSenkronEdildi(Boolean senkronEdildi) {
         this.senkronEdildi = senkronEdildi;
+    }
+
+    public String getTeslimAlmaTarihi() {
+        return teslimAlmaTarihi;
+    }
+
+    public void setTeslimAlmaTarihi(String teslimAlmaTarihi) {
+        this.teslimAlmaTarihi = teslimAlmaTarihi;
+    }
+
+    public String getTeslimEtmeTarihi() {
+        return teslimEtmeTarihi;
+    }
+
+    public void setTeslimEtmeTarihi(String teslimEtmeTarihi) {
+        this.teslimEtmeTarihi = teslimEtmeTarihi;
     }
 }
 

@@ -52,5 +52,10 @@ public interface KaynakDao {
     int updatekaynakQuery(Long mid, Long id, Boolean senkronEdildiMi);
 
 
+    @Query("UPDATE KAYNAK set secilenKaynakMi = 0")
+    int updateSecilenKaynakMiAll();
+
+    @Query("UPDATE KAYNAK set secilenKaynakMi = :durum where mid = :mid")
+    int updateSecilenKaynakMi(Long mid, Boolean durum);
 
 }

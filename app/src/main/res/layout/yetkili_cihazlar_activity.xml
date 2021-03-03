@@ -43,9 +43,23 @@
                 android:fontFamily="@font/museosans"
                 android:text="Yetki Tanımlama"
                 android:textColor="@color/text"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 app:fontFamily="@font/segoeuib" />
+
+
+            <ImageView
+                android:id="@+id/yetki_ayarlar_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginRight="10dp"
+                android:padding="5dp"
+                android:scaleType="centerCrop"
+                android:singleLine="true"
+                android:src="@drawable/settings2"
+                android:text="Start a new Journey"
+                android:textSize="16dp" />
 
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
@@ -274,6 +288,9 @@
                         android:textColor="@color/text" />
 
                 </LinearLayout>
+
+
+
 
             </LinearLayout>
 

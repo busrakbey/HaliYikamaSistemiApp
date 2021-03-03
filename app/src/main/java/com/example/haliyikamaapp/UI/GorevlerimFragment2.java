@@ -50,6 +50,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.haliyikamaapp.Adapter.GorevlerAdapter;
+import com.example.haliyikamaapp.Adapter.SwipeToDeleteCallback;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.GorevFomBilgileri;
 import com.example.haliyikamaapp.Model.Entity.Gorevler;
@@ -65,6 +66,7 @@ import com.example.haliyikamaapp.ToolLayer.OrtakFunction;
 import com.example.haliyikamaapp.ToolLayer.RefrofitRestApi;
 import com.example.haliyikamaapp.ToolLayer.SwipeHelper;
 import com.fasterxml.jackson.databind.node.DoubleNode;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -109,6 +111,8 @@ public class GorevlerimFragment2 extends Fragment {
     String tahsilEdilecekTuar = "";
     List<SiparisDetay> siparisDetayList = null;
     private SwipeRefreshLayout swipeRefreshLayout;
+    Snackbar snackbar;
+    Long seciliKaynakId = null;
 
 
     @Nullable
@@ -123,6 +127,13 @@ public class GorevlerimFragment2 extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         init_item(view);
         try {
+            List<Kaynak> kaynakList =db.kaynakDao().getkaynakAll();
+            seciliKaynakId = null;
+            for(Kaynak item : kaynakList)
+                if(item.getSecilenKaynakMi() != null && item.getSecilenKaynakMi() == true)
+                    seciliKaynakId= item.getId();
+
+
             getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
         } catch (Exception e) {
             e.printStackTrace();
@@ -152,7 +163,7 @@ public class GorevlerimFragment2 extends Fragment {
                 try {
                     ((MainActivity) getContext()).siparis_islemleri();
                     getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
-                    get_list(durumList, searchviewText);
+                    get_list(durumList, searchviewText,seciliKaynakId);
                     swipeRefreshLayout.setRefreshing(false);
 
                 } catch (Exception e) {
@@ -170,7 +181,7 @@ public class GorevlerimFragment2 extends Fragment {
                 if (filtre_tarih_yarin.isChecked())
                     tarihBugundeMi = false;
 
-                get_list(durumList, searchviewText);
+                get_list(durumList, searchviewText, seciliKaynakId);
             }
         });
 
@@ -254,7 +265,7 @@ public class GorevlerimFragment2 extends Fragment {
 
                 durumList = new ArrayList<String>();
                 durumList = strings;
-                get_list(durumList, searchviewText);
+                get_list(durumList, searchviewText, seciliKaynakId);
 
 
             }
@@ -269,13 +280,13 @@ public class GorevlerimFragment2 extends Fragment {
 
 
                 underlayButtons.add(new SwipeHelper.UnderlayButton(
-                        "Tamamla",
+                        "Tamamla", null
 
-                        AppCompatResources.getDrawable(
+                       /*AppCompatResources.getDrawable(
                                 getContext(),
                                 android.R.drawable.ic_media_play
-                        ),
-                        Color.parseColor("#FF0000"), Color.parseColor("#FFFFFF"),
+                        )*/,
+                        Color.parseColor("#FF9800"), Color.parseColor("#FFFFFF"),
                         new SwipeHelper.UnderlayButtonClickListener() {
                             @Override
                             public void onClick(int pos) {
@@ -314,149 +325,41 @@ public class GorevlerimFragment2 extends Fragment {
                                                 if (siparisDetayList.size() == 0)
                                                     siparisDetayList = db.siparisDetayDao().getSiparisDetayForSiparisMid(siparisList.get(0).getMid());
                                             }
-                                        }
-                                        if (siparisDetayList == null || siparisDetayList.size() == 0) {
-                                            MessageBox.showAlert(getContext(), "Görevi tamamlamak için ürün eklemeniz lazım.", false);
-                                            return;
-                                        } else
 
-                                            alert_dialog_gorev_tamamla("TeslimAl", gorevlerAdapter.getData().get(position).getTaskId());
+                                            if (siparisDetayList == null || siparisDetayList.size() == 0) {
+                                                MessageBox.showAlert(getContext(), "Görevi tamamlamak için ürün eklemeniz lazım.", false);
 
 
-                                    }
-
-                                }
-                            }
-                        }
-                ));
-
-
-                underlayButtons.add(new SwipeHelper.UnderlayButton(
-                        "Konum",
-
-                        AppCompatResources.getDrawable(
-                                getContext(),
-                                android.R.drawable.ic_menu_mylocation
-                        ),
-                        Color.parseColor("#FF9800"), Color.parseColor("#FFFFFF"),
-                        new SwipeHelper.UnderlayButtonClickListener() {
-                            @Override
-                            public void onClick(int pos) {
-                                final int position = viewHolder.getAdapterPosition();
-
-                                List<Musteri> musteriList = null;
-                                musteriList = db.musteriDao().getMusteriForId(gorevlerAdapter.getData().get(position).getMusteriId());
-                                if (musteriList.size() > 0) {
-
-                                    if (musteriList.get(0).getxKoor() != null && musteriList.get(0).getyKoor() != null
-                                            && Double.valueOf(musteriList.get(0).getxKoor()) > 0 && Double.valueOf(musteriList.get(0).getyKoor()) > 0) {
-                                        String geoUri = "http://maps.google.com/maps?q=loc:" + Double.valueOf(musteriList.get(0).getyKoor()) + "," + Double.valueOf(musteriList.get(0).getxKoor()) + " (" + "" + ")";
-                                        Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(geoUri));
-                                        startActivity(intent);
-                                    } else if (!musteriList.get(0).getAdres().equalsIgnoreCase("")) {
-                                        String url = "http://maps.google.com/maps?daddr=" + musteriList.get(0).getAdres();
-                                        Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(url));
-                                        startActivity(intent);
-                                    }
-                                }
-                            }
-                        }
-                ));
-
-                underlayButtons.add(new SwipeHelper.UnderlayButton(
-                        "Yazdır",
-
-                        AppCompatResources.getDrawable(
-                                getContext(),
-                                android.R.drawable.ic_menu_gallery
-                        ),
-                        Color.parseColor("#44728A"), Color.parseColor("#FFFFFF"),
-                        new SwipeHelper.UnderlayButtonClickListener() {
-                            @Override
-                            public void onClick(int pos) {
-                                final int position = viewHolder.getAdapterPosition();
-
-                                if (gorevlerAdapter.getData().get(position).getSiparisId() != null) {
-                                    Intent bluetooth = new Intent(getContext(), BluetoothActivity.class);
-                                    bluetooth.putExtra("siparisId", gorevlerAdapter.getData().get(position).getSiparisId().toString());
-                                    bluetooth.putExtra("subeAdi", gorevlerAdapter.getData().get(position).getSubeAdi());
-                                    startActivity(bluetooth);
-                                }
-                            }
-                        }
-                ));
+                                                Intent i = new Intent(mContext, SiparisDetayActivity.class);
+                                                // i.putExtra("gelenPage", "sipariş");
+                                                i.putExtra("siparisId", String.valueOf(gorevlerAdapter.getData().get(position).getSiparisId()));
+                                                i.putExtra("subeMid", siparisList.get(0).getSubeMid() != null ? siparisList.get(0).getSubeMid().toString() : null);
+                                                i.putExtra("subeId", siparisList.get(0).getSubeId() != null ? siparisList.get(0).getSubeId().toString() : null);
+                                                i.putExtra("siparisMid", siparisList != null ? siparisList.get(0).getMid().toString() : null);
+                                                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                mContext.getApplicationContext().startActivity(i);
 
 
-                underlayButtons.add(new SwipeHelper.UnderlayButton(
-                        "Sms",
-
-                        AppCompatResources.getDrawable(
-                                getContext(),
-                                android.R.drawable.ic_menu_edit
-                        ),
-                        Color.parseColor("#23A96E"), Color.parseColor("#FFFFFF"),
-                        new SwipeHelper.UnderlayButtonClickListener() {
-                            @Override
-                            public void onClick(int pos) {
-                                final int position = viewHolder.getAdapterPosition();
-
-                                if (!gorevlerAdapter.getData().get(position).getTelefonNumarasi().equalsIgnoreCase("")) {
-
-                                  /*  SmsManager smgr = SmsManager.getDefault();
-                                    smgr.sendTextMessage(gorevlerAdapter.getData().get(position).getTelefonNumarasi(),null,"Merhabalar..",null,null);
-                                    Toast.makeText(getContext(), "SMS Sent Successfully", Toast.LENGTH_SHORT).show();*/
+                                                return;
 
 
-                                    Intent intent = new Intent(Intent.ACTION_SENDTO);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    intent.setData(Uri.parse("smsto:" + gorevlerAdapter.getData().get(position).getTelefonNumarasi())); // This ensures only SMS apps respond
-                                    intent.putExtra("sms_body", "Merhabalar..");
-                                    startActivity(intent);
-                                }
-                            }
-                        }
-                ));
+                                            } else
 
-
-                underlayButtons.add(new SwipeHelper.UnderlayButton(
-                        "Telefon",
-
-                        AppCompatResources.getDrawable(
-                                getContext(),
-                                android.R.drawable.ic_menu_call
-                        ),
-                        Color.parseColor("#D8D8D8"), Color.parseColor("#FFFFFF"),
-                        new SwipeHelper.UnderlayButtonClickListener() {
-                            @Override
-                            public void onClick(int pos) {
-                                final int position = viewHolder.getAdapterPosition();
-
-                                if (!gorevlerAdapter.getData().get(position).getTelefonNumarasi().equalsIgnoreCase("")) {
-                                    Intent intent = new Intent();
-                                    intent.setAction(Intent.ACTION_DIAL);
-                                    intent.setData(Uri.parse("tel: " + gorevlerAdapter.getData().get(position).getTelefonNumarasi()));
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    mContext.getApplicationContext().startActivity(intent);
-                                } else {
-                                    Cursor telefonun_rehberi = mContext.getApplicationContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
-                                    while (telefonun_rehberi.moveToNext()) {
-                                        String isim = telefonun_rehberi.getString(telefonun_rehberi.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                                        String numara = telefonun_rehberi.getString(telefonun_rehberi.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                                        if (isim.equalsIgnoreCase(gorevlerAdapter.getData().get(position).getMusteriAdi() + " " +
-                                                gorevlerAdapter.getData().get(position).getMusteriSoyadi())) {
-                                            Intent intent = new Intent();
-                                            intent.setAction(Intent.ACTION_DIAL); // Action for what intent called for
-                                            intent.setData(Uri.parse("tel: " + numara)); // Data with intent respective action on intent
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            mContext.getApplicationContext().startActivity(intent);
-                                            telefonun_rehberi.close();
+                                                alert_dialog_gorev_tamamla("TeslimAl", gorevlerAdapter.getData().get(position).getTaskId());
 
                                         }
+
+
                                     }
+
                                 }
                             }
                         }
                 ));
+
+
+
+
 
             }
         };
@@ -464,7 +367,7 @@ public class GorevlerimFragment2 extends Fragment {
 
     }
 
-    public void get_list(List<String> siparisDurumu, String searchViewText) {
+    public void get_list(List<String> siparisDurumu, String searchViewText, Long seciliKaynakId) {
         List<Gorevler> gorevlerList;
 
 
@@ -479,12 +382,12 @@ public class GorevlerimFragment2 extends Fragment {
 
         if ((siparisDurumu != null && siparisDurumu.size() > 0) || (searchViewText != null && !searchViewText.equalsIgnoreCase("")))
             if (tarihBugundeMi)
-                gorevlerList = db.gorevlerDao().getQueryIleriTarih(searchViewText, siparisDurumu, dateFiltre);
+                gorevlerList = db.gorevlerDao().getQueryIleriTarih(searchViewText, siparisDurumu, dateFiltre,seciliKaynakId );
             else
-                gorevlerList = db.gorevlerDao().getGorevQueryPrameter(searchViewText, siparisDurumu, dateFiltre);
+                gorevlerList = db.gorevlerDao().getGorevQueryPrameter(searchViewText, siparisDurumu, dateFiltre,seciliKaynakId);
 
         else
-            gorevlerList = db.gorevlerDao().getGorevAll();
+            gorevlerList = db.gorevlerDao().getGorevAllForKaynakId(seciliKaynakId);
         gorevlerAdapter = new GorevlerAdapter(getContext(), gorevlerList);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -492,11 +395,6 @@ public class GorevlerimFragment2 extends Fragment {
         recyclerView.setAdapter(gorevlerAdapter);
 
 
-        gorevlerAdapter = new GorevlerAdapter(getContext(), gorevlerList);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        gorevlerAdapter.notifyDataSetChanged();
-        recyclerView.setAdapter(gorevlerAdapter);
 
 
     }
@@ -596,7 +494,7 @@ public class GorevlerimFragment2 extends Fragment {
                             @Override
                             public void run() {
 
-                                get_list(durumList, searchviewText);
+                                get_list(durumList, searchviewText,seciliKaynakId);
                                 List<Gorevler> totalGorevList = db.gorevlerDao().getGorevAll();
                                 for (Gorevler item : totalGorevList) {
                                     try {
@@ -618,7 +516,7 @@ public class GorevlerimFragment2 extends Fragment {
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 progressDoalog.dismiss();
-                MessageBox.showAlert(getContext(), "Hata Oluştu.. " + t.getMessage(), false);
+                // MessageBox.showAlert(getContext(), "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
 
@@ -679,7 +577,7 @@ public class GorevlerimFragment2 extends Fragment {
 
                             }
                         });
-                        get_list(null, null);
+                        get_list(null, null,seciliKaynakId);
 
                     } else
                         MessageBox.showAlert(mContext, "Kayıt bulunamamıştır..", false);
@@ -689,7 +587,7 @@ public class GorevlerimFragment2 extends Fragment {
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 progressDoalog.dismiss();
-                MessageBox.showAlert(mContext, "Hata Oluştu.. " + t.getMessage(), false);
+                // MessageBox.showAlert(mContext, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
 
@@ -733,7 +631,7 @@ public class GorevlerimFragment2 extends Fragment {
             public boolean onQueryTextChange(String newText) {
 
                 searchviewText = newText;
-                get_list(durumList, newText);
+                get_list(durumList, newText,seciliKaynakId);
 
 
                 return false;
@@ -742,7 +640,7 @@ public class GorevlerimFragment2 extends Fragment {
         search_view.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                get_list(durumList, "");
+                get_list(durumList, "",seciliKaynakId);
                 searchviewText = "";
                 return false;
             }
@@ -768,6 +666,7 @@ public class GorevlerimFragment2 extends Fragment {
         final EditText gorev_teslim_et_notlar = (EditText) mView.findViewById(R.id.gorev_teslim_edilecek_not);
         final LinearLayout gorev_araca_yukle_linear = (LinearLayout) mView.findViewById(R.id.gorev_araca_yukle_linear);
         final Spinner gorev_kaynak_spinner = (Spinner) mView.findViewById(R.id.gorev_kaynak_spinner);
+
 
         mBuilder.setView(mView);
         final AlertDialog dialog = mBuilder.create();
@@ -955,9 +854,9 @@ public class GorevlerimFragment2 extends Fragment {
                     icObje.put("id", item.getId());
                     icObje.put("siparisId", item.getSiparisId());
                     icObje.put("urunId", item.getUrunId());
-                    icObje.put("urunAdi", db.urunDao().getUrunForId(item.getUrunId()).get(0).getUrunAdi());
+                    icObje.put("urunAdi", item.getUrunId() != null ? db.urunDao().getUrunForId(item.getUrunId()).get(0).getUrunAdi() : null);
                     icObje.put("olcuBirimId", item.getOlcuBirimId());
-                    icObje.put("olcuBirimAdi", db.olcuBirimDao().getOlcuBirimForId(item.getOlcuBirimId()).get(0).getOlcuBirimi());
+                    icObje.put("olcuBirimAdi", "M2");
                     icObje.put("birimFiyat", item.getBirimFiyat());
                     icObje.put("miktar", item.getMiktar());
                     icObje.put("toplamTutar", item.getBirimFiyat() * item.getMiktar());
@@ -1007,7 +906,7 @@ public class GorevlerimFragment2 extends Fragment {
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 progressDoalog.dismiss();
-                MessageBox.showAlert(getContext(), "Hata Oluştu.. " + t.getMessage(), false);
+                //   MessageBox.showAlert(getContext(), "Hata Oluştu.. " + t.getMessage(), false);
             }
 
         });

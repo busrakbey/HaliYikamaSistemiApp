@@ -51,6 +51,9 @@ public class Kaynak {
     @ColumnInfo(name = "senkronEdildi")
     public Boolean senkronEdildi;
 
+    @ColumnInfo(name = "secilenKaynakMi")
+    public Boolean secilenKaynakMi;
+
     @NonNull
     public Long getMid() {
         return mid;
@@ -162,5 +165,13 @@ public class Kaynak {
 
     public void setSenkronEdildi(Boolean senkronEdildi) {
         this.senkronEdildi = senkronEdildi;
+    }
+
+    public Boolean getSecilenKaynakMi() {
+        return secilenKaynakMi;
+    }
+
+    public void setSecilenKaynakMi(Boolean secilenKaynakMi) {
+        this.secilenKaynakMi = secilenKaynakMi;
     }
 }

@@ -33,6 +33,7 @@ import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.Siparis;
 import com.example.haliyikamaapp.Model.Entity.SiparisDetay;
 import com.example.haliyikamaapp.R;
+import com.example.haliyikamaapp.ToolLayer.MessageBox;
 import com.example.haliyikamaapp.ToolLayer.Utils;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -63,6 +64,7 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
     private BluetoothSocket mBluetoothSocket;
     BluetoothDevice mBluetoothDevice;
     String gelenSiparisId, gelenSiparisMid, gelenSubeAdi;
+    String mDeviceAddress = "02:3C:6E:1A:2F:7F";
 
     @Override
     public void onCreate(Bundle mSavedInstanceState) {
@@ -99,11 +101,28 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
         mPrint = (Button) findViewById(R.id.mPrint);
         mPrint.setOnClickListener(new View.OnClickListener() {
             public void onClick(View mView) {
-                try {
+               /* try {
                     Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                }
+                }*/
+
+
+                Thread thread = new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            while (true) {
+                                sleep(3000);
+
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+
+                thread.start();
 
                 barkodYazici(gelenSiparisId != null ? gelenSiparisId : gelenSiparisMid, gelenSubeAdi);
             }
@@ -153,7 +172,8 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
             case REQUEST_CONNECT_DEVICE:
                 if (mResultCode == Activity.RESULT_OK) {
                     Bundle mExtra = mDataIntent.getExtras();
-                    String mDeviceAddress = mExtra.getString("DeviceAddress");
+                    mDeviceAddress = mExtra.getString("DeviceAddress");
+
                     Log.v(TAG, "Coming incoming address " + mDeviceAddress);
                     mBluetoothDevice = mBluetoothAdapter
                             .getRemoteDevice(mDeviceAddress);
@@ -277,64 +297,72 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
 
     public void barkodYazici(String siparisId, final String subeAdi) {
 
-        OutputStream os = null;
-        try {
-            os = mBluetoothSocket
-                    .getOutputStream();
-            // os.write(new byte[] { 0x1b, 'a', 0x01 });
-            byte[] change = new byte[]{27, 33, 0};
-
-            os.write(new byte[]{0x1B, 'a', 0x01});
-            os.write(("    " + trEngCevir(subeAdi).toUpperCase() + " HALI YIKAMA " + "\n").getBytes());
+        if (mBluetoothSocket == null)
+            MessageBox.showAlert(getApplicationContext(), "Lütfen önce bağlantı kurmak istediğiniz cihazı seçiniz.", false);
+        else {
 
 
-            os.write(createBarkocImage(Long.valueOf(gelenSiparisId)));
+            OutputStream os = null;
+            try {
+                os = mBluetoothSocket
+                        .getOutputStream();
+                // os.write(new byte[] { 0x1b, 'a', 0x01 });
+                byte[] change = new byte[]{27, 33, 0};
 
-            // os.write(new byte[]{0x1b, 'a', 0x01});
-            change[2] = (byte) (0x3); //small
-            os.write(change);
-            os.write(new byte[]{0x1B, 'a', 0x00});
-            os.write(("URUN    FIYAT    MIKTAR   BIRIM   TUTAR \n").getBytes());
-            os.write((" ----------------------------------------\n").getBytes());
+                os.write(("\n   ").getBytes());
+                os.write(("\n   ").getBytes());
 
-            HaliYikamaDatabase db = HaliYikamaDatabase.getInstance(getApplicationContext());
-            List<Siparis> siparisList = db.siparisDao().getSiparisForSiparisId(Long.valueOf(gelenSiparisId));
-            List<SiparisDetay> siparisDetayList = db.siparisDetayDao().getSiparisDetayForSiparisId(Long.valueOf(gelenSiparisId));
+                os.write(new byte[]{0x1B, 'a', 0x01});
+                os.write((" " + trEngCevir(subeAdi).toUpperCase() + " HALI YIKAMA " + "\n").getBytes());
 
-            double toplamTutar = 0.0;
-            for (SiparisDetay item : siparisDetayList) {
-                if (item.getUrunId() != null)
-                    os.write(db.urunDao().getUrunForId(item.getUrunId()).get(0).getUrunAdi().getBytes());
-                else
+
+                os.write(createBarkocImage(Long.valueOf(gelenSiparisId)));
+
+                // os.write(new byte[]{0x1b, 'a', 0x01});
+                change[2] = (byte) (0x3); //small
+                os.write(change);
+                os.write(new byte[]{0x1B, 'a', 0x00});
+                os.write(("URUN    FIYAT    MIKTAR   BIRIM   TUTAR \n").getBytes());
+                os.write((" ----------------------------------------\n").getBytes());
+
+                HaliYikamaDatabase db = HaliYikamaDatabase.getInstance(getApplicationContext());
+                List<Siparis> siparisList = db.siparisDao().getSiparisForSiparisId(Long.valueOf(gelenSiparisId));
+                List<SiparisDetay> siparisDetayList = db.siparisDetayDao().getSiparisDetayForSiparisId(Long.valueOf(gelenSiparisId));
+
+                double toplamTutar = 0.0;
+                for (SiparisDetay item : siparisDetayList) {
+                    if (item.getUrunId() != null)
+                        os.write(db.urunDao().getUrunForId(item.getUrunId()).get(0).getUrunAdi().getBytes());
+                    else
+                        os.write(("     ").getBytes());
+
+                    os.write(("   ").getBytes());
+                    os.write((item.getBirimFiyat() != null ? item.getBirimFiyat().toString() : "    ").getBytes());
                     os.write(("     ").getBytes());
+                    os.write((item.getMiktar() != null ? item.getMiktar().toString() : "    ").getBytes());
+                    os.write(("      ").getBytes());
+                    if (item.getOlcuBirimId() != null)
+                        os.write(db.olcuBirimDao().getOlcuBirimForId(item.getOlcuBirimId()).get(0).getOlcuBirimi().getBytes());
+                    else
+                        os.write(("  ").getBytes());
 
-                os.write(("   ").getBytes());
-                os.write((item.getBirimFiyat() != null ? item.getBirimFiyat().toString() : "    ").getBytes());
-                os.write(("     ").getBytes());
-                os.write((item.getMiktar() != null ? item.getMiktar().toString() : "    ").getBytes());
-                os.write(("      ").getBytes());
-                if (item.getOlcuBirimId() != null)
-                    os.write(db.olcuBirimDao().getOlcuBirimForId(item.getOlcuBirimId()).get(0).getOlcuBirimi().getBytes());
-                else
-                    os.write(("  ").getBytes());
+                    os.write(("     ").getBytes());
+                    os.write((String.valueOf((item.getMiktar() != null ? item.getMiktar() : 0) * (item.getBirimFiyat() != null ? item.getBirimFiyat() : 0))).getBytes());
+                    os.write(("\n").getBytes());
 
-                os.write(("     ").getBytes());
-                os.write((String.valueOf((item.getMiktar() != null ? item.getMiktar() : 0) * (item.getBirimFiyat() != null ? item.getBirimFiyat() : 0))).getBytes());
+                    toplamTutar = toplamTutar + (item.getMiktar() != null ? item.getMiktar() : 0) * (item.getBirimFiyat() != null ? item.getBirimFiyat() : 0);
+
+                }
+
+
+                os.write(("\nToplam Urun Sayisi: " + siparisDetayList.size()).getBytes());
+                os.write(("\nToplam Tutar: " + toplamTutar + " TL").getBytes());
+                os.write(("\n ----------------------------------------").getBytes());
                 os.write(("\n").getBytes());
-
-                toplamTutar = toplamTutar + (item.getMiktar() != null ? item.getMiktar() : 0) * (item.getBirimFiyat() != null ? item.getBirimFiyat() : 0);
-
-            }
+                //This is printer specific code you can comment ==== > Start
 
 
-            os.write(("\nToplam Urun: " + siparisDetayList.size()).getBytes());
-            os.write(("\nToplam Tutar: " + toplamTutar + " TL").getBytes());
-
-
-            //This is printer specific code you can comment ==== > Start
-
-
-            // Setting height
+                // Setting height
                    /* int gs = 29;
                     os.write(intToByteArray(gs));
                     int h = 104;
@@ -349,10 +377,10 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
                     os.write(intToByteArray(w));
                     int n_width = 2;
                     os.write(intToByteArray(n_width));*/
-        } catch (IOException e) {
-            e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-
 
     }
 

@@ -13,74 +13,291 @@
         android:orientation="vertical">
 
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="0dp"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/whiteCardColor"
-            android:elevation="4dp"
-            app:buttonGravity="bottom"
-            app:contentInsetEnd="0dp"
-            app:contentInsetStart="5dp"
-            app:contentInsetStartWithNavigation="0dp"
-            app:layout_collapseMode="pin"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/toolbar_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/museosans"
-                    android:text="Diğer İşlemler"
-                    android:textColor="@color/text"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:fontFamily="@font/segoeuib" />
-
-
-                <ImageView
-                    android:id="@+id/toolbar_right_subtitle"
-                    android:layout_width="45dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:padding="5dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/user_profile"
-                    android:textSize="16dp"
-                    android:visibility="gone" />
-            </LinearLayout>
-        </androidx.appcompat.widget.Toolbar>
-
         <LinearLayout
             android:id="@+id/linear"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/toolbar">
+            tools:layout_editor_absoluteY="56dp">
 
             <LinearLayout
                 android:id="@+id/linearLayout3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="15dp"
+                android:layout_margin="25dp"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/toolbar">
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/harcama_tanim_cardview"
+                    android:id="@+id/ara_tamamla"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:foreground="@drawable/mr_drawermenugradient_grey"
+                    app:cardBackgroundColor="#8AFFE94C"
+                    app:cardCornerRadius="15dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_gravity="center_vertical|center"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="0.3"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_centerHorizontal="true"
+                                android:layout_gravity="center_vertical|center"
+                                android:layout_margin="15dp"
+                                android:layout_marginTop="15dp"
+                                app:srcCompat="@drawable/phone" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:layout_weight="0.1"
+                            android:background="@drawable/mr_drawermenugradient_normal"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_below="@id/bus"
+                                android:layout_margin="5dp"
+                                android:layout_weight="0.01"
+                                android:gravity="center_horizontal|top"
+                                android:text="Ara"
+                                android:textSize="@dimen/text_size_small"></TextView>
+
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/sms_tamamla"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:foreground="@drawable/mr_drawermenugradient_grey"
+                    app:cardBackgroundColor="#C75DDA"
+                    app:cardCornerRadius="15dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_gravity="center_vertical|center"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="0.3"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/tanim_sms"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_centerHorizontal="true"
+                                android:layout_gravity="center_vertical|center"
+                                android:layout_margin="15dp"
+                                android:layout_marginTop="15dp"
+                                app:srcCompat="@drawable/sms" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:layout_weight="0.1"
+                            android:background="@drawable/mr_drawermenugradient_normal"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_below="@id/bus"
+                                android:layout_margin="5dp"
+                                android:layout_weight="0.01"
+                                android:gravity="center_horizontal|top"
+                                android:text="Sms"
+                                android:textSize="@dimen/text_size_small"></TextView>
+
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/whatsapp_tamamla"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:foreground="@drawable/mr_drawermenugradient_grey"
+                    android:visibility="visible"
+                    app:cardBackgroundColor="#B551C956"
+                    app:cardCornerRadius="15dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_gravity="center_vertical|center"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="0.3"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:layout_centerHorizontal="true"
+                                android:layout_gravity="center_vertical|center"
+                                android:layout_margin="15dp"
+                                android:layout_marginTop="15dp"
+                                app:srcCompat="@drawable/whatsapp_icon" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_weight="0.1"
+                            android:background="@drawable/mr_drawermenugradient_normal"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_below="@id/bus"
+                                android:layout_margin="5dp"
+                                android:gravity="center|center_horizontal"
+                                android:text="Whatsapp"
+                                android:textSize="@dimen/text_size_small"></TextView>
+
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="25dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/linearLayout3">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/konum_tamamla"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:foreground="@drawable/mr_drawermenugradient_grey"
+                    app:cardBackgroundColor="#A98862DF"
+                    app:cardCornerRadius="15dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_gravity="center_vertical|center"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="0.3"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/tanim_sube_buton"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:layout_centerHorizontal="true"
+                                android:layout_gravity="center_vertical|center"
+                                android:layout_margin="15dp"
+                                android:layout_marginTop="15dp"
+                                app:srcCompat="@drawable/map" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_weight="0.1"
+                            android:background="@drawable/mr_drawermenugradient_normal"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_below="@id/bus"
+                                android:layout_margin="5dp"
+                                android:gravity="center|center_horizontal"
+                                android:text="Konum"
+                                android:textSize="@dimen/text_size_small"></TextView>
+
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/yazdir_tamamla"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
                     android:layout_weight="1"
                     android:clickable="true"
                     android:foreground="@drawable/mr_drawermenugradient_grey"
@@ -104,210 +321,12 @@
                             <ImageView
                                 android:id="@+id/tanim_harcama"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_vertical|center"
-                                android:layout_margin="15dp"
-                                app:srcCompat="@drawable/cuzdan" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:layout_weight="0.1"
-                            android:background="@drawable/mr_drawermenugradient_normal"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_below="@id/bus"
-                                android:layout_margin="5dp"
-                                android:gravity="center"
-                                android:text="Harcamalar"
-                                android:textSize="@dimen/text_size_small"></TextView>
-
-
-                        </LinearLayout>
-
-
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/kaynak_tanim_cardview"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    android:foreground="@drawable/mr_drawermenugradient_grey"
-                    app:cardBackgroundColor="#8AF85700"
-                    app:cardCornerRadius="15dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_gravity="center_vertical|center"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:layout_weight="0.3"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@+id/tanim_kaynak"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_vertical|center"
-                                android:layout_margin="15dp"
-                                app:srcCompat="@drawable/kaynaklar" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:layout_weight="0.1"
-                            android:background="@drawable/mr_drawermenugradient_normal"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_below="@id/bus"
-                                android:layout_margin="5dp"
-                                android:layout_weight="0.01"
-                                android:gravity="center|center_horizontal"
-                                android:text="Kaynaklar"
-                                android:textSize="@dimen/text_size_small"></TextView>
-
-
-                        </LinearLayout>
-
-
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/sms_tanim_cardview"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    android:foreground="@drawable/mr_drawermenugradient_grey"
-                    app:cardBackgroundColor="#8AFFE94C"
-                    app:cardCornerRadius="15dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_gravity="center_vertical|center"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:layout_weight="0.3"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@+id/tanim_sms"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_vertical|center"
-                                android:layout_margin="15dp"
-                                app:srcCompat="@drawable/sms2" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:layout_weight="0.1"
-                            android:background="@drawable/mr_drawermenugradient_normal"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_below="@id/bus"
-                                android:layout_margin="5dp"
-                                android:layout_weight="0.01"
-                                android:gravity="center"
-                                android:text="Sms Şablonları"
-                                android:textSize="@dimen/text_size_small"></TextView>
-
-
-                        </LinearLayout>
-
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/linearLayout2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="15dp"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/linearLayout3">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/sube_tanim_cardview"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    android:foreground="@drawable/mr_drawermenugradient_grey"
-                    app:cardBackgroundColor="#B551C956"
-                    app:cardCornerRadius="15dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_gravity="center_vertical|center"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:layout_weight="0.3"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@+id/tanim_sube_buton"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
+                                android:layout_height="100dp"
                                 android:layout_centerHorizontal="true"
                                 android:layout_gravity="center_vertical|center"
                                 android:layout_margin="15dp"
                                 android:layout_marginTop="15dp"
-                                app:srcCompat="@drawable/sube" />
+                                app:srcCompat="@drawable/printer2" />
 
                         </LinearLayout>
 
@@ -316,7 +335,7 @@
                             android:layout_height="0dp"
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
-                            android:layout_marginBottom="5dp"
+                            android:layout_marginBottom="10dp"
                             android:layout_weight="0.1"
                             android:background="@drawable/mr_drawermenugradient_normal"
                             android:orientation="vertical">
@@ -326,8 +345,8 @@
                                 android:layout_height="match_parent"
                                 android:layout_below="@id/bus"
                                 android:layout_margin="5dp"
-                                android:gravity="center|center_horizontal"
-                                android:text="Şubeler"
+                                android:gravity="center"
+                                android:text="Yazdır"
                                 android:textSize="@dimen/text_size_small"></TextView>
 
 
@@ -338,14 +357,14 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/urun_cardview"
+                    android:id="@+id/tamamla_Tamamla"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
                     android:layout_weight="1"
                     android:clickable="true"
                     android:foreground="@drawable/mr_drawermenugradient_grey"
-                    app:cardBackgroundColor="#ADEB524C"
+                    app:cardBackgroundColor="#CDFA6257"
                     app:cardCornerRadius="15dp">
 
                     <LinearLayout
@@ -365,12 +384,12 @@
                             <ImageView
                                 android:id="@+id/tanim_urun_buton"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
+                                android:layout_height="100dp"
                                 android:layout_centerHorizontal="true"
                                 android:layout_gravity="center_vertical|center"
                                 android:layout_margin="15dp"
                                 android:layout_marginTop="15dp"
-                                app:srcCompat="@drawable/notepad" />
+                                app:srcCompat="@drawable/list" />
 
                         </LinearLayout>
 
@@ -390,70 +409,7 @@
                                 android:layout_below="@id/bus"
                                 android:layout_margin="5dp"
                                 android:gravity="center|center_horizontal"
-                                android:text="Ürünler"
-                                android:textSize="@dimen/text_size_small"></TextView>
-
-
-                        </LinearLayout>
-
-
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/bolge_tanim_cardview"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    android:foreground="@drawable/mr_drawermenugradient_grey"
-                    app:cardBackgroundColor="#A665A6F1"
-                    app:cardCornerRadius="15dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_gravity="center_vertical|center"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:layout_weight="0.3"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@+id/tanim_bolge"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_vertical|center"
-                                android:layout_margin="15dp"
-                                android:layout_marginTop="15dp"
-                                app:srcCompat="@drawable/map" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:layout_weight="0.1"
-                            android:background="@drawable/mr_drawermenugradient_normal"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_below="@id/bus"
-                                android:layout_margin="5dp"
-                                android:gravity="center"
-                                android:text="Bölgeler"
+                                android:text="Ürün Listesi"
                                 android:textSize="@dimen/text_size_small"></TextView>
 
 
@@ -465,246 +421,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/linearLayout4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="15dp"
-                android:orientation="horizontal"
-
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/linearLayout2"
-
-                >
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/yazici_tanim_cardview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    android:foreground="@drawable/mr_drawermenugradient_grey"
-                    app:cardBackgroundColor="#8FA027B1"
-                    app:cardCornerRadius="15dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_gravity="center_vertical|center"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:layout_weight="0.3"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@+id/tanim_yazici_buton"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_vertical|center"
-                                android:layout_margin="15dp"
-                                android:layout_marginTop="15dp"
-                                app:srcCompat="@drawable/printer2" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginBottom="5dp"
-                            android:layout_weight="0.1"
-                            android:background="@drawable/mr_drawermenugradient_normal"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_below="@id/bus"
-                                android:layout_margin="5dp"
-                                android:gravity="center|center_horizontal"
-                                android:text="Yazıcı"
-                                android:textSize="@dimen/text_size_small"></TextView>
-
-
-                        </LinearLayout>
-
-
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/yetki_cardview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    android:foreground="@drawable/mr_drawermenugradient_grey"
-                    app:cardBackgroundColor="#CDFFD254"
-                    app:cardCornerRadius="15dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_gravity="center_vertical|center"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:layout_weight="0.3"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@+id/tanim_yetki_buton"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_vertical|center"
-                                android:layout_margin="15dp"
-                                android:layout_marginTop="15dp"
-                                app:srcCompat="@drawable/manager" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginBottom="5dp"
-                            android:layout_weight="0.1"
-                            android:background="@drawable/mr_drawermenugradient_normal"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_below="@id/bus"
-                                android:layout_margin="5dp"
-                                android:gravity="center|center_horizontal"
-                                android:text="Yetki"
-                                android:textSize="@dimen/text_size_small"></TextView>
-
-
-                        </LinearLayout>
-
-
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/harita_tanim_cardview"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    android:foreground="@drawable/mr_drawermenugradient_grey"
-                    app:cardBackgroundColor="#B551C956"
-                    app:cardCornerRadius="15dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_gravity="center_vertical|center"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:layout_weight="0.3"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:id="@+id/tanim_harita_buton"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_vertical|center"
-                                android:layout_margin="15dp"
-                                android:layout_marginTop="15dp"
-                                app:srcCompat="@drawable/map" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:layout_marginBottom="5dp"
-                            android:layout_weight="0.1"
-                            android:background="@drawable/mr_drawermenugradient_normal"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_below="@id/bus"
-                                android:layout_margin="5dp"
-                                android:gravity="center|center_horizontal"
-                                android:text="Harita"
-                                android:textSize="@dimen/text_size_small"></TextView>
-
-
-                        </LinearLayout>
-
-
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-
-            </LinearLayout>
-
-            <androidx.coordinatorlayout.widget.CoordinatorLayout
-                android:id="@+id/cordinatorBottom"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_gravity="bottom"
-                app:layout_constraintTop_toBottomOf="@id/linear"
-                tools:layout_editor_absoluteY="601dp">
-
-                <com.google.android.material.bottomappbar.BottomAppBar
-                    android:id="@+id/bottom_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:paddingBottom="0dp"
-                    android:theme="@style/Theme.MaterialComponents.Light"
-                    app:contentInsetStart="0dp"
-                    app:contentInsetStartWithNavigation="0dp"
-                    app:fabAlignmentMode="center"
-                    app:fabCradleRoundedCornerRadius="25dp"
-                    app:fabCradleVerticalOffset="0dp">
-
-
-                    <com.google.android.material.bottomnavigation.BottomNavigationView
-                        android:id="@+id/bottom_navigation"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        app:itemIconTint="@color/bottom_bar_item_selector"
-                        app:labelVisibilityMode="selected"
-                        app:menu="@menu/bottom_navigation" />
-                </com.google.android.material.bottomappbar.BottomAppBar>
-
-
-            </androidx.coordinatorlayout.widget.CoordinatorLayout>
         </LinearLayout>
 
 

@@ -85,6 +85,7 @@ public interface RefrofitRestApi {
     @POST()  ////hy/process/userTasks/999"
     Call<String>  getKullaniciGorevList (@Url String url,@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body String gorevPageBilgileri);
 
+
     @GET()  ////fw/process/taskFormData/15008"
     Call<String>  getGorevTamamlamakIcinGerekliFormList (@Url String url,@Header("Authorization") String auth, @Header("tenant-id") String tenantId,
                                                          @Header("Content-Type") String contentType, @Header("Accept") String accept  );

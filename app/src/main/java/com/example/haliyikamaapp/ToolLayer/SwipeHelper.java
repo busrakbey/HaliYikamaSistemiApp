@@ -32,12 +32,12 @@ import java.util.Queue;
 
 public abstract class SwipeHelper extends ItemTouchHelper.SimpleCallback {
 
-    public static final int BUTTON_WIDTH = 100;
+    public static final int BUTTON_WIDTH = 130;
     private RecyclerView recyclerView;
     private List<UnderlayButton> buttons;
     private GestureDetector gestureDetector;
     private int swipedPos = -1;
-    private float swipeThreshold = 0.5f;
+    private float swipeThreshold = 30f;
     private Map<Integer, List<UnderlayButton>> buttonsBuffer;
     private Queue<Integer> recoverQueue;
     private static Boolean animate;
@@ -60,18 +60,23 @@ public abstract class SwipeHelper extends ItemTouchHelper.SimpleCallback {
             if (swipedPos < 0) return false;
             Point point = new Point((int) e.getRawX(), (int) e.getRawY());
 
-            RecyclerView.ViewHolder swipedViewHolder = recyclerView.findViewHolderForAdapterPosition(swipedPos);
-            View swipedItem = swipedViewHolder.itemView;
-            Rect rect = new Rect();
-            swipedItem.getGlobalVisibleRect(rect);
+            if(recyclerView != null ) {
+                RecyclerView.ViewHolder swipedViewHolder = recyclerView.findViewHolderForAdapterPosition(swipedPos);
+                if(swipedViewHolder != null) {
+                    View swipedItem = swipedViewHolder.itemView;
+                    Rect rect = new Rect();
+                    swipedItem.getGlobalVisibleRect(rect);
 
-            if (e.getAction() == MotionEvent.ACTION_DOWN || e.getAction() == MotionEvent.ACTION_UP || e.getAction() == MotionEvent.ACTION_MOVE) {
-                if (rect.top < point.y && rect.bottom > point.y)
-                    gestureDetector.onTouchEvent(e);
-                else {
-                    recoverQueue.add(swipedPos);
-                    swipedPos = -1;
-                    recoverSwipedItem();
+                    if (e.getAction() == MotionEvent.ACTION_DOWN || e.getAction() == MotionEvent.ACTION_UP || e.getAction() == MotionEvent.ACTION_MOVE) {
+                        if (rect.top < point.y && rect.bottom > point.y)
+                            gestureDetector.onTouchEvent(e);
+                        else {
+                            recoverQueue.add(swipedPos);
+                            swipedPos = -1;
+                            recoverSwipedItem();
+                        }
+                    }
+                    return false;
                 }
             }
             return false;
@@ -79,7 +84,7 @@ public abstract class SwipeHelper extends ItemTouchHelper.SimpleCallback {
     };
 
     public SwipeHelper(Context context, RecyclerView recyclerView, Boolean animate) {
-        super(0, ItemTouchHelper.LEFT);
+        super(0, ItemTouchHelper.START);
         this.animate = animate;
         this.recyclerView = recyclerView;
         this.buttons = new ArrayList<>();
@@ -243,7 +248,7 @@ public abstract class SwipeHelper extends ItemTouchHelper.SimpleCallback {
                 // Draw Text
 //                p.setColor(Color.BLACK);
                 p.setColor(textColor);
-                p.setTextSize(17);
+                p.setTextSize(22);
                 Rect r = new Rect();
                 float cHeight = rect.height();
                 float cWidth = rect.width();
@@ -262,7 +267,7 @@ public abstract class SwipeHelper extends ItemTouchHelper.SimpleCallback {
                 //animate
                 // Draw Text
                 TextPaint textPaint = new TextPaint();
-                textPaint.setTextSize(17);
+                textPaint.setTextSize(22);
                 textPaint.setColor(textColor);
                 StaticLayout sl = new StaticLayout(text, textPaint, (int) rect.width(),
                         Layout.Alignment.ALIGN_CENTER, 1, 1, false);

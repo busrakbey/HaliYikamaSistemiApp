@@ -180,4 +180,11 @@
     </style>
 
 
+    <style name="hesapOzetiButton" parent="viewParent">
+        <item name="android:background">@drawable/hesap_button</item>
+        <item name="android:textColor">@color/whiteTextColor</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
 </resources>

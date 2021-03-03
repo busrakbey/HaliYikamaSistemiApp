@@ -100,7 +100,6 @@ import com.twilio.type.PhoneNumber;
 
 import static android.view.View.GONE;
 
-
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     Toolbar toolbar;
     FloatingActionButton ekleButon;
@@ -167,6 +166,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             pd.setCancelable(false);
             pd.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
             pd.show();
+            getServisler();
+
             new Handler().postDelayed(new Runnable() {
 
                 @Override
@@ -174,8 +175,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     pd.dismiss();
 
                 }
-            }, 11000);
-            getServisler();
+            }, 13000);
 
         }
 
@@ -504,16 +504,20 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     startActivity(siparis);
                 }
 
-                if (page.equalsIgnoreCase("Görevlerim")) {
-                    selectedFragment = new MusteriFragment();
+               else  if (page.equalsIgnoreCase("Görevlerim")) {
+                  /*  selectedFragment = new MusteriFragment();
                     FragmentManager manager = getSupportFragmentManager();
                     FragmentTransaction transaction = manager.beginTransaction();
                     transaction.replace(R.id.fragment_container, selectedFragment);
                     getFragmentManager().executePendingTransactions();
                     transaction.detach(selectedFragment);
                     transaction.attach(selectedFragment);
-                    transaction.commit();
+                    transaction.commit();*/
                     bottomNavigationView.setSelectedItemId(R.id.nav_musteri);
+
+                    Intent musteri = new Intent(getApplication().getApplicationContext(), MusteriKayitActivity.class);
+                    startActivity(musteri);
+
                    /* getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                             selectedFragment).commit();*/
 
@@ -587,6 +591,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                             public void onClick(View view) {
                                 Intent intent = new Intent(MainActivity.this, SiparisKayitActivity.class);
                                 intent.putExtra("musteriMid", String.valueOf(item.getMid()));
+                                intent.putExtra("musteriId", String.valueOf(item.getId()));
                                 finish();
                                 startActivity(intent);
                             }
@@ -604,6 +609,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                             public void onClick(View view) {
                                 Intent intent = new Intent(MainActivity.this, MusteriKayitActivity.class);
                                 intent.putExtra("musteriMid", item.getMid().toString());
+                                intent.putExtra("musteriId", item.getId().toString());
+
                                 finish();
                                 startActivity(intent);
                             }
@@ -798,7 +805,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onFailure(Call<List<Urun>> call, Throwable t) {
                 progressDoalog.dismiss();
-                MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+               // MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
 
@@ -1419,8 +1426,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                                         for (SiparisDetay i : gelenSiparisDetayList2) {
                                                             List<Siparis> siparis = db.siparisDao().getSiparisForSiparisId(item.getId());
                                                             List<SiparisDetay> urunVarMi = db.siparisDetayDao().getSiparisDetayForId(i.getId());
-                                                            i.setMustId(siparis.get(0).getMid());
-                                                            i.setSiparisMid(siparis.get(0).getMid());
+                                                            if(siparis != null && siparis.size() > 0) {
+                                                                i.setMustId(siparis.get(0).getMid());
+                                                                i.setSiparisMid(siparis.get(0).getMid());
+                                                            }
                                                             if (urunVarMi.size() > 0) {
                                                                 i.setMid(urunVarMi.get(0).getMid());
                                                                 i.setUrunMid(urunVarMi.get(0).getUrunMid());
@@ -1556,7 +1565,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 if (response.isSuccessful()) {
                     Boolean yeniKayitMi = true;
                     progressDoalog.dismiss();
-                    db.kaynakDao().deletekaynakAll();
+                   // db.kaynakDao().deletekaynakAll();
                     gelenKaynakList = response.body();
 
                     // db.kaynakDao().setkaynakList(gelenKaynakList);
@@ -1573,6 +1582,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 if (all.getId() != null && all.getId().toString().equalsIgnoreCase(i.getId().toString())) {
                                     yeniKayitMi = false;
                                     i.setMid(all.getMid());
+                                    i.setSecilenKaynakMi(all.getSecilenKaynakMi());
                                     db.kaynakDao().updatekaynak(i);
                                 }
                             }

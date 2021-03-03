@@ -72,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.login_activity);
         initViews();
-        ilk_logo.setVisibility(VISIBLE);
+       // ilk_logo.setVisibility(VISIBLE);
         db = HaliYikamaDatabase.getInstance(LoginActivity.this);
         String kullaniciEdit = getIntent().getStringExtra("userEdit");
         if (kullaniciEdit != null && kullaniciEdit.equalsIgnoreCase("userEdit"))
@@ -210,7 +210,10 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<String> call, Response<String> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                    MessageBox.showAlert(LoginActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                   // MessageBox.showAlert(LoginActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                    Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                    i.putExtra("login" , "login");
+                    startActivity(i);
                     return;
                 }
                 if (response.isSuccessful()) {

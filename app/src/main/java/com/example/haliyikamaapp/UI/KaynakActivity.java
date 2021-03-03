@@ -206,7 +206,7 @@ public class KaynakActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     Boolean yeniKayitMi = true;
                     progressDoalog.dismiss();
-                    db.kaynakDao().deletekaynakAll();
+                    //db.kaynakDao().deletekaynakAll();
                     gelenKaynakList = response.body();
 
                    // db.kaynakDao().setkaynakList(gelenKaynakList);
@@ -223,6 +223,7 @@ public class KaynakActivity extends AppCompatActivity {
                                 if (all.getId() != null && all.getId().toString().equalsIgnoreCase(i.getId().toString())) {
                                     yeniKayitMi = false;
                                     i.setMid(all.getMid());
+                                    i.setSecilenKaynakMi(all.getSecilenKaynakMi());
                                     db.kaynakDao().updatekaynak(i);
                                 }
                             }
@@ -267,6 +268,7 @@ public class KaynakActivity extends AppCompatActivity {
         kaynak.setMid(null);
         kaynak.setMustId(null);
         kaynak.setSenkronEdildi(null);
+        kaynak.setSecilenKaynakMi(null);
 
         call = refrofitRestApi.postKaynak(OrtakFunction.authorization, OrtakFunction.tenantId, "application/json", kaynak);
 

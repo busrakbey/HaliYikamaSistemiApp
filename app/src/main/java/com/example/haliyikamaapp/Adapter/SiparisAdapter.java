@@ -114,6 +114,8 @@ public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHo
 
         }
 
+        holder.aciklama_item.setText((itemsFiltered.get(position).getAciklama() != null && !itemsFiltered.get(position).getAciklama().equalsIgnoreCase("")) ? itemsFiltered.get(position).getAciklama() : "Sipariş Notu Yok.");
+
 
         ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
         int color1 = generator.getRandomColor();
@@ -241,7 +243,7 @@ public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHo
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         RelativeLayout relativeLayout;
-        public TextView tarih_item, sipariş_durumu_item, siparis_tutari_item, sube_item, adres_item, musteri_adi;
+        public TextView tarih_item, sipariş_durumu_item, siparis_tutari_item, sube_item, adres_item, musteri_adi, aciklama_item;
         ImageView edit_item, senkron_siparis;
 
 
@@ -255,6 +257,7 @@ public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHo
             this.senkron_siparis = (ImageView) itemView.findViewById(R.id.senkron_siparis);
             this.adres_item = (TextView) itemView.findViewById(R.id.siparis_adres_item);
             this.musteri_adi = (TextView) itemView.findViewById(R.id.siparis_musteri_adi);
+            this.aciklama_item = (TextView) itemView.findViewById(R.id.siparis_aciklama_item);
 
 
             relativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayout);

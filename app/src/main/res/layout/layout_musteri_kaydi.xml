@@ -90,6 +90,7 @@
                     style="@style/modifiedEditText"
                     android:clickable="true"
                     android:hint="Telefon Numarası"
+                    android:inputType="number"
                     maskededittext:mask="(999) 999-9999" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -260,7 +261,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/signup_text_margin_top"
-                android:layout_weight="0.3"
                 android:drawableTop="@android:drawable/ic_menu_edit"
                 android:onClick="adresGirOnClick"
                 android:paddingTop="5dp"
@@ -289,10 +289,9 @@
 
             <Button
                 android:id="@+id/siparis_olustur_button"
-                style="@style/tamamlaButton"
-                android:layout_width="wrap_content"
+                style="@style/paraGirisButton"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="15dp"
                 android:layout_marginTop="@dimen/signup_text_margin_top"
                 android:layout_weight="0.3"
                 android:drawableTop="@android:drawable/ic_menu_add"
@@ -302,13 +301,13 @@
                 android:text="YENİ SİPARİŞ"
                 android:textColor="@color/text"
                 android:textSize="@dimen/newsMoreTextSize"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
 
             <Button
                 android:id="@+id/siparis_listele_button"
-                style="@style/tamamlaButton"
-                android:layout_width="wrap_content"
+                style="@style/harcamaButton"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="@dimen/signup_text_margin_top"
@@ -317,10 +316,26 @@
                 android:onClick="siparisListeleOnClick"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"
-                android:text="SİPARİŞLERİM"
+                android:text="SİPARİŞ GEÇMİŞİ"
                 android:textColor="@color/text"
                 android:textSize="@dimen/newsMoreTextSize"
-                android:visibility="gone" />
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/btn3"
+                style="@style/hesapOzetiButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:layout_weight="0.3"
+                android:drawableTop="@android:drawable/ic_menu_week"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:text="   HESAP ÖZETİ "
+                android:textColor="@color/text"
+                android:textSize="@dimen/newsMoreTextSize"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/siparis_yazdir_button"

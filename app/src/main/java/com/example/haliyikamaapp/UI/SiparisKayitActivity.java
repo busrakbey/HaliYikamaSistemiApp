@@ -36,6 +36,7 @@ import com.example.haliyikamaapp.Model.Entity.Sms;
 import com.example.haliyikamaapp.Model.Entity.Sube;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
+import com.example.haliyikamaapp.ToolLayer.SharedPreferencesSettings;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -69,6 +70,7 @@ public class SiparisKayitActivity extends AppCompatActivity {
     List<String> kaynakListString;
     ImageView siparisBarkodYazdirButton;
     EditText teslimEdilmeTarihi, teslimAlinmaTarihi;
+    SharedPreferencesSettings sharedPreferencesSettings;
 
 
     @SuppressLint("RestrictedApi")
@@ -127,6 +129,9 @@ public class SiparisKayitActivity extends AppCompatActivity {
         siparisBarkodYazdirButton = (ImageView) findViewById(R.id.siparis_barkod_yazdir);
         teslimAlinmaTarihi = (EditText) findViewById(R.id.siparis_teslim_alinma_tarihi);
         teslimEdilmeTarihi = (EditText) findViewById(R.id.siparis_teslim_tarihi);
+        sharedPreferencesSettings = new SharedPreferencesSettings();
+
+
 
 
         Calendar calendar = Calendar.getInstance();
@@ -169,12 +174,41 @@ public class SiparisKayitActivity extends AppCompatActivity {
             }
         });
 
+
+        teslimEdilmeTarihi.setText(dayOfMonth + "." + Integer.valueOf(month + 1) + "." + year);
+        teslimEdilmeTarihi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                datePickerDialog = new DatePickerDialog(SiparisKayitActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                                teslimEdilmeTarihi.setText(day + "." + Integer.valueOf(month + 1) + "." + year);
+                            }
+                        }, year, month, dayOfMonth);
+                datePickerDialog.show();
+
+            }
+        });
+
+        if(sharedPreferencesSettings.getValues(getApplicationContext(), "siparis_gun") != null &&
+                !sharedPreferencesSettings.getValues(getApplicationContext(), "siparis_gun").equals("")){
+            Calendar calendar2 = Calendar.getInstance();
+            calendar2.add(Calendar.DATE, sharedPreferencesSettings.getValues(getApplicationContext(), "siparis_gun"));
+            final int year2 = calendar2.get(Calendar.YEAR);
+            final int month2 = calendar2.get(Calendar.MONTH);
+            final int dayOfMonth2 = calendar2.get(Calendar.DAY_OF_MONTH);
+            teslimEdilmeTarihi.setText(dayOfMonth2 + "." + Integer.valueOf(month2 + 1) + "." + year2 );
+        }
+
         siparisBarkodYazdirButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent bluetooth = new Intent(SiparisKayitActivity.this,BluetoothActivity.class);
-                bluetooth.putExtra("siparisId" , gelenSiparisId != null ? gelenSiparisId : null);
-                bluetooth.putExtra("siparisMid" , gelenSiparisMid != null ? gelenSiparisMid : null);
+                Intent bluetooth = new Intent(SiparisKayitActivity.this, BluetoothActivity.class);
+                bluetooth.putExtra("siparisId", gelenSiparisId != null ? gelenSiparisId : null);
+                bluetooth.putExtra("siparisMid", gelenSiparisMid != null ? gelenSiparisMid : null);
                 bluetooth.putExtra("subeAdi", seciliSubeAdi);
                 startActivity(bluetooth);
             }
@@ -199,6 +233,19 @@ public class SiparisKayitActivity extends AppCompatActivity {
             gelenMusteriId = null;
         if (gelenSiparisId != null && gelenSiparisId.equalsIgnoreCase("null"))
             gelenSiparisId = null;
+
+        List<Musteri> musterimList = null;
+        if (gelenSubeId == null) {
+            musterimList = db.musteriDao().getMusteriForId(Long.valueOf(gelenMusteriId));
+            if (musterimList.size() == 0)
+                musterimList = db.musteriDao().getMusteriForMid(Long.valueOf(gelenMusteriMid));
+
+            if (musterimList.get(0).getSubeId() != null)
+                gelenSubeId = String.valueOf(musterimList.get(0).getSubeId());
+            else
+                sube_spinner.setEnabled(false);
+
+        }
 
 
         final List<Sube> subeList = db.subeDao().getSubeAll();
@@ -264,7 +311,7 @@ public class SiparisKayitActivity extends AppCompatActivity {
             kaynakListString.add(item.getKaynakAdi());
         }
 
-        ArrayAdapter<String> dataAdapter_kaynak= new ArrayAdapter<String>(SiparisKayitActivity.this, android.R.layout.simple_spinner_item, kaynakListString);
+        ArrayAdapter<String> dataAdapter_kaynak = new ArrayAdapter<String>(SiparisKayitActivity.this, android.R.layout.simple_spinner_item, kaynakListString);
         dataAdapter_kaynak.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         kaynak_spinner.setAdapter(dataAdapter_kaynak);
         kaynak_spinner.setSelection(0);
@@ -294,7 +341,7 @@ public class SiparisKayitActivity extends AppCompatActivity {
         else
             teslim_alinacak_checkbox.setChecked(true);
 
-        if (gelenMusteriMid != null ) {
+        if (gelenMusteriMid != null) {
             musteri_edittw.setEnabled(false);
             List<Musteri> musteri = db.musteriDao().getMusteriForMid(Long.valueOf(gelenMusteriMid));
             musteri_edittw.setText(musteri.get(0).getMusteriAdi() + " " + musteri.get(0).getMusteriSoyadi());
@@ -333,14 +380,14 @@ public class SiparisKayitActivity extends AppCompatActivity {
         final Siparis siparis = new Siparis();
 
         siparis.setMusteriMid(gelenMusteriMid != null ? Long.valueOf(gelenMusteriMid) : null);
-        siparis.setMusteriId(gelenMusteriId != null  ? Long.valueOf(gelenMusteriId) : null);
+        siparis.setMusteriId(gelenMusteriId != null ? Long.valueOf(gelenMusteriId) : null);
         siparis.setSubeId(gelenSubeId != null ? Long.valueOf(gelenSubeId) : secilenSube.getId());
-        siparis.setSubeMid(gelenSubeMid != null  ? Long.valueOf(gelenSubeMid) : secilenSube.getMid());
+        siparis.setSubeMid(gelenSubeMid != null ? Long.valueOf(gelenSubeMid) : secilenSube.getMid());
         siparis.setSiparisTarihi(tarih_edittw.getText().toString());
         siparis.setAciklama(aciklama_edittw.getText().toString());
         siparis.setTeslimAlinacak(teslim_alinacak_checkbox.isChecked() ? true : false);
-        siparis.setSiparisDurumu(teslim_alinacak_checkbox.isChecked() ?  "Teslim Alınacak" : "" );
-        siparis.setId(gelenSiparisId != null  ? Long.valueOf(gelenSiparisId) : null);
+        siparis.setSiparisDurumu(teslim_alinacak_checkbox.isChecked() ? "Teslim Alınacak" : "");
+        siparis.setId(gelenSiparisId != null ? Long.valueOf(gelenSiparisId) : null);
         siparis.setSenkronEdildi(false);
         siparis.setTeslimAlmaTarihi(teslimAlinmaTarihi.getText().toString());
         siparis.setTeslimEtmeTarihi(teslimAlinmaTarihi.getText().toString());
@@ -363,10 +410,13 @@ public class SiparisKayitActivity extends AppCompatActivity {
                         if (gelenSiparisMid == null && Integer.valueOf(String.valueOf(finalYeniKayitSiparisMid)) > 0) {
                             if (tamamla) {
                                 db.siparisDao().updateSiparisBarkod(createBarkocImage(String.valueOf("00000" + finalYeniKayitSiparisMid)), finalYeniKayitSiparisMid);
-                                MessageBox.showAlert(SiparisKayitActivity.this, "Kayıt Başarılı..\n", false);
+                                MessageBox.showAlert(SiparisKayitActivity.this, "Sipariş oluşturuldu. \n", false);
                                 Intent i = new Intent(SiparisKayitActivity.this, MainActivity.class);
-                                i.putExtra("gelenPage", "sipariş");
+                               // i.putExtra("gelenPage", "gorevlerim");
+                                i.putExtra("gelenPage", "müşteri_görevlerim");
                                 finish();
+                                startActivity(i);
+
                             } else {
                                 Intent i = new Intent(SiparisKayitActivity.this, SiparisDetayKayitActivity.class);
                                 i.putExtra("siparisMid", String.valueOf(finalYeniKayitSiparisMid));
@@ -378,10 +428,12 @@ public class SiparisKayitActivity extends AppCompatActivity {
                         }
                         if (gelenSiparisMid != null && finalYeniKayitSiparisMid == 1) {
                             if (tamamla) {
-                                MessageBox.showAlert(SiparisKayitActivity.this, "İşlem Başarılı..\n", false);
+                                MessageBox.showAlert(SiparisKayitActivity.this, "Sipariş oluşturuldu.\n", false);
                                 Intent i = new Intent(SiparisKayitActivity.this, MainActivity.class);
-                                i.putExtra("gelenPage", "sipariş");
+                                i.putExtra("gelenPage", "müşteri_görevlerim");
                                 finish();
+                                startActivity(i);
+
                             } else {
                                 Intent i = new Intent(SiparisKayitActivity.this, SiparisDetayKayitActivity.class);
                                 i.putExtra("siparisMid", String.valueOf(finalYeniKayitSiparisMid));

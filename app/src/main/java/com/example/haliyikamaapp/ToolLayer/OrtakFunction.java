@@ -199,12 +199,15 @@ public class OrtakFunction {
                 String password = "hy-secret";
                 String auth = username + ":" + password;
                 byte[] data = auth.getBytes();
-                String base64 = Base64.encodeToString(data, Base64.NO_WRAP);
+                String base64 = Base64.encodeToString(data, Base64.DEFAULT);
                 headers.put("Accept", "application/json");
                 headers.put("Content-Type", "application/x-www-form-urlencoded");
-                headers.put("Authorization", "Basic " + base64);
                 headers.put("tenant-id", tenantId);
-                headers.put("Connection", "keep-alive");
+              //  headers.put("Connection", "keep-alive");
+                headers.put("Authorization", "Basic " + base64);
+
+
+
 
 
                 //   headers.put("imei-number ", imei);
@@ -246,7 +249,7 @@ public class OrtakFunction {
             RetryPolicy policy = new DefaultRetryPolicy(socketTimeout,
                     2,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-        request.setRetryPolicy(policy);
+       // request.setRetryPolicy(policy);
 
         mQueue.add(request);
         dialog.show();
@@ -331,6 +334,7 @@ public class OrtakFunction {
                 .connectTimeout(4, TimeUnit.MINUTES)
                 .writeTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(false)
                 .build();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(url)

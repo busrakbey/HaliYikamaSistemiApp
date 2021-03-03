@@ -26,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.haliyikamaapp.Adapter.MusteriAdapter;
 import com.example.haliyikamaapp.Adapter.SwipeToDeleteCallback;
@@ -54,7 +55,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MusteriFragment extends Fragment {
-    ConstraintLayout relativeLayout;
+    SwipeRefreshLayout swipeRefreshLayout;
     public MusteriAdapter adapter;
     RecyclerView recyclerView;
     HaliYikamaDatabase db;
@@ -83,7 +84,7 @@ public class MusteriFragment extends Fragment {
     }
 
     void init_item(View view) {
-        relativeLayout = (ConstraintLayout) view.findViewById(R.id.relativeLayout);
+       // swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.relativeLayout);
         db = HaliYikamaDatabase.getInstance(getContext());
         recyclerView = (RecyclerView) view.findViewById(R.id.musteri_recyclerview);
 
@@ -93,6 +94,22 @@ public class MusteriFragment extends Fragment {
         progressDoalog.setTitle("SİSTEM");
         progressDoalog.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
         swipe_item();
+
+
+      /*  swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                try {
+                    senkronEdilmeyenKayitlariGonder();
+                    getMusteriListFromService();
+                    swipeRefreshLayout.setRefreshing(false);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, R.color.colorAccent, R.color.colorPrimaryDark);*/
 
 
     }
@@ -310,12 +327,12 @@ public class MusteriFragment extends Fragment {
 
 
                 underlayButtons.add(new SwipeHelper.UnderlayButton(
-                        "Ara",
+                        "Ara",null
 
-                        AppCompatResources.getDrawable(
+                       /* AppCompatResources.getDrawable(
                                 getContext(),
                                 android.R.drawable.ic_menu_call
-                        ),
+                        )*/,
                         Color.parseColor("#FF0000"), Color.parseColor("#FFFFFF"),
                         new SwipeHelper.UnderlayButtonClickListener() {
                             @Override
@@ -335,12 +352,12 @@ public class MusteriFragment extends Fragment {
 
 
                 underlayButtons.add(new SwipeHelper.UnderlayButton(
-                        "Düzenle",
+                        "Sms",null
 
-                        AppCompatResources.getDrawable(
+                      /*  AppCompatResources.getDrawable(
                                 getContext(),
                                 android.R.drawable.ic_menu_edit
-                        ),
+                        )*/,
                         Color.parseColor("#FF9800"), Color.parseColor("#FFFFFF"),
                         new SwipeHelper.UnderlayButtonClickListener() {
                             @Override
@@ -356,31 +373,7 @@ public class MusteriFragment extends Fragment {
                         }
                 ));
 
-                underlayButtons.add(new SwipeHelper.UnderlayButton(
-                        " Yeni Sipariş ",
 
-                        AppCompatResources.getDrawable(
-                                getContext(),
-                               android.R.drawable.ic_menu_add
-                        ),
-                        Color.parseColor("#D8D8D8"), Color.parseColor("#FFFFFF"),
-                        new SwipeHelper.UnderlayButtonClickListener() {
-                            @Override
-                            public void onClick(int pos) {
-                                final int position = viewHolder.getAdapterPosition();
-
-                                if (adapter != null && adapter.getData().get(position).getId() != null) {
-                                    Intent musteri = new Intent(mContext, SiparisKayitActivity.class);
-                                    musteri.putExtra("musteriMid", String.valueOf(adapter.getData().get(position).getMid()));
-                                    musteri.putExtra("musteriId", String.valueOf(adapter.getData().get(position).getId()));
-                                    musteri.putExtra("subeId", String.valueOf(adapter.getData().get(position).getSubeId()));
-                                    musteri.putExtra("subeMid", String.valueOf(adapter.getData().get(position).getSubeMid()));
-                                    musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    mContext.getApplicationContext().startActivity(musteri);
-                                }
-                            }
-                        }
-                ));
 
 
               
