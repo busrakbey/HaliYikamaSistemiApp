@@ -203,7 +203,7 @@ public class OrtakFunction {
                 headers.put("Accept", "application/json");
                 headers.put("Content-Type", "application/x-www-form-urlencoded");
                 headers.put("tenant-id", tenantId);
-              //  headers.put("Connection", "keep-alive");
+              headers.put("Connection", "keep-alive");
                 headers.put("Authorization", "Basic " + base64);
 
 
@@ -319,6 +319,7 @@ public class OrtakFunction {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(ScalarsConverterFactory.create())
                 .client(okHttpClient)
                 .build();
 
@@ -340,7 +341,10 @@ public class OrtakFunction {
                 .baseUrl(url)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
+
+
 
 
         RefrofitRestApi refrofitRestApi = retrofit.create(RefrofitRestApi.class);

@@ -42,6 +42,8 @@ import com.example.haliyikamaapp.UI.BluetoothActivity;
 import com.example.haliyikamaapp.UI.MusteriGorevlerimDetayActivity;
 import com.example.haliyikamaapp.UI.SiparisDetayActivity;
 
+import org.w3c.dom.Text;
+
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -82,26 +84,41 @@ public class GorevlerAdapter extends RecyclerView.Adapter<GorevlerAdapter.MyView
             Timestamp stamp = new Timestamp(Long.valueOf(data.get(position).getSiparisTarihi()));
             DateFormat f = new SimpleDateFormat("dd.MM.yyyy HH:mm");
             Date date = new Date(stamp.getTime());
-            holder.tarih_item.setText(f.format(date));
+          //  holder.tarih_item.setText(f.format(date));
         }
 
+        holder.siparis_sube_adi.setText(data.get(position).getSubeAdi()!= null ? data.get(position).getSubeAdi() : "");
         holder.siparis_tutari_item.setText(data.get(position).getTaskDescription());
         holder.sipariş_durumu_item.setText(data.get(position).getSiparisDurumu());
+        holder.siparis_no_item.setText("\n000" + data.get(position).getSiparisId().toString() + "\n");
 
         if (data.get(position).getSiparisDurumu() != null) {
-            if (data.get(position).getSiparisDurumu().equalsIgnoreCase("Teslim Alınacak"))
+            if (data.get(position).getSiparisDurumu().equalsIgnoreCase("Teslim Alınacak")) {
                 holder.sipariş_durumu_item.setTextColor(Color.parseColor("#c056d9"));
+                holder.siparis_no_item.setBackgroundColor(Color.parseColor("#c056d9"));
 
-            if (data.get(position).getSiparisDurumu().equalsIgnoreCase("Teslime Hazır"))
+            }
+
+            if (data.get(position).getSiparisDurumu().equalsIgnoreCase("Teslime Hazır")) {
                 holder.sipariş_durumu_item.setTextColor(Color.parseColor("#5cee36"));
+                holder.siparis_no_item.setBackgroundColor(Color.parseColor("#5cee36"));
+
+            }
 
 
-            if (data.get(position).getSiparisDurumu().equalsIgnoreCase("Teslime Çıktı"))
+            if (data.get(position).getSiparisDurumu().equalsIgnoreCase("Teslime Çıktı")) {
                 holder.sipariş_durumu_item.setTextColor(Color.parseColor("#ea3732"));
+                holder.siparis_no_item.setBackgroundColor(Color.parseColor("#ea3732"));
+
+            }
 
 
-            if (data.get(position).getSiparisDurumu().equalsIgnoreCase("Yıkanacak") || data.get(position).getSiparisDurumu().equalsIgnoreCase("Yıkamada"))
+            if (data.get(position).getSiparisDurumu().equalsIgnoreCase("Yıkanacak") ||
+                    data.get(position).getSiparisDurumu().equalsIgnoreCase("Yıkamada")) {
                 holder.sipariş_durumu_item.setTextColor(Color.parseColor("#f48024"));
+                holder.siparis_no_item.setBackgroundColor(Color.parseColor("#f48024"));
+
+            }
         }
 
         List<Musteri> musteriList = db.musteriDao().getMusteriForId(data.get(position).getMusteriId());
@@ -112,7 +129,6 @@ public class GorevlerAdapter extends RecyclerView.Adapter<GorevlerAdapter.MyView
 
         holder.adres_item2.setText(siparisList.size() > 0 ? siparisList.get(0).getAciklama() : "Sipariş Notu Yok");
 
-        holder.sube_item.setText(data.get(position).getSubeAdi());
         holder.musteri_adi.setText(data.get(position).getMusteriAdi() + " " + (data.get(position).getMusteriSoyadi() != null ? data.get(position).getMusteriSoyadi() : ""));
         holder.siparis_tutari_item.setText(data.get(position).getSiparisToplamTutar() != null ? String.valueOf(data.get(position).getSiparisToplamTutar()) : null);
 
@@ -346,19 +362,19 @@ public class GorevlerAdapter extends RecyclerView.Adapter<GorevlerAdapter.MyView
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         RelativeLayout relativeLayout;
-        public TextView tarih_item, sipariş_durumu_item, siparis_tutari_item, sube_item, adres_item, musteri_adi, adres_item2;
+        public TextView  sipariş_durumu_item, siparis_tutari_item, sube_item, adres_item, musteri_adi, adres_item2, siparis_sube_adi,siparis_no_item;
 
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            this.tarih_item = (TextView) itemView.findViewById(R.id.siparis_tarih_item);
             this.siparis_tutari_item = (TextView) itemView.findViewById(R.id.siparis_tutari_item);
             this.sipariş_durumu_item = (TextView) itemView.findViewById(R.id.siparis_durum_item);
-            this.sube_item = (TextView) itemView.findViewById(R.id.siparis_sube_item);
+
             this.adres_item = (TextView) itemView.findViewById(R.id.siparis_adres_item);
             this.adres_item2 = (TextView) itemView.findViewById(R.id.siparis_adres_item2);
-
             this.musteri_adi = (TextView) itemView.findViewById(R.id.siparis_musteri_adi);
+            this.siparis_sube_adi = (TextView) itemView.findViewById(R.id.siparis_sube_adi);
+            this.siparis_no_item = (TextView) itemView.findViewById(R.id.siparis_no_item);
 
             relativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayout);
         }

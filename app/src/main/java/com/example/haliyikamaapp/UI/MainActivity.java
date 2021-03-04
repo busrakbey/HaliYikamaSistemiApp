@@ -82,6 +82,7 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -175,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     pd.dismiss();
 
                 }
-            }, 13000);
+            }, 12000);
 
         }
 
@@ -502,9 +503,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 if (page.equalsIgnoreCase("Sipariş")) {
                     Intent siparis = new Intent(getApplication().getApplicationContext(), SiparisKayitActivity.class);
                     startActivity(siparis);
-                }
-
-               else  if (page.equalsIgnoreCase("Görevlerim")) {
+                } else if (page.equalsIgnoreCase("Görevlerim")) {
                   /*  selectedFragment = new MusteriFragment();
                     FragmentManager manager = getSupportFragmentManager();
                     FragmentTransaction transaction = manager.beginTransaction();
@@ -805,7 +804,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onFailure(Call<List<Urun>> call, Throwable t) {
                 progressDoalog.dismiss();
-               // MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                // MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
 
@@ -1161,8 +1160,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
 
     void siparis_islemleri() {
-
-        for (Siparis item : db.siparisDao().getSenkronEdilmeyenAll()) {
+        List<Siparis> senkronEdilmeyenList = db.siparisDao().getSenkronEdilmeyenAll();
+//siparisDao().getSenkronEdilmeyenAll()
+        for (Siparis item : db.siparisDao().getSiparisAll()) {
             try {
                 if (item.getMusteriId() == null) {
                     Musteri musteri = db.musteriDao().getMusteriForMid(item.getMusteriMid()).get(0);
@@ -1198,6 +1198,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         siparis.setBarkod(null);
         siparis.setSubeMid(null);
         siparis.setSiparisTarihi(siparis.getSiparisTarihi() + " 00:00");
+        siparis.setKaynakMid(null);
         Call<Siparis> call = refrofitRestApi.postSiparis(OrtakFunction.authorization, OrtakFunction.tenantId, siparis);
         call.enqueue(new Callback<Siparis>() {
             @Override
@@ -1211,29 +1212,28 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     progressDoalog.dismiss();
                     gelenSiparis = response.body();
                     if (gelenSiparis != null) {
-
                         db.siparisDao().updateSiparisQuery(siparisMid, gelenSiparis.getId(), true);
                         MainActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                // db.siparisDao().getSiparisAll()
                                 List<SiparisDetay> siparisdetayList = db.siparisDetayDao().getSiparisDetayForMustId(siparisMid);
 
-                                // List<SiparisDetay> siparisdetayList2 = db.siparisDetayDao().getSiparisDetayForSiparisId( gelenSiparis.getId());
+                                List<SiparisDetay> itemsToRemove = new ArrayList<>();
+
+                                for (SiparisDetay item : siparisdetayList) {
+                                    if (item.getSenkronEdildi() != null && item.getSenkronEdildi() == true)
+                                        itemsToRemove.add(item);
+
+                                }
+                                siparisdetayList.removeAll(itemsToRemove);
+
 
                                 if (siparisdetayList != null && siparisdetayList.size() > 0) {
                                     List<Siparis> gidecekSiparis = db.siparisDao().getSiparisForSiparisId(gelenSiparis.getId());
                                     db.siparisDetayDao().updateSiparisId(siparisMid, gelenSiparis.getId());
                                     postSiparisDetayListFromService(siparisdetayList, gidecekSiparis);
 
-
                                 }
-
-                                /*if (siparisdetayList != null && siparisdetayList.size() > 0) {
-                                    List<Siparis> gidecekSiparis = db.siparisDao().getSiparisForMid(gelenSiparis.getMid());
-                                    postSiparisDetayListFromService(siparisdetayList, gidecekSiparis);
-                                }*/
-
                             }
                         });
                     }
@@ -1244,7 +1244,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onFailure(Call<Siparis> call, Throwable t) {
                 progressDoalog.dismiss();
-                MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+              //  MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
     }
@@ -1255,7 +1255,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     String gelenSiparisDetayList = null;
 
 
-    public void postSiparisDetayListFromService(List<SiparisDetay> siparisDetayList, final List<Siparis> gelenSiparis) {
+    public void postSiparisDetayListFromService(final List<SiparisDetay> siparisDetayList, final List<Siparis> gelenSiparis) {
         progressDoalog.show();
         final RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
         final List<Long> midList = new ArrayList<>();
@@ -1265,9 +1265,23 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             object.addProperty("id", item.getId());
             object.addProperty("siparisId", gelenSiparis.get(0).getId());
             object.addProperty("urunId", item.getUrunId());
+            if (item.getUrunId() != null && db.urunDao().getUrunForId(item.getUrunId()).size() > 0)
+                object.addProperty("urunAdi", db.urunDao().getUrunForId(item.getUrunId()).get(0).getUrunAdi());
+            else
+                object.addProperty("urunAdi", " ");
+
+            if (item.getOlcuBirimId() != null && db.olcuBirimDao().getOlcuBirimForId(item.getOlcuBirimId()).size() > 0)
+                object.addProperty("olcuBirimAdi", db.olcuBirimDao().getOlcuBirimForId(item.getOlcuBirimId()).get(0).getOlcuBirimi());
+            else
+                object.addProperty("olcuBirimAdi", " ");
+
             object.addProperty("olcuBirimId", item.getOlcuBirimId());
             object.addProperty("birimFiyat", item.getBirimFiyat());
             object.addProperty("miktar", item.getMiktar());
+            object.addProperty("toplamTutar", item.getMiktar() * item.getBirimFiyat());
+            object.addProperty("musteriNotu", gelenSiparis.get(0).getAciklama());
+
+
             midList.add(item.getMid());
             //  object.addProperty("musteriNotu", "");
             datas.add(object);
@@ -1306,7 +1320,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                         }
                                         if (response.isSuccessful()) {
                                             progressDoalog.dismiss();
-                                            gelenSiparisDetayLists = response.body();
+
+                                            db.siparisDetayDao().updateSiparisDetayQuery(gelenSiparis.get(0).getMid(), true);
+
+
+
+                                          /*  gelenSiparisDetayLists = response.body();
                                             if (gelenSiparisDetayLists != null && gelenSiparisDetayLists.size() > 0) {
                                                 updateSiparisDetayList = new ArrayList<SiparisDetay>();
 
@@ -1339,7 +1358,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                                 });
 
 
-                                            }
+                                            }*/
                                         }
                                     }
 
@@ -1396,6 +1415,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                             public void run() {
                                 for (final Siparis item : gelenSiparisList) {
                                     List<Siparis> urunVarMi = db.siparisDao().getSiparisForSiparisId(item.getId());
+                                    item.setSenkronEdildi(true);
                                     if (urunVarMi.size() > 0) {
                                         item.setMid(urunVarMi.get(0).getMid());
                                         item.setMusteriMid(urunVarMi.get(0).getMusteriMid());
@@ -1424,9 +1444,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                                     public void run() {
 
                                                         for (SiparisDetay i : gelenSiparisDetayList2) {
+                                                            i.setSenkronEdildi(true);
                                                             List<Siparis> siparis = db.siparisDao().getSiparisForSiparisId(item.getId());
                                                             List<SiparisDetay> urunVarMi = db.siparisDetayDao().getSiparisDetayForId(i.getId());
-                                                            if(siparis != null && siparis.size() > 0) {
+                                                            if (siparis != null && siparis.size() > 0) {
                                                                 i.setMustId(siparis.get(0).getMid());
                                                                 i.setSiparisMid(siparis.get(0).getMid());
                                                             }
@@ -1565,7 +1586,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 if (response.isSuccessful()) {
                     Boolean yeniKayitMi = true;
                     progressDoalog.dismiss();
-                   // db.kaynakDao().deletekaynakAll();
+                    // db.kaynakDao().deletekaynakAll();
                     gelenKaynakList = response.body();
 
                     // db.kaynakDao().setkaynakList(gelenKaynakList);

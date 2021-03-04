@@ -107,7 +107,7 @@ public class GorevlerimFragment2 extends Fragment {
     Boolean tarihBugundeMi = true;
     Kaynak secili_kaynak;
     String gorevNotu = "", secilenTeslimEtDurumu = "", girilenTahsilatTutari = "", gorevTamamlamaNotu = "";
-    Boolean hesapKapatCheckbox = false;
+    Boolean hesapKapatCheckbox = false, teslimEdilmeTarihiMi = false;
     String tahsilEdilecekTuar = "";
     List<SiparisDetay> siparisDetayList = null;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -127,11 +127,11 @@ public class GorevlerimFragment2 extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         init_item(view);
         try {
-            List<Kaynak> kaynakList =db.kaynakDao().getkaynakAll();
+            List<Kaynak> kaynakList = db.kaynakDao().getkaynakAll();
             seciliKaynakId = null;
-            for(Kaynak item : kaynakList)
-                if(item.getSecilenKaynakMi() != null && item.getSecilenKaynakMi() == true)
-                    seciliKaynakId= item.getId();
+            for (Kaynak item : kaynakList)
+                if (item.getSecilenKaynakMi() != null && item.getSecilenKaynakMi() == true)
+                    seciliKaynakId = item.getId();
 
 
             getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
@@ -157,13 +157,31 @@ public class GorevlerimFragment2 extends Fragment {
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_to_refresh_layout);
 
+
+        RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                Log.e("ListView", "onScrollStateChanged");
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                // Could hide open views here if you wanted. //
+            }
+        };
+
+        recyclerView.setOnScrollListener(onScrollListener);
+
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 try {
                     ((MainActivity) getContext()).siparis_islemleri();
                     getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
-                    get_list(durumList, searchviewText,seciliKaynakId);
+                    get_list(durumList, searchviewText, seciliKaynakId);
                     swipeRefreshLayout.setRefreshing(false);
 
                 } catch (Exception e) {
@@ -280,12 +298,12 @@ public class GorevlerimFragment2 extends Fragment {
 
 
                 underlayButtons.add(new SwipeHelper.UnderlayButton(
-                        "Tamamla", null
+                        "Tamamla",null,
 
-                       /*AppCompatResources.getDrawable(
+                       /* AppCompatResources.getDrawable(
                                 getContext(),
-                                android.R.drawable.ic_media_play
-                        )*/,
+                                R.drawable.check
+                        ),*/
                         Color.parseColor("#FF9800"), Color.parseColor("#FFFFFF"),
                         new SwipeHelper.UnderlayButtonClickListener() {
                             @Override
@@ -358,9 +376,6 @@ public class GorevlerimFragment2 extends Fragment {
                 ));
 
 
-
-
-
             }
         };
 
@@ -377,24 +392,27 @@ public class GorevlerimFragment2 extends Fragment {
             durumList.add("Teslime Çıktı");
             durumList.add("Yıkanacak");
         }
-        if (searchViewText == null)
+        gorevlerList = db.gorevlerDao().getGorevAll();
+
+
+
+      /*  if (searchViewText == null)
             searchViewText = "";
 
         if ((siparisDurumu != null && siparisDurumu.size() > 0) || (searchViewText != null && !searchViewText.equalsIgnoreCase("")))
             if (tarihBugundeMi)
-                gorevlerList = db.gorevlerDao().getQueryIleriTarih(searchViewText, siparisDurumu, dateFiltre,seciliKaynakId );
+               // gorevlerList = db.gorevlerDao().getGorevAllForKaynakId(seciliKaynakId);
+                gorevlerList = db.gorevlerDao().getGorevQueryPrameterTeslimAlmaTarihi(searchViewText, siparisDurumu, dateFiltre, seciliKaynakId);
             else
-                gorevlerList = db.gorevlerDao().getGorevQueryPrameter(searchViewText, siparisDurumu, dateFiltre,seciliKaynakId);
+                gorevlerList = db.gorevlerDao().getQueryIleriTarihTeslimAlmaTarihi(searchViewText, siparisDurumu, dateFiltre, seciliKaynakId);
 
         else
-            gorevlerList = db.gorevlerDao().getGorevAllForKaynakId(seciliKaynakId);
+            gorevlerList = db.gorevlerDao().getGorevAllForKaynakId(seciliKaynakId);*/
         gorevlerAdapter = new GorevlerAdapter(getContext(), gorevlerList);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         gorevlerAdapter.notifyDataSetChanged();
         recyclerView.setAdapter(gorevlerAdapter);
-
-
 
 
     }
@@ -494,7 +512,7 @@ public class GorevlerimFragment2 extends Fragment {
                             @Override
                             public void run() {
 
-                                get_list(durumList, searchviewText,seciliKaynakId);
+                                get_list(durumList, searchviewText, seciliKaynakId);
                                 List<Gorevler> totalGorevList = db.gorevlerDao().getGorevAll();
                                 for (Gorevler item : totalGorevList) {
                                     try {
@@ -577,7 +595,7 @@ public class GorevlerimFragment2 extends Fragment {
 
                             }
                         });
-                        get_list(null, null,seciliKaynakId);
+                        get_list(null, null, seciliKaynakId);
 
                     } else
                         MessageBox.showAlert(mContext, "Kayıt bulunamamıştır..", false);
@@ -631,7 +649,7 @@ public class GorevlerimFragment2 extends Fragment {
             public boolean onQueryTextChange(String newText) {
 
                 searchviewText = newText;
-                get_list(durumList, newText,seciliKaynakId);
+                get_list(durumList, newText, seciliKaynakId);
 
 
                 return false;
@@ -640,7 +658,7 @@ public class GorevlerimFragment2 extends Fragment {
         search_view.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                get_list(durumList, "",seciliKaynakId);
+                get_list(durumList, "", seciliKaynakId);
                 searchviewText = "";
                 return false;
             }

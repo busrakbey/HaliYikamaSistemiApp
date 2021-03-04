@@ -373,82 +373,86 @@ public class SiparisKayitActivity extends AppCompatActivity {
     }
 
     void yeni_musteri_kayit(final Boolean tamamla) {
-      /*  if(!tc_no_edittw.getText().toString().trim().equalsIgnoreCase("") || !adi_edittw.getText().toString().trim().equalsIgnoreCase("")
-                || !soyadi_edittw.getText().toString().trim().equalsIgnoreCase("")|| !tel_no_edittw.getText().toString().trim().equalsIgnoreCase("")){
-        }*/
-        //  else{
-        final Siparis siparis = new Siparis();
+        if(secili_kaynak == null){
+            MessageBox.showAlert(SiparisKayitActivity.this, "Lütfen kaynak seçimi yapınız.", false);
+        }
+         else{
+            final Siparis siparis = new Siparis();
 
-        siparis.setMusteriMid(gelenMusteriMid != null ? Long.valueOf(gelenMusteriMid) : null);
-        siparis.setMusteriId(gelenMusteriId != null ? Long.valueOf(gelenMusteriId) : null);
-        siparis.setSubeId(gelenSubeId != null ? Long.valueOf(gelenSubeId) : secilenSube.getId());
-        siparis.setSubeMid(gelenSubeMid != null ? Long.valueOf(gelenSubeMid) : secilenSube.getMid());
-        siparis.setSiparisTarihi(tarih_edittw.getText().toString());
-        siparis.setAciklama(aciklama_edittw.getText().toString());
-        siparis.setTeslimAlinacak(teslim_alinacak_checkbox.isChecked() ? true : false);
-        siparis.setSiparisDurumu(teslim_alinacak_checkbox.isChecked() ? "Teslim Alınacak" : "");
-        siparis.setId(gelenSiparisId != null ? Long.valueOf(gelenSiparisId) : null);
-        siparis.setSenkronEdildi(false);
-        siparis.setTeslimAlmaTarihi(teslimAlinmaTarihi.getText().toString());
-        siparis.setTeslimEtmeTarihi(teslimAlinmaTarihi.getText().toString());
+            siparis.setMusteriMid(gelenMusteriMid != null ? Long.valueOf(gelenMusteriMid) : null);
+            siparis.setMusteriId(gelenMusteriId != null ? Long.valueOf(gelenMusteriId) : null);
+            siparis.setSubeId(gelenSubeId != null ? Long.valueOf(gelenSubeId) : secilenSube.getId());
+            siparis.setSubeMid(gelenSubeMid != null ? Long.valueOf(gelenSubeMid) : secilenSube.getMid());
+            siparis.setSiparisTarihi(tarih_edittw.getText().toString());
+            siparis.setAciklama(aciklama_edittw.getText().toString());
+            siparis.setTeslimAlinacak(teslim_alinacak_checkbox.isChecked() ? true : false);
+            siparis.setSiparisDurumu(teslim_alinacak_checkbox.isChecked() ? "Teslim Alınacak" : "");
+            siparis.setId(gelenSiparisId != null ? Long.valueOf(gelenSiparisId) : null);
+            siparis.setSenkronEdildi(false);
+            siparis.setTeslimAlmaTarihi(teslimAlinmaTarihi.getText().toString());
+            siparis.setTeslimEtmeTarihi(teslimAlinmaTarihi.getText().toString());
+            siparis.setKaynakId(secili_kaynak != null ? secili_kaynak.getId() : null);
+            siparis.setKaynakMid(secili_kaynak != null ? secili_kaynak.getMid() : null);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                long yeniKayitSiparisMid = -1;
-                if (gelenSiparisMid == null)
-                    yeniKayitSiparisMid = db.siparisDao().setSiparis(siparis);
-                if (gelenSiparisMid != null) {
-                    siparis.setMid(Long.valueOf(gelenSiparisMid));
-                    yeniKayitSiparisMid = db.siparisDao().updateSiparis(siparis);
-                }
 
-                final long finalYeniKayitSiparisMid = yeniKayitSiparisMid;
-                SiparisKayitActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (gelenSiparisMid == null && Integer.valueOf(String.valueOf(finalYeniKayitSiparisMid)) > 0) {
-                            if (tamamla) {
-                                db.siparisDao().updateSiparisBarkod(createBarkocImage(String.valueOf("00000" + finalYeniKayitSiparisMid)), finalYeniKayitSiparisMid);
-                                MessageBox.showAlert(SiparisKayitActivity.this, "Sipariş oluşturuldu. \n", false);
-                                Intent i = new Intent(SiparisKayitActivity.this, MainActivity.class);
-                               // i.putExtra("gelenPage", "gorevlerim");
-                                i.putExtra("gelenPage", "müşteri_görevlerim");
-                                finish();
-                                startActivity(i);
-
-                            } else {
-                                Intent i = new Intent(SiparisKayitActivity.this, SiparisDetayKayitActivity.class);
-                                i.putExtra("siparisMid", String.valueOf(finalYeniKayitSiparisMid));
-                                i.putExtra("subeId", gelenSubeId != null ? gelenSubeId : secilenSube.getId());
-                                i.putExtra("subeMid", gelenSubeMid != null ? gelenSubeMid : secilenSube.getMid());
-                                finish();
-                                startActivity(i);
-                            }
-                        }
-                        if (gelenSiparisMid != null && finalYeniKayitSiparisMid == 1) {
-                            if (tamamla) {
-                                MessageBox.showAlert(SiparisKayitActivity.this, "Sipariş oluşturuldu.\n", false);
-                                Intent i = new Intent(SiparisKayitActivity.this, MainActivity.class);
-                                i.putExtra("gelenPage", "müşteri_görevlerim");
-                                finish();
-                                startActivity(i);
-
-                            } else {
-                                Intent i = new Intent(SiparisKayitActivity.this, SiparisDetayKayitActivity.class);
-                                i.putExtra("siparisMid", String.valueOf(finalYeniKayitSiparisMid));
-                                i.putExtra("subeId", gelenSubeId != null ? gelenSubeId : secilenSube.getId());
-                                i.putExtra("subeMid", gelenSubeMid != null ? gelenSubeMid : secilenSube.getMid());
-                                finish();
-                                startActivity(i);
-                            }
-                        } else if (finalYeniKayitSiparisMid < 0)
-                            MessageBox.showAlert(SiparisKayitActivity.this, "İşlem başarısız..\n", false);
-
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    long yeniKayitSiparisMid = -1;
+                    if (gelenSiparisMid == null)
+                        yeniKayitSiparisMid = db.siparisDao().setSiparis(siparis);
+                    if (gelenSiparisMid != null) {
+                        siparis.setMid(Long.valueOf(gelenSiparisMid));
+                        yeniKayitSiparisMid = db.siparisDao().updateSiparis(siparis);
                     }
-                });
-            }
-        }).start();
+
+                    final long finalYeniKayitSiparisMid = yeniKayitSiparisMid;
+                    SiparisKayitActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (gelenSiparisMid == null && Integer.valueOf(String.valueOf(finalYeniKayitSiparisMid)) > 0) {
+                                if (tamamla) {
+                                    db.siparisDao().updateSiparisBarkod(createBarkocImage(String.valueOf("00000" + finalYeniKayitSiparisMid)), finalYeniKayitSiparisMid);
+                                    MessageBox.showAlert(SiparisKayitActivity.this, "Sipariş oluşturuldu. \n", false);
+                                    Intent i = new Intent(SiparisKayitActivity.this, MainActivity.class);
+                                    // i.putExtra("gelenPage", "gorevlerim");
+                                    i.putExtra("gelenPage", "müşteri_görevlerim");
+                                    finish();
+                                    startActivity(i);
+
+                                } else {
+                                    Intent i = new Intent(SiparisKayitActivity.this, SiparisDetayKayitActivity.class);
+                                    i.putExtra("siparisMid", String.valueOf(finalYeniKayitSiparisMid));
+                                    i.putExtra("subeId", gelenSubeId != null ? gelenSubeId : secilenSube.getId());
+                                    i.putExtra("subeMid", gelenSubeMid != null ? gelenSubeMid : secilenSube.getMid());
+                                    finish();
+                                    startActivity(i);
+                                }
+                            }
+                            if (gelenSiparisMid != null && finalYeniKayitSiparisMid == 1) {
+                                if (tamamla) {
+                                    MessageBox.showAlert(SiparisKayitActivity.this, "Sipariş güncellendi.\n", false);
+                                    Intent i = new Intent(SiparisKayitActivity.this, MainActivity.class);
+                                    i.putExtra("gelenPage", "müşteri_görevlerim");
+                                    finish();
+                                    startActivity(i);
+
+                                } else {
+                                    Intent i = new Intent(SiparisKayitActivity.this, SiparisDetayKayitActivity.class);
+                                    i.putExtra("siparisMid", String.valueOf(finalYeniKayitSiparisMid));
+                                    i.putExtra("subeId", gelenSubeId != null ? gelenSubeId : secilenSube.getId());
+                                    i.putExtra("subeMid", gelenSubeMid != null ? gelenSubeMid : secilenSube.getMid());
+                                    finish();
+                                    startActivity(i);
+                                }
+                            } else if (finalYeniKayitSiparisMid < 0)
+                                MessageBox.showAlert(SiparisKayitActivity.this, "İşlem başarısız..\n", false);
+
+                        }
+                    });
+                }
+            }).start();
+        }
     }
 
     void getEditMode(Long siparisMid) {
@@ -477,6 +481,15 @@ public class SiparisKayitActivity extends AppCompatActivity {
                     sube_spinner.setSelection(subeListString.indexOf(item.getSubeAdi()));
                 }
             }
+
+
+            List<Kaynak> kaynakList = db.kaynakDao().getkaynakForMid(updateKayitList.get(0).getKaynakMid());
+            if (kaynakList.size() > 0) {
+                for (Kaynak item : kaynakList) {
+                    kaynak_spinner.setSelection(kaynakListString.indexOf(item.getKaynakAdi()));
+                }
+            }
+            aciklama_edittw.setText(updateKayitList.get(0).getAciklama());
 
 
         }

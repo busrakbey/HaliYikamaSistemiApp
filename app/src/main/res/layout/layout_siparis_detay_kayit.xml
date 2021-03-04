@@ -17,10 +17,23 @@
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/parent"
-            android:layout_marginTop="@dimen/signup_text_margin_top">
+            android:layout_marginTop="@dimen/signup_text_margin_top"
+            android:visibility="gone">
 
             <AutoCompleteTextView
                 android:id="@+id/sip_urun_adi"
+                style="@style/modifiedEditText"
+                android:hint="Ürün"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/parent"
+            android:layout_marginTop="@dimen/signup_text_margin_top">
+
+            <Spinner
+                android:id="@+id/sip_urun_adi_spinner"
                 style="@style/modifiedEditText"
                 android:hint="Ürün"
                 android:inputType="text" />

@@ -21,9 +21,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:layout_weight="0.3"
+            android:layout_weight="0.2"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <TextView
                 android:layout_width="match_parent"
@@ -35,23 +35,17 @@
 
 
             <TextView
-                android:id="@+id/siparis_tarih_item"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="21.12.2020"
-                android:textColor="@color/mr_toolbar2"
-                android:textSize="@dimen/text_size_normal"
-                android:textStyle="normal" />
-
-            <TextView
-                android:id="@+id/siparis_sube_item"
+                android:id="@+id/siparis_no_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_weight="0.5"
                 android:text="Merkez Şubesi"
-                android:textColor="@color/mr_toolbar3"
-                android:textSize="@dimen/text_size_small" />
+                android:textColor="@color/beyaz"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:background="@color/orange2"
+                android:textSize="@dimen/text_size_medium" />
 
         </LinearLayout>
 
@@ -65,8 +59,8 @@
 
             <View
                 android:layout_width="1dp"
-                android:layout_height="70dp"
-                android:layout_margin="10dp"
+                android:layout_height="100dp"
+                android:layout_marginLeft="10dp"
                 android:background="@color/mr_toolbar"></View>
         </LinearLayout>
 
@@ -78,6 +72,16 @@
             android:orientation="vertical"
             android:padding="5dp">
 
+
+            <TextView
+                android:id="@+id/siparis_sube_adi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="BÜŞRA AKBEY"
+                android:textColor="#3F51B5"
+                android:textSize="@dimen/text_size_medium"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/siparis_musteri_adi"

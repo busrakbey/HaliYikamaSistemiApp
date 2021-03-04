@@ -217,20 +217,26 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="wrap_content">
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/parent"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.7"
-            android:layout_marginTop="@dimen/signup_text_margin_top">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/adres"
-                style="@style/modifiedEditText"
-                android:hint="Adres" />
-        </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/parent"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.9"
+                android:minLines="2">
+
+                <EditText
+                    android:id="@+id/adres"
+                    style="@style/modifiedEditText"
+                    android:layout_height="match_parent"
+                    android:hint="Adres"
+
+                    android:lines="5"
+                    android:maxLength="500"
+                    android:minLines="2" />
+            </com.google.android.material.textfield.TextInputLayout>
 
 
             <ImageView

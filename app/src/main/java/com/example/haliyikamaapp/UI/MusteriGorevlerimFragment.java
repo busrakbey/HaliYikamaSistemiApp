@@ -211,7 +211,7 @@ public class MusteriGorevlerimFragment extends Fragment {
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 progressDoalog.dismiss();
-                MessageBox.showAlert(getContext(), "Hata Oluştu.. " + t.getMessage(), false);
+              //  MessageBox.showAlert(getContext(), "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
 
@@ -282,7 +282,7 @@ public class MusteriGorevlerimFragment extends Fragment {
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 progressDoalog.dismiss();
-                MessageBox.showAlert(mContext, "Hata Oluştu.. " + t.getMessage(), false);
+               // MessageBox.showAlert(mContext, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
 

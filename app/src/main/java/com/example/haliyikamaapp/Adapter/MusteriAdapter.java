@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+
 import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.ToolLayer.OrtakFunction;
@@ -28,6 +29,8 @@ import com.example.haliyikamaapp.UI.MainActivity;
 import com.example.haliyikamaapp.UI.MusteriDetayActivity;
 import com.example.haliyikamaapp.UI.MusteriKayitActivity;
 import com.example.haliyikamaapp.UI.SiparisKayitActivity;
+
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -181,6 +184,9 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
              //   ((MainActivity)mContext).postMusteriListFromService(musteri);
             }
         });
+
+
+
     }
 
     @Override
@@ -243,7 +249,11 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
         RelativeLayout relativeLayout;
         public TextView adiSoyadi_item, tarih_item, telefonNo_item,musteri_turu_item;
         ImageView isimBasHarfi_item, edit_musteri, telefon_et_button,senkron_et_button, whatsapp_button;
+
         Button new_siparis_button;
+        TextView textViewPos;
+        TextView textViewData;
+        Button buttonDelete;
 
 
         public MyViewHolder(View itemView) {
@@ -257,7 +267,11 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
             this.senkron_et_button =  (ImageView) itemView.findViewById(R.id.senkron_musteri);
             this.musteri_turu_item = (TextView) itemView.findViewById(R.id.musteri_turu_item);
             this.whatsapp_button = (ImageView) itemView.findViewById(R.id.telefon_whatsapp);
+
+
+
             relativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayout);
+
         }
     }
 

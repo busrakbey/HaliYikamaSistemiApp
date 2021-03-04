@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -84,7 +85,7 @@ public class MusteriFragment extends Fragment {
     }
 
     void init_item(View view) {
-       // swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.relativeLayout);
+       swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.relativeLayout);
         db = HaliYikamaDatabase.getInstance(getContext());
         recyclerView = (RecyclerView) view.findViewById(R.id.musteri_recyclerview);
 
@@ -96,7 +97,9 @@ public class MusteriFragment extends Fragment {
         swipe_item();
 
 
-      /*  swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 try {
@@ -109,7 +112,7 @@ public class MusteriFragment extends Fragment {
                 }
             }
         });
-        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, R.color.colorAccent, R.color.colorPrimaryDark);*/
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, R.color.colorAccent, R.color.colorPrimaryDark);
 
 
     }
@@ -269,7 +272,7 @@ public class MusteriFragment extends Fragment {
         Call<Musteri> call;
         final Long musteriMid = musteri.getMid();
         musteri.setMid(null);
-        musteri.setMusteriSoyadi(" - ");
+        musteri.setMusteriSoyadi("  ");
         musteri.setxKoor(null);
         musteri.setyKoor(null);
         musteri.setSubeMid(null);
@@ -383,6 +386,9 @@ public class MusteriFragment extends Fragment {
 
 
     }
+
+
+
 
 
 }

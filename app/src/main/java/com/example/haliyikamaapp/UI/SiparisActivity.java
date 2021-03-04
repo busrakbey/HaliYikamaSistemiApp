@@ -488,12 +488,12 @@ public class SiparisActivity extends AppCompatActivity {
 
 
                 underlayButtons.add(new SwipeHelper.UnderlayButton(
-                        "Düzenle",
+                        "Düzenle",null,
 
-                        AppCompatResources.getDrawable(
+                       /* AppCompatResources.getDrawable(
                                 SiparisActivity.this,
                                 android.R.drawable.ic_menu_edit
-                        ),
+                        ),*/
                         Color.parseColor("#FF9800"), Color.parseColor("#FFFFFF"),
                         new SwipeHelper.UnderlayButtonClickListener() {
                             @Override

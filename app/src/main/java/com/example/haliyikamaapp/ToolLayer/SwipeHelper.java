@@ -1,6 +1,7 @@
 package com.example.haliyikamaapp.ToolLayer;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -37,7 +38,7 @@ public abstract class SwipeHelper extends ItemTouchHelper.SimpleCallback {
     private List<UnderlayButton> buttons;
     private GestureDetector gestureDetector;
     private int swipedPos = -1;
-    private float swipeThreshold = 30f;
+    private float swipeThreshold = 0.0000000001f;
     private Map<Integer, List<UnderlayButton>> buttonsBuffer;
     private Queue<Integer> recoverQueue;
     private static Boolean animate;
@@ -125,7 +126,7 @@ public abstract class SwipeHelper extends ItemTouchHelper.SimpleCallback {
             buttons.clear();
 
         buttonsBuffer.clear();
-        swipeThreshold = 0.5f * buttons.size() * BUTTON_WIDTH;
+        swipeThreshold = 0.00000000001f * buttons.size() * BUTTON_WIDTH;
         recoverSwipedItem();
     }
 
@@ -169,7 +170,13 @@ public abstract class SwipeHelper extends ItemTouchHelper.SimpleCallback {
                 translationX = dX * buffer.size() * BUTTON_WIDTH / itemView.getWidth();
                 drawButtons(c, itemView, buffer, pos, translationX);
             }
+
+
+
+
+
         }
+
 
         super.onChildDraw(c, recyclerView, viewHolder, translationX, dY, actionState, isCurrentlyActive);
     }
@@ -299,5 +306,11 @@ public abstract class SwipeHelper extends ItemTouchHelper.SimpleCallback {
 
     public interface UnderlayButtonClickListener {
         void onClick(int pos);
+    }
+
+    @Override
+    public int interpolateOutOfBoundsScroll(RecyclerView recyclerView, int viewSize, int viewSizeOutOfBounds, int totalSize, long msSinceStartScroll) {
+        final int direction = (int) Math.signum(viewSizeOutOfBounds);
+        return 10 * direction;
     }
 }
