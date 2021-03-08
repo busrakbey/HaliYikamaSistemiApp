@@ -112,6 +112,7 @@ public class GorevlerimFragment2 extends Fragment {
     List<SiparisDetay> siparisDetayList = null;
     private SwipeRefreshLayout swipeRefreshLayout;
     Snackbar snackbar;
+     int position;
     Long seciliKaynakId = null;
 
 
@@ -292,9 +293,11 @@ public class GorevlerimFragment2 extends Fragment {
         });
 
 
+
         SwipeHelper swipeHelper = new SwipeHelper(getContext(), recyclerView, false) {
             @Override
             public void instantiateUnderlayButton(final RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons) {
+               position = viewHolder.getAdapterPosition();
 
 
                 underlayButtons.add(new SwipeHelper.UnderlayButton(
@@ -308,7 +311,6 @@ public class GorevlerimFragment2 extends Fragment {
                         new SwipeHelper.UnderlayButtonClickListener() {
                             @Override
                             public void onClick(int pos) {
-                                final int position = viewHolder.getAdapterPosition();
 
                                 if (gorevlerAdapter.getData() != null) {
                                     if (gorevlerAdapter.getData().get(position).getTaskName().equalsIgnoreCase("Yikama")) {
@@ -324,13 +326,15 @@ public class GorevlerimFragment2 extends Fragment {
                                     }
 
                                     if (gorevlerAdapter.getData().get(position).getTaskName().equalsIgnoreCase("TeslimEt")) {
-                                        alert_dialog_gorev_tamamla("TeslimEt", gorevlerAdapter.getData().get(position).getTaskId());
+
 
                                         List<GorevFomBilgileri> formDetay = db.gorevFomBilgileriDao().getGorevId(gorevlerAdapter.getData().get(position).getTaskId());
                                         for (GorevFomBilgileri item : formDetay) {
                                             if (item.getName().equalsIgnoreCase("Tahsil Edilecek Tutar"))
                                                 tahsilEdilecekTuar = item.getValue();
                                         }
+
+                                        alert_dialog_gorev_tamamla("TeslimEt", gorevlerAdapter.getData().get(position).getTaskId());
                                     }
 
                                     if (gorevlerAdapter.getData().get(position).getTaskName().equalsIgnoreCase("TeslimAl")) {
@@ -392,22 +396,21 @@ public class GorevlerimFragment2 extends Fragment {
             durumList.add("Teslime Çıktı");
             durumList.add("Yıkanacak");
         }
-        gorevlerList = db.gorevlerDao().getGorevAll();
+       // gorevlerList = db.gorevlerDao().getGorevAllForKaynakId(seciliKaynakId);
 
 
 
-      /*  if (searchViewText == null)
+        if (searchViewText == null)
             searchViewText = "";
 
         if ((siparisDurumu != null && siparisDurumu.size() > 0) || (searchViewText != null && !searchViewText.equalsIgnoreCase("")))
             if (tarihBugundeMi)
-               // gorevlerList = db.gorevlerDao().getGorevAllForKaynakId(seciliKaynakId);
-                gorevlerList = db.gorevlerDao().getGorevQueryPrameterTeslimAlmaTarihi(searchViewText, siparisDurumu, dateFiltre, seciliKaynakId);
-            else
                 gorevlerList = db.gorevlerDao().getQueryIleriTarihTeslimAlmaTarihi(searchViewText, siparisDurumu, dateFiltre, seciliKaynakId);
+            else
+                gorevlerList = db.gorevlerDao().getGorevQueryPrameterTeslimAlmaTarihi(searchViewText, siparisDurumu, dateFiltre, seciliKaynakId);
 
         else
-            gorevlerList = db.gorevlerDao().getGorevAllForKaynakId(seciliKaynakId);*/
+            gorevlerList = db.gorevlerDao().getGorevAllForKaynakId(seciliKaynakId);
         gorevlerAdapter = new GorevlerAdapter(getContext(), gorevlerList);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -497,6 +500,9 @@ public class GorevlerimFragment2 extends Fragment {
                                 JSONObject siparisObject = new JSONObject(processVariablesObject.getString("siparis"));
                                 List<Siparis> gelenSiparisList = Arrays.asList(gson.fromJson(siparisObject.toString(), Siparis.class));*/
 
+
+                                get_list(null,null,null);
+                                gorevlerAdapter.notifyDataSetChanged();
 
                             }
 
@@ -597,8 +603,7 @@ public class GorevlerimFragment2 extends Fragment {
                         });
                         get_list(null, null, seciliKaynakId);
 
-                    } else
-                        MessageBox.showAlert(mContext, "Kayıt bulunamamıştır..", false);
+                    }
                 }
             }
 
@@ -910,6 +915,8 @@ public class GorevlerimFragment2 extends Fragment {
                         db.siparisDao().updateSiparisDurumu(gorevId, )
                     }*/
                     MessageBox.showAlert(getContext(), "Görev başarıyla tamamlanmıştır..", false);
+                    gorevlerAdapter.notifyDataSetChanged();
+                    get_list(null,null,null);
                     try {
                         getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
                     } catch (Exception e) {

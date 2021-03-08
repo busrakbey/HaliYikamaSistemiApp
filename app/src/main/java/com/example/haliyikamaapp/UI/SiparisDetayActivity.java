@@ -103,7 +103,12 @@ public class SiparisDetayActivity extends AppCompatActivity {
 
     public void get_list() {
         final List<SiparisDetay> kisiler;
-        if (siparisId != null && !siparisId.equalsIgnoreCase("null"))
+        final List<SiparisDetay> kisiler2;
+
+        if(siparisId != null && siparisMid != null && !siparisId.equalsIgnoreCase("null") && !siparisMid.equalsIgnoreCase("null") )
+            kisiler = db.siparisDetayDao().getSiparisDetayForSiparisIdSiparisMid(Long.valueOf(siparisId), Long.valueOf(siparisMid) );
+
+        else if (siparisId != null && !siparisId.equalsIgnoreCase("null"))
             kisiler = db.siparisDetayDao().getSiparisDetayForSiparisId(Long.valueOf(siparisId));
         else
             kisiler = db.siparisDetayDao().getSiparisDetayForMustId(Long.valueOf(siparisMid));

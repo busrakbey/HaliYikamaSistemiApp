@@ -180,7 +180,7 @@ public class SiparisActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-       // get_list();
+        get_list();
 
     }
 

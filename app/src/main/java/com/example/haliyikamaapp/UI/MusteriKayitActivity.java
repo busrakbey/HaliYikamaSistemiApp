@@ -286,11 +286,11 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
                         public void run() {
 
                             if (gelenMusteriMid == null && Integer.valueOf(String.valueOf(finalMusteriMid)) > 0) {
-                                MessageBox.showAlert(MusteriKayitActivity.this, "Kayıt Başarılı..\n", false);
+                                MessageBox.showAlert(MusteriKayitActivity.this, "Kayıt Başarılı.\n", false);
                                 finish();
                             }
                             if (gelenMusteriMid != null && finalMusteriMid == 1) {
-                                MessageBox.showAlert(MusteriKayitActivity.this, "İşlem Başarılı..\n", false);
+                                MessageBox.showAlert(MusteriKayitActivity.this, "Güncelleme Başarılı.\n", false);
                                 finish();
 
                             } else if (finalMusteriMid < 0)

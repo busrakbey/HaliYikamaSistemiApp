@@ -42,7 +42,7 @@
                 android:fontFamily="@font/museosans"
                 android:text="Ürünler"
                 android:textColor="@color/text"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 app:fontFamily="@font/segoeuib" />
 
@@ -57,19 +57,24 @@
                 android:singleLine="true"
                 android:src="@drawable/user_profile"
                 android:text="Start a new Journey"
-                android:textSize="16dp" />
+                android:textSize="16dp"
+                android:visibility="gone" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
 
-
     <ScrollView
 
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="85dp"
         android:background="@drawable/ic_bg_top"
-        tools:ignore="MissingConstraints">
-
+        app:layout_constraintBottom_toTopOf="@+id/layout"
+        app:layout_constraintEnd_toEndOf="@id/layout"
+        app:layout_constraintHorizontal_bias="0.72"
+        app:layout_constraintStart_toStartOf="@id/toolbar"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
 
         <RelativeLayout style="@style/parent">
@@ -84,19 +89,80 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="60dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="50dp"
                 android:layout_marginRight="8dp"
                 android:orientation="vertical">
 
-
                 <include layout="@layout/layout_siparis_detay_kayit" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/eklenen_urunler_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"></androidx.recyclerview.widget.RecyclerView>
+
 
             </LinearLayout>
         </RelativeLayout>
 
     </ScrollView>
 
+
+
+
+    <LinearLayout
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/harcama_shape_bk"
+        android:orientation="horizontal"
+        tools:layout_editor_absoluteX="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/fragment_container"
+        tools:layout_editor_absoluteY="590dp"
+        tools:ignore="NotSibling">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="0.9"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="   Toplam"></TextView>
+
+            <TextView
+                android:id="@+id/toplam_tutar_urun"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="   0 TL"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_size_medium"
+                android:textStyle="bold"></TextView>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_placeorder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/tamamla_shape_bk"
+            android:drawableRight="@drawable/right2"
+            android:onClick="iletisimOnClick"
+            android:paddingRight="5dp"
+            android:text="  TAMAMLA "
+            android:textColor="@color/text"
+            android:textStyle="bold"></Button>
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

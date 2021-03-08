@@ -15,6 +15,45 @@
         android:layout_gravity="center"
         android:padding="@dimen/loginViewsMargin">
 
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|right"
+                android:layout_weight="1"
+                android:fontFamily="@font/museosans"
+                android:gravity="right|top"
+                android:text="Vazgeç"
+                android:textColor="#A8212121"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:visibility="invisible"
+                app:fontFamily="@font/segoeuib" />
+
+            <Button
+                android:id="@+id/urun_vazgec_button"
+                style="@style/harcamaButton"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="100dp"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:layout_weight="0.5"
+                android:drawableLeft="@android:drawable/ic_menu_close_clear_cancel"
+                android:onClick="iletisimIleriOnclik"
+                android:paddingLeft="10dp"
+                android:text="VAZGEÇ"
+                android:textColor="@color/beyaz" />
+
+
+        </LinearLayout>
+
+
         <com.google.android.material.textfield.TextInputLayout
             style="@style/parent"
             android:layout_marginTop="@dimen/signup_text_margin_top"
@@ -107,16 +146,30 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/urun_ekle_button"
+                style="@style/tamamlaButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:layout_weight="0.5"
+                android:drawableLeft="@drawable/ic_check_black_24dp"
+                android:paddingLeft="10dp"
+                android:text="E K L E"
+                android:textColor="@color/text" />
+
+            <Button
                 android:id="@+id/iletisim_kaydet"
                 style="@style/tamamlaButton"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="@dimen/signup_text_margin_top"
                 android:layout_weight="0.5"
-                android:onClick="iletisimOnClick"
-                android:textColor="@color/text"
                 android:drawableLeft="@drawable/ic_check_black_24dp"
+                android:onClick="iletisimOnClick"
                 android:paddingLeft="10dp"
-                android:text="TAMAMLA" />
+                android:text="TAMAMLA"
+                android:textColor="@color/text"
+                android:visibility="gone" />
+
 
             <Button
                 android:id="@+id/iletisim_ileri_button"
@@ -124,11 +177,12 @@
                 android:layout_width="wrap_content"
                 android:layout_marginLeft="100dp"
                 android:layout_marginTop="@dimen/signup_text_margin_top"
-                android:onClick="iletisimIleriOnclik"
                 android:layout_weight="0.5"
                 android:drawableRight="@drawable/ic_arrow_forward_black_24dp"
+                android:onClick="iletisimIleriOnclik"
                 android:paddingRight="10dp"
-                android:text="İLERLE" />
+                android:text="İLERLE"
+                android:visibility="gone" />
 
 
         </LinearLayout>

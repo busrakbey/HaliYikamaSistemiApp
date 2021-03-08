@@ -957,7 +957,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
                     progressDoalog.dismiss();
-                    MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                   // MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
                 }
             });
         }
@@ -1218,20 +1218,17 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                             public void run() {
                                 List<SiparisDetay> siparisdetayList = db.siparisDetayDao().getSiparisDetayForMustId(siparisMid);
 
-                                List<SiparisDetay> itemsToRemove = new ArrayList<>();
+                                List<SiparisDetay> senkronEdilecekler = new ArrayList<>();
 
                                 for (SiparisDetay item : siparisdetayList) {
-                                    if (item.getSenkronEdildi() != null && item.getSenkronEdildi() == true)
-                                        itemsToRemove.add(item);
-
+                                    if (item.getSenkronEdildi() == null || item.getSenkronEdildi() == false)
+                                        senkronEdilecekler.add(item);
                                 }
-                                siparisdetayList.removeAll(itemsToRemove);
 
-
-                                if (siparisdetayList != null && siparisdetayList.size() > 0) {
+                                if (senkronEdilecekler != null && senkronEdilecekler.size() > 0) {
                                     List<Siparis> gidecekSiparis = db.siparisDao().getSiparisForSiparisId(gelenSiparis.getId());
                                     db.siparisDetayDao().updateSiparisId(siparisMid, gelenSiparis.getId());
-                                    postSiparisDetayListFromService(siparisdetayList, gidecekSiparis);
+                                    postSiparisDetayListFromService(senkronEdilecekler, gidecekSiparis);
 
                                 }
                             }
@@ -1365,7 +1362,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                     @Override
                                     public void onFailure(Call<List<SiparisDetay>> call, Throwable t) {
                                         progressDoalog.dismiss();
-                                        MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                                      //  MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
                                     }
                                 });
 
@@ -1381,7 +1378,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 progressDoalog.dismiss();
-                MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+              //  MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
 
@@ -1471,7 +1468,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                         @Override
                                         public void onFailure(Call<List<SiparisDetay>> call, Throwable t) {
                                             progressDoalog.dismiss();
-                                            MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                                           // MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
                                         }
                                     });
 
@@ -1492,7 +1489,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onFailure(Call<List<Siparis>> call, Throwable t) {
                 progressDoalog.dismiss();
-                MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+               // MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
 
@@ -1551,7 +1548,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onFailure(Call<List<Musteri>> call, Throwable t) {
                 progressDoalog.dismiss();
-                MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+               // MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
     }
@@ -1621,7 +1618,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onFailure(Call<List<Kaynak>> call, Throwable t) {
                 progressDoalog.dismiss();
-                MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+               // MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
 

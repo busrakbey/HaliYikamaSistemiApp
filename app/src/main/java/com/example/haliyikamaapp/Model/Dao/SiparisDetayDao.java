@@ -47,6 +47,9 @@ public interface SiparisDetayDao {
     @Query("SELECT * FROM SIPARIS_DETAY where siparisId = :siparisId")
     List<SiparisDetay> getSiparisDetayForSiparisId(Long siparisId);
 
+    @Query("SELECT * FROM SIPARIS_DETAY where siparisId = :siparisId or siparisMid = :siparisMid")
+    List<SiparisDetay> getSiparisDetayForSiparisIdSiparisMid(Long siparisId, Long siparisMid);
+
     @Query("SELECT * FROM SIPARIS_DETAY where siparisMid = :siparisMid")
     List<SiparisDetay> getSiparisDetayForSiparisMid(Long siparisMid);
 

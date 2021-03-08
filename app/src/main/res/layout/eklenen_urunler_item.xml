@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:numberpicker="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/relativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="7dp"
+    android:background="@drawable/shadow">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="10dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="40dp"
+                android:layout_margin="10dp"
+                android:background="@color/mr_toolbar"></View>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_weight="0.8"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/siparis_detay_urun_adi_item"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="3dp"
+                android:layout_weight="0.5"
+                android:text="Ürün Adı"
+                android:textColor="@color/mr_toolbar2"
+                android:textSize="@dimen/text_size_medium"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:id="@+id/siparis_detay_birim_fiyati_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="300 TL"
+                    android:textColor="@color/mr_toolbar"
+                    android:textSize="@dimen/text_size_normal" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/urun_azalt"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:background="#B2FF5443"
+                android:drawableEnd="@drawable/minus"
+                android:padding="5dp"
+                android:layout_margin="5dp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/urun_adeti_item"
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:inputType="number"
+                android:text="1"
+                android:enabled="false"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/text_size_medium" />
+
+
+            <Button
+                android:id="@+id/urun_artir"
+                android:layout_width="30dp"
+                android:layout_margin="5dp"
+
+                android:background="#B2FF5443"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/plus"
+                android:padding="5dp" />
+
+
+
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="-15dp"
+            android:layout_marginRight="5dp"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/urun_sil_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/delete" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

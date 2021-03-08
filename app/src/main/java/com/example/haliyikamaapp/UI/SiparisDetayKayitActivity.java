@@ -2,6 +2,7 @@ package com.example.haliyikamaapp.UI;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -11,12 +12,18 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.haliyikamaapp.Adapter.EklenenUrunlerAdapter;
+import com.example.haliyikamaapp.Adapter.SiparisDetayAdapter;
 import com.example.haliyikamaapp.AutoCompleteAdapter.MusteriAutoCompleteAdapter;
 import com.example.haliyikamaapp.AutoCompleteAdapter.OlcuBirimAutoCompleteAdapter;
 import com.example.haliyikamaapp.AutoCompleteAdapter.UrunAutoCompleteAdapter;
@@ -29,7 +36,11 @@ import com.example.haliyikamaapp.Model.Entity.UrunFiyat;
 import com.example.haliyikamaapp.Model.Entity.UrunSube;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
+import com.example.haliyikamaapp.ToolLayer.SwipeHelper;
+import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +59,12 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
     OlcuBirim secilenOlcuBirim = null;
     Spinner sip_urun_adi_spinner;
     List<String> urunStringList;
-
+    Button urun_vazgec_button, urun_ekle_button;
+    List<SiparisDetay> siparisDetayListTemp;
+    RecyclerView eklenen_urunler_recyclerview;
+    EklenenUrunlerAdapter siparis_detay_adapter;
+    TextView toplam_tutar;
+    Button btn_placeorder;
 
 
     @SuppressLint("RestrictedApi")
@@ -100,15 +116,20 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
         kaydet_button = (Button) findViewById(R.id.iletisim_kaydet);
         siparis_detay_ileri_button = (Button) findViewById(R.id.iletisim_ileri_button);
         sip_urun_adi_spinner = (Spinner) findViewById(R.id.sip_urun_adi_spinner);
+        urun_vazgec_button = (Button) findViewById(R.id.urun_vazgec_button);
         urunStringList = new ArrayList<String>();
+        urun_ekle_button = (Button) findViewById(R.id.urun_ekle_button);
+        eklenen_urunler_recyclerview = (RecyclerView) findViewById(R.id.eklenen_urunler_recyclerview);
+        siparisDetayListTemp = new ArrayList<SiparisDetay>();
+        toplam_tutar = (TextView) findViewById(R.id.toplam_tutar_urun);
+        btn_placeorder = (Button) findViewById(R.id.btn_placeorder);
 
         Intent intent = getIntent();
         siparisMid = intent.getStringExtra("siparisMid");
         siparisDetayMid = intent.getStringExtra("siparisDetayMid");
         subeId = intent.getStringExtra("subeId");
         subeMid = intent.getStringExtra("subeMid");
-        if (siparisDetayMid != null)
-            getEditMode(Long.valueOf(siparisDetayMid));
+
 
         if (siparisMid != null && siparisMid.equalsIgnoreCase("null"))
             siparisMid = null;
@@ -121,6 +142,17 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
 
         if (subeId != null && subeId.equalsIgnoreCase("null"))
             subeId = null;
+
+        if (siparisDetayMid != null)
+            getEditMode(Long.valueOf(siparisDetayMid));
+
+        urun_vazgec_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+        kaydet_button();
 
 
         List<OlcuBirim> allOlcuBirim = db.olcuBirimDao().getOlcuBirimAll();
@@ -171,7 +203,7 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
                 if (position > 0) {
                     String valInfo = urunStringList.get(position);
                     if (valInfo != null) {
-                        Urun dty =  finalAllUrun.get(position - 1);
+                        Urun dty = finalAllUrun.get(position - 1);
                         secilenUrun = dty;
                         List<UrunSube> listSubeId = db.urunSubeDao().getUrunSubeAndUrunId(secilenUrun.getId(), Long.valueOf(subeId));
                         List<UrunSube> listSubeMid = db.urunSubeDao().getUrunSubeForUrunMid(secilenUrun.getId());
@@ -192,7 +224,6 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
                     birim_fiyati_edittw.setText(null);
 
 
-
                 }
 
             }
@@ -202,11 +233,6 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
 
             }
         });
-
-
-
-
-
 
 
         urun_adi_autocomplete.setThreshold(2);
@@ -238,18 +264,21 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
         });
 
 
+        urun_ekle_button();
+
+
     }
 
-    public void iletisimOnClick(View v) {
+  /*  public void iletisimOnClick(View v) {
         yeni_ietisim_kayit(true);
-    }
+    }*/
 
     public void iletisimIleriOnclik(View v) {
         yeni_ietisim_kayit(false);
     }
 
     void yeni_ietisim_kayit(final Boolean tamamla) {
-        if (secilenUrun == null  ||
+        if (secilenUrun == null ||
                 birim_fiyati_edittw.getText().toString().trim().equalsIgnoreCase("")) {
             MessageBox.showAlert(SiparisDetayKayitActivity.this, "Lütfen zorunlu alanları eksiksiz doldurunuz.", false);
 
@@ -268,7 +297,7 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
             siparisDetay.setUrunId(secilenUrun.getId());
             siparisDetay.setSenkronEdildi(false);
 
-            db.siparisDao().updateSiparisSenkronDurum(Long.valueOf(siparisMid),false);
+            db.siparisDao().updateSiparisSenkronDurum(Long.valueOf(siparisMid), false);
 
             new Thread(new Runnable() {
                 @Override
@@ -293,8 +322,8 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
                                 } else {
                                     Intent i = new Intent(SiparisDetayKayitActivity.this, SiparisDetayKayitActivity.class);
                                     i.putExtra("siparisMid", siparisMid);
-                                    i.putExtra("subeId", subeId );
-                                    i.putExtra("subeMid", subeMid );
+                                    i.putExtra("subeId", subeId);
+                                    i.putExtra("subeMid", subeMid);
                                     finish();
                                     startActivity(i);
                                 }
@@ -312,8 +341,8 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
                                     Intent i = new Intent(SiparisDetayKayitActivity.this, SiparisDetayKayitActivity.class);
                                     i.putExtra("siparisMid", siparisMid);
                                     i.putExtra("siparisMid", siparisMid);
-                                    i.putExtra("subeId", subeId );
-                                    i.putExtra("subeMid", subeMid );
+                                    i.putExtra("subeId", subeId);
+                                    i.putExtra("subeMid", subeMid);
                                     finish();
                                     startActivity(i);
                                 }
@@ -333,7 +362,7 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
 
     void getEditMode(Long siparisDetayMid) {
         List<SiparisDetay> updateKayitList = db.siparisDetayDao().getSiparisDetayForMid(siparisDetayMid);
-        if (updateKayitList != null && updateKayitList.size() > 0 && updateKayitList.get(0).getMid() == siparisDetayMid) {
+        if (updateKayitList != null && updateKayitList.size() > 0 && updateKayitList.get(0).getMid().toString().equalsIgnoreCase(siparisDetayMid.toString())) {
             birim_fiyati_edittw.setText(updateKayitList.get(0).getBirimFiyat() != null ? updateKayitList.get(0).getBirimFiyat().toString() : "");
             miktar_edittw.setText(updateKayitList.get(0).getMiktar() != null ? updateKayitList.get(0).getMiktar().toString() : "");
             //  olcu_birim_spinne.setText(updateKayitList.get(0).getKapiNo());
@@ -352,6 +381,118 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
                 olcu_birim_autocomplete.setText(olcuBirim.get(0).getOlcuBirimi());
 
         }
+    }
+
+    Double toplamEklenenTurar = 0.0;
+
+    void urun_ekle_button() {
+        urun_ekle_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                if (secilenUrun != null && !miktar_edittw.getText().toString().equalsIgnoreCase("")
+                        && !olcu_birim_autocomplete.getText().toString().equalsIgnoreCase("") && !birim_fiyati_edittw.getText().toString().equalsIgnoreCase("")) {
+
+
+                    final SiparisDetay siparisDetay = new SiparisDetay();
+                    if (!birim_fiyati_edittw.getText().toString().equalsIgnoreCase(""))
+                        siparisDetay.setBirimFiyat(Double.parseDouble(birim_fiyati_edittw.getText().toString()));
+
+                    siparisDetay.setOlcuBirimMid(secilenOlcuBirim.getMid());
+                    siparisDetay.setOlcuBirimId(secilenOlcuBirim.getId());
+                    if (!miktar_edittw.getText().toString().equalsIgnoreCase(""))
+                        siparisDetay.setMiktar(Double.parseDouble(miktar_edittw.getText().toString()));
+                    siparisDetay.setMustId(Long.valueOf(siparisMid));
+                    siparisDetay.setSiparisMid(Long.valueOf(siparisMid));
+                    siparisDetay.setUrunMid(secilenUrun.getMid());
+                    siparisDetay.setUrunId(secilenUrun.getId());
+                    siparisDetay.setSenkronEdildi(false);
+
+                    siparisDetayListTemp.add(siparisDetay);
+
+
+                    toplamEklenenTurar = 0.0;
+
+                    for (SiparisDetay item : siparisDetayListTemp) {
+                        toplamEklenenTurar = toplamEklenenTurar + (item.getMiktar() * item.getBirimFiyat());
+
+                    }
+                    toplam_tutar.setText("   " + String.valueOf(toplamEklenenTurar) + " TL");
+
+
+                    // MessageBox.showAlert(SiparisDetayKayitActivity.this, "Ürünler başarılı bir şekilde eklenmiştir.\n", false);
+
+                    siparis_detay_adapter = new EklenenUrunlerAdapter(SiparisDetayKayitActivity.this, siparisDetayListTemp);
+                    eklenen_urunler_recyclerview.setHasFixedSize(true);
+                    eklenen_urunler_recyclerview.setLayoutManager(new LinearLayoutManager(SiparisDetayKayitActivity.this));
+                    eklenen_urunler_recyclerview.setAdapter(siparis_detay_adapter);
+                    siparis_detay_adapter.notifyDataSetChanged();
+                } else
+                    MessageBox.showAlert(SiparisDetayKayitActivity.this, "Lütfen tüm alanları eksiksiz doldurunuz.", false);
+            }
+
+
+        });
+    }
+
+    void kaydet_button() {
+        btn_placeorder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                db.siparisDao().updateSiparisSenkronDurum(Long.valueOf(siparisMid), false);
+                List<Long> yeniKayitSiparisMidList;
+                if (siparisDetayMid == null)
+                    yeniKayitSiparisMidList = db.siparisDetayDao().setSiparisDetayList(siparisDetayListTemp);
+                Intent i = new Intent(SiparisDetayKayitActivity.this, SiparisDetayActivity.class);
+                i.putExtra("siparisMid", String.valueOf(siparisMid));
+                finish();
+                startActivity(i);
+            }
+        });
+
+
+    }
+
+    public void urun_sil_button(Integer position) {
+        if (position != null) {
+            toplamEklenenTurar = toplamEklenenTurar - (siparisDetayListTemp.get(position).getMiktar() * siparisDetayListTemp.get(position).getBirimFiyat());
+            siparisDetayListTemp.remove(siparisDetayListTemp.get(position));
+            MessageBox.showAlert(SiparisDetayKayitActivity.this, "Seçili ürün çıkarılmıştır.\n", false);
+            toplam_tutar.setText("   " + toplamEklenenTurar + " TL");
+        }
+        siparis_detay_adapter = new EklenenUrunlerAdapter(SiparisDetayKayitActivity.this, siparisDetayListTemp);
+        eklenen_urunler_recyclerview.setHasFixedSize(true);
+        eklenen_urunler_recyclerview.setLayoutManager(new LinearLayoutManager(SiparisDetayKayitActivity.this));
+        eklenen_urunler_recyclerview.setAdapter(siparis_detay_adapter);
+        siparis_detay_adapter.notifyDataSetChanged();
+
+    }
+
+    public void urun_artir_azalt(Boolean artiyorMu, Integer position) {
+        if (artiyorMu) {
+            siparisDetayListTemp.get(position).setMiktar(siparisDetayListTemp.get(position).getMiktar() + 1);
+            toplamEklenenTurar = toplamEklenenTurar + (siparisDetayListTemp.get(position).getBirimFiyat());
+        } else {
+            siparisDetayListTemp.get(position).setMiktar(siparisDetayListTemp.get(position).getMiktar() - 1);
+
+            if (position != null) {
+                toplamEklenenTurar = toplamEklenenTurar - (siparisDetayListTemp.get(position).getBirimFiyat());
+                if (siparisDetayListTemp.get(position).getMiktar() < 1) {
+                    siparisDetayListTemp.remove(siparisDetayListTemp.get(position));
+                    MessageBox.showAlert(SiparisDetayKayitActivity.this, "Seçili ürün çıkarılmıştır.\n", false);
+                }
+            }
+
+        }
+        toplam_tutar.setText("   " + toplamEklenenTurar + " TL");
+        siparis_detay_adapter = new EklenenUrunlerAdapter(SiparisDetayKayitActivity.this, siparisDetayListTemp);
+        eklenen_urunler_recyclerview.setHasFixedSize(true);
+        eklenen_urunler_recyclerview.setLayoutManager(new LinearLayoutManager(SiparisDetayKayitActivity.this));
+        eklenen_urunler_recyclerview.setAdapter(siparis_detay_adapter);
+        siparis_detay_adapter.notifyDataSetChanged();
+
     }
 }
 

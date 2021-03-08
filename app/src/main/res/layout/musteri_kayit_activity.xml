@@ -56,7 +56,8 @@
                 android:singleLine="true"
                 android:src="@drawable/user_profile"
                 android:text="Start a new Journey"
-                android:textSize="16dp" />
+                android:textSize="16dp"
+                tools:visibility="gone" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 

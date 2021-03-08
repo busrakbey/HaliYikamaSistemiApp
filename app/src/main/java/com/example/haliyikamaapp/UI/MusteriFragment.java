@@ -81,11 +81,10 @@ public class MusteriFragment extends Fragment {
         getMusteriListFromService();
 
 
-
     }
 
     void init_item(View view) {
-       swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.relativeLayout);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.relativeLayout);
         db = HaliYikamaDatabase.getInstance(getContext());
         recyclerView = (RecyclerView) view.findViewById(R.id.musteri_recyclerview);
 
@@ -95,8 +94,6 @@ public class MusteriFragment extends Fragment {
         progressDoalog.setTitle("SİSTEM");
         progressDoalog.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
         swipe_item();
-
-
 
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -125,7 +122,7 @@ public class MusteriFragment extends Fragment {
                /* item.setxKoor(Double.NaN);
                 item.setyKoor(Double.NaN);*/
                 item.setSenkronEdildi(null);
-               // item.setSubeId(null);
+                // item.setSubeId(null);
                 postMusteriListFromService(item);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -189,10 +186,13 @@ public class MusteriFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        senkronEdilmeyenKayitlariGonder();
+        getMusteriListFromService();
         get_list();
     }
 
     List<Musteri> gelenMusteriList;
+
     void getMusteriListFromService() {
 
         RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
@@ -202,19 +202,19 @@ public class MusteriFragment extends Fragment {
             public void onResponse(Call<List<Musteri>> call, Response<List<Musteri>> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                  //  //  MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
+                    //  //  MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
                     progressDoalog.dismiss();
                     gelenMusteriList = response.body();
                     if (gelenMusteriList != null && gelenMusteriList.size() > 0) {
-                        Boolean yeniKayitMi = true;
                         if (db.musteriDao().getMusteriAll().size() == 0)
                             db.musteriDao().setMusteriList(gelenMusteriList);
                         else {
 
                             for (Musteri i : gelenMusteriList) {
+                                Boolean yeniKayitMi = true;
 
                                 i.setSenkronEdildi(true);
                                 for (Musteri all : db.musteriDao().getMusteriAll()) {
@@ -232,10 +232,7 @@ public class MusteriFragment extends Fragment {
                         }
 
 
-
-                             get_list();
-
-
+                        get_list();
 
 
                     }
@@ -323,14 +320,14 @@ public class MusteriFragment extends Fragment {
         });
     }
 
-    void swipe_item(){
+    void swipe_item() {
         SwipeHelper swipeHelper = new SwipeHelper(getContext(), recyclerView, false) {
             @Override
             public void instantiateUnderlayButton(final RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons) {
 
 
                 underlayButtons.add(new SwipeHelper.UnderlayButton(
-                        "Ara",null
+                        "Ara", null
 
                        /* AppCompatResources.getDrawable(
                                 getContext(),
@@ -355,7 +352,7 @@ public class MusteriFragment extends Fragment {
 
 
                 underlayButtons.add(new SwipeHelper.UnderlayButton(
-                        "Sms",null
+                        "Sms", null
 
                       /*  AppCompatResources.getDrawable(
                                 getContext(),
@@ -377,18 +374,11 @@ public class MusteriFragment extends Fragment {
                 ));
 
 
-
-
-              
-
             }
         };
 
 
     }
-
-
-
 
 
 }

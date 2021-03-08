@@ -38,7 +38,7 @@ public abstract class SwipeHelper extends ItemTouchHelper.SimpleCallback {
     private List<UnderlayButton> buttons;
     private GestureDetector gestureDetector;
     private int swipedPos = -1;
-    private float swipeThreshold = 0.0000000001f;
+    private float swipeThreshold = 0.0000001f;
     private Map<Integer, List<UnderlayButton>> buttonsBuffer;
     private Queue<Integer> recoverQueue;
     private static Boolean animate;
@@ -126,7 +126,7 @@ public abstract class SwipeHelper extends ItemTouchHelper.SimpleCallback {
             buttons.clear();
 
         buttonsBuffer.clear();
-        swipeThreshold = 0.00000000001f * buttons.size() * BUTTON_WIDTH;
+        swipeThreshold = 0.00000001f * buttons.size() * BUTTON_WIDTH;
         recoverSwipedItem();
     }
 
