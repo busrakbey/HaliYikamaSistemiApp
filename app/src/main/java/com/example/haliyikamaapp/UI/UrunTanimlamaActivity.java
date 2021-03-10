@@ -60,13 +60,6 @@ public class UrunTanimlamaActivity extends AppCompatActivity {
     ProgressDialog progressDoalog;
     RefrofitRestApi refrofitRestApi;
 
-    List<S_IL> iller;
-    List<S_ILCE> ilceler, all_ilce;
-    List<String> ilStringList;
-    List<String> ilceStringList;
-    int selected_il_index = 0, selected_ilce_index = 0;
-    Long secili_il_id, secili_ilce_id;
-
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -240,13 +233,19 @@ public class UrunTanimlamaActivity extends AppCompatActivity {
     }
 
     void senkronEdilmeyenKayitlariGonder() {
-        for (Urun item : db.urunDao().getSenkronEdilmeyenUrunAll()) {
-            try {
-                postUrunService(item);
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+
+            for (Urun item : db.urunDao().getUrunAll()) {
+                if (item.getId() == null)
+                    postUrunService(item);
+                else
+                    putUrunService(item);
+
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
     Urun gelenUrun;
@@ -261,6 +260,69 @@ public class UrunTanimlamaActivity extends AppCompatActivity {
 
         // urun.setId(null);
         Call<Urun> call = refrofitRestApi.postUrun(OrtakFunction.authorization, OrtakFunction.tenantId, urun);
+        call.enqueue(new Callback<Urun>() {
+            @Override
+            public void onResponse(Call<Urun> call, Response<Urun> response) {
+                if (!response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    MessageBox.showAlert(UrunTanimlamaActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                    return;
+                }
+                if (response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    gelenUrun = response.body();
+                    if (gelenUrun != null) {
+                        db.urunDao().updateUrunQuery(urunMid, gelenUrun.getId(), true);
+                        db.urunSubeDao().updateUrunSubeQueryForUrunMid(urunMid, gelenUrun.getId());
+                        try {
+                            if (gelenUrun.getId() != null) {
+                                for (UrunSube item : db.urunSubeDao().getUrunSubeForUrunId(gelenUrun.getId()))
+                                    if (item.getSenkronEdildi() == false)
+                                        postUrunSubeService(item);
+                            } else {
+                                for (UrunSube item : db.urunSubeDao().getUrunSubeForUrunMid(urunMid))
+                                    if (item.getSenkronEdildi() == false)
+                                        postUrunSubeService(item);
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+
+                        }
+                        UrunTanimlamaActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+
+                            }
+                        });
+
+
+                    } /*else
+                        MessageBox.showAlert(UrunTanimlamaActivity.this, "Kayıt bulunamamıştır..", false);*/
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Urun> call, Throwable t) {
+                progressDoalog.dismiss();
+                MessageBox.showAlert(UrunTanimlamaActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+            }
+        });
+
+    }
+
+
+    public void putUrunService(final Urun urun) throws Exception {
+        progressDoalog.show();
+        final Long urunMid = urun.getMid();
+        final Long urunId = urun.getId();
+        urun.setMid(null);
+        urun.setMustId(null);
+        urun.setSenkronEdildi(null);
+
+        // urun.setId(null);
+        Call<Urun> call = refrofitRestApi.putUrun("hy/urun" + urun.getId(), OrtakFunction.authorization, OrtakFunction.tenantId, urun);
         call.enqueue(new Callback<Urun>() {
             @Override
             public void onResponse(Call<Urun> call, Response<Urun> response) {

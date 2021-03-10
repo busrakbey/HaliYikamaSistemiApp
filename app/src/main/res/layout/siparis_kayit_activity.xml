@@ -58,7 +58,8 @@
                 android:singleLine="true"
                 android:src="@drawable/printer"
                 android:text="Start a new Journey"
-                android:textSize="16dp" />
+                android:textSize="16dp"
+                android:visibility="invisible" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 

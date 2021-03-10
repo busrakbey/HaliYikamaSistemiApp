@@ -18,6 +18,7 @@ import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -69,6 +70,8 @@ import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -90,7 +93,7 @@ import retrofit2.Response;
 
 
 public class GorevlerimFragment2 extends Fragment {
-    ProgressDialog progressDoalog;
+    ProgressDialog progressDoalog, pd;
     RefrofitRestApi refrofitRestApi;
     HaliYikamaDatabase db;
     Activity mActivity;
@@ -102,7 +105,7 @@ public class GorevlerimFragment2 extends Fragment {
     ImageView userButton;
     public List<String> durumList;
     RadioButton filtre_tarih_bugun, filtre_tarih_yarin;
-    String dateFiltre, searchviewText;
+    String dateFiltre, searchviewText = "";
     RadioGroup tarihRadioGrup;
     Boolean tarihBugundeMi = true;
     Kaynak secili_kaynak;
@@ -112,7 +115,7 @@ public class GorevlerimFragment2 extends Fragment {
     List<SiparisDetay> siparisDetayList = null;
     private SwipeRefreshLayout swipeRefreshLayout;
     Snackbar snackbar;
-     int position;
+    int position;
     Long seciliKaynakId = null;
 
 
@@ -120,6 +123,7 @@ public class GorevlerimFragment2 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_gorevlerim2i, container, false);
+
 
     }
 
@@ -135,16 +139,69 @@ public class GorevlerimFragment2 extends Fragment {
                     seciliKaynakId = item.getId();
 
 
+            //   getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        pd = ProgressDialog.show(getContext(), "Sistem",
+                "Lütfen bekleyiniz", true);
+        pd.setCancelable(false);
+        pd.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
+        pd.show();
+        ((MainActivity) getContext()).getMusteriListFromService();
+        siparis_islemleri();
+        //  getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
+
+        get_list(null, "", seciliKaynakId);
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+
+                pd.dismiss();
+
+            }
+        }, 3000);
+
+
+    }
+
+    void siparis_islemleri() {
+
+        getSiparisListFromService();
+
+        for (Siparis item : db.siparisDao().getSiparisAll()) {
+            if (item.getMusteriId() == null && db.musteriDao().getMusteriForMid(item.getMusteriMid()).size() > 0) {
+                Musteri musteri = db.musteriDao().getMusteriForMid(item.getMusteriMid()).get(0);
+                db.siparisDao().updateSiparisMusteriId(item.getMid(), musteri.getId());
+                item.setMusteriId(musteri.getId());
+            }
+            item.setMustId(null);
+            item.setSenkronEdildi(null);
+            item.setMusteriMid(null);
+            postSiparisListFromService(item, item.getMid());
+        }
+
+
+        try {
             getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+
+
     }
+
 
     void init_item(View view) {
         refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
         progressDoalog = new ProgressDialog(getContext());
+        pd = new ProgressDialog(getContext());
+
         progressDoalog.setMessage("Lütfen bekleyiniz..");
         progressDoalog.setTitle("SİSTEM");
         progressDoalog.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
@@ -179,17 +236,38 @@ public class GorevlerimFragment2 extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                pd = ProgressDialog.show(getContext(), "Sistem",
+                        "Lütfen bekleyiniz", true);
+                pd.setCancelable(false);
+                pd.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
+                pd.show();
                 try {
-                    ((MainActivity) getContext()).siparis_islemleri();
-                    getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
+                    ((MainActivity) getContext()).getMusteriListFromService();
+                    siparis_islemleri();
                     get_list(durumList, searchviewText, seciliKaynakId);
                     swipeRefreshLayout.setRefreshing(false);
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                //  getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
+
+
+                new Handler().postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+
+                        pd.dismiss();
+
+                    }
+                }, 3500);
+
+
             }
         });
+
+
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, R.color.colorAccent, R.color.colorPrimaryDark);
 
         tarihRadioGrup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -293,15 +371,14 @@ public class GorevlerimFragment2 extends Fragment {
         });
 
 
-
         SwipeHelper swipeHelper = new SwipeHelper(getContext(), recyclerView, false) {
             @Override
             public void instantiateUnderlayButton(final RecyclerView.ViewHolder viewHolder, List<UnderlayButton> underlayButtons) {
-               position = viewHolder.getAdapterPosition();
+                position = viewHolder.getAdapterPosition();
 
 
                 underlayButtons.add(new SwipeHelper.UnderlayButton(
-                        "Tamamla",null,
+                        "Tamamla", null,
 
                        /* AppCompatResources.getDrawable(
                                 getContext(),
@@ -396,8 +473,7 @@ public class GorevlerimFragment2 extends Fragment {
             durumList.add("Teslime Çıktı");
             durumList.add("Yıkanacak");
         }
-       // gorevlerList = db.gorevlerDao().getGorevAllForKaynakId(seciliKaynakId);
-
+        // gorevlerList = db.gorevlerDao().getGorevAllForKaynakId(seciliKaynakId);
 
 
         if (searchViewText == null)
@@ -458,7 +534,7 @@ public class GorevlerimFragment2 extends Fragment {
                     return;
                 }
                 if (response.isSuccessful()) {
-                    progressDoalog.dismiss();
+
                     gelenGorevList = response.body();
                     if (!gelenGorevList.equalsIgnoreCase("")) {
                         db.gorevlerDao().deleteGorevAll();
@@ -501,7 +577,7 @@ public class GorevlerimFragment2 extends Fragment {
                                 List<Siparis> gelenSiparisList = Arrays.asList(gson.fromJson(siparisObject.toString(), Siparis.class));*/
 
 
-                                get_list(null,null,null);
+                                // get_list(null, null, null);
                                 gorevlerAdapter.notifyDataSetChanged();
 
                             }
@@ -522,6 +598,7 @@ public class GorevlerimFragment2 extends Fragment {
                                 List<Gorevler> totalGorevList = db.gorevlerDao().getGorevAll();
                                 for (Gorevler item : totalGorevList) {
                                     try {
+                                        progressDoalog.dismiss();
                                         getFormBilgilerimList(item.getTaskId());
                                     } catch (Exception e) {
                                         e.printStackTrace();
@@ -601,7 +678,8 @@ public class GorevlerimFragment2 extends Fragment {
 
                             }
                         });
-                        get_list(null, null, seciliKaynakId);
+                        get_list(durumList, searchviewText, seciliKaynakId);
+
 
                     }
                 }
@@ -624,15 +702,6 @@ public class GorevlerimFragment2 extends Fragment {
             mActivity = (Activity) context;
             mContext = (Context) context;
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        //((MainActivity)getContext()).siparis_islemleri();
-        //durumList = new ArrayList<String>();
-        // get_list(null, null);
     }
 
 
@@ -915,15 +984,18 @@ public class GorevlerimFragment2 extends Fragment {
                         db.siparisDao().updateSiparisDurumu(gorevId, )
                     }*/
                     MessageBox.showAlert(getContext(), "Görev başarıyla tamamlanmıştır..", false);
+
+
                     gorevlerAdapter.notifyDataSetChanged();
-                    get_list(null,null,null);
-                    try {
-                        getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    get_list(null, "", seciliKaynakId);
 
 
+                }
+
+                try {
+                    getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
             }
@@ -935,6 +1007,353 @@ public class GorevlerimFragment2 extends Fragment {
             }
 
         });
+    }
+
+
+    Siparis gelenSiparis;
+
+    public void postSiparisListFromService(final Siparis siparis, final Long siparisMid) {
+        progressDoalog.show();
+        siparis.setMid(null);
+        siparis.setBarkod(null);
+        siparis.setSubeMid(null);
+        siparis.setSiparisTarihi(siparis.getSiparisTarihi() + " 00:00");
+        siparis.setKaynakMid(null);
+        Call<Siparis> call = refrofitRestApi.postSiparis(OrtakFunction.authorization, OrtakFunction.tenantId, siparis);
+        call.enqueue(new Callback<Siparis>() {
+            @Override
+            public void onResponse(Call<Siparis> call, Response<Siparis> response) {
+                if (!response.isSuccessful()) {
+                    //progressDoalog.dismiss();
+                    // MessageBox.showAlert(mActivity, "Servisle bağlantı sırasında hata oluştu...", false);
+                    return;
+                }
+                if (response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    gelenSiparis = response.body();
+                    if (gelenSiparis != null) {
+                        db.siparisDao().updateSiparisQuery(siparisMid, gelenSiparis.getId(), true);
+                        mActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                List<SiparisDetay> siparisdetayList = db.siparisDetayDao().getSiparisDetayForMustId(siparisMid);
+
+                                List<SiparisDetay> senkronEdilecekler = new ArrayList<>();
+
+                                for (SiparisDetay item : siparisdetayList) {
+                                    if (item.getSenkronEdildi() == null || item.getSenkronEdildi() == false)
+                                        senkronEdilecekler.add(item);
+                                }
+
+                                if (senkronEdilecekler != null && senkronEdilecekler.size() > 0) {
+                                    List<Siparis> gidecekSiparis = db.siparisDao().getSiparisForSiparisId(gelenSiparis.getId());
+                                    db.siparisDetayDao().updateSiparisId(siparisMid, gelenSiparis.getId());
+                                    postSiparisDetayListFromService(senkronEdilecekler, gidecekSiparis);
+
+                                } else {
+
+                                    if (gelenSiparis.processInstanceId == null ) {
+                                        postSiparisSureciBaslatService(gelenSiparis);
+                                    }
+
+                                }
+
+
+                            }
+                        });
+                    }
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<Siparis> call, Throwable t) {
+                progressDoalog.dismiss();
+                //  MessageBox.showAlert(mActivity, "Hata Oluştu.. " + t.getMessage(), false);
+            }
+        });
+    }
+
+
+    String gelenSiparisDetayList = null;
+
+    public void postSiparisDetayListFromService(final List<SiparisDetay> siparisDetayList, final List<Siparis> gelenSiparis) {
+        progressDoalog.show();
+        final RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
+        final List<Long> midList = new ArrayList<>();
+        JsonArray datas = new JsonArray();
+        for (SiparisDetay item : siparisDetayList) {
+            JsonObject object = new JsonObject();
+            object.addProperty("id", item.getId());
+            object.addProperty("siparisId", gelenSiparis.get(0).getId());
+            object.addProperty("urunId", item.getUrunId());
+            if (item.getUrunId() != null && db.urunDao().getUrunForId(item.getUrunId()).size() > 0)
+                object.addProperty("urunAdi", db.urunDao().getUrunForId(item.getUrunId()).get(0).getUrunAdi());
+            else
+                object.addProperty("urunAdi", " ");
+
+            if (item.getOlcuBirimId() != null && db.olcuBirimDao().getOlcuBirimForId(item.getOlcuBirimId()).size() > 0)
+                object.addProperty("olcuBirimAdi", db.olcuBirimDao().getOlcuBirimForId(item.getOlcuBirimId()).get(0).getOlcuBirimi());
+            else
+                object.addProperty("olcuBirimAdi", " ");
+
+            object.addProperty("olcuBirimId", item.getOlcuBirimId());
+            object.addProperty("birimFiyat", item.getBirimFiyat());
+            object.addProperty("miktar", item.getMiktar());
+            if (item.getMiktar() != null && item.getBirimFiyat() != null)
+                object.addProperty("toplamTutar", item.getMiktar() * item.getBirimFiyat());
+            else
+                object.addProperty("toplamTutar", 0);
+
+            object.addProperty("musteriNotu", gelenSiparis.get(0).getAciklama());
+
+
+            midList.add(item.getMid());
+            //  object.addProperty("musteriNotu", "");
+            datas.add(object);
+        }
+
+        progressDoalog.show();
+        Call<String> call = refrofitRestApi.postSiparisDetay(OrtakFunction.authorization, OrtakFunction.tenantId, datas.toString());
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (!response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    // MessageBox.showAlert(mActivity, "Servisle bağlantı sırasında hata oluştu...", false);
+                    return;
+                }
+                if (response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    gelenSiparisDetayList = response.body();
+                    if (gelenSiparisDetayList != null) {
+
+
+                        mActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                final RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
+                                Call<List<SiparisDetay>> call = refrofitRestApi.getSiparisDetayList("hy/siparis/siparisUrunler/" + gelenSiparis.get(0).getId(), OrtakFunction.authorization, OrtakFunction.tenantId);
+                                call.enqueue(new Callback<List<SiparisDetay>>() {
+                                    @Override
+                                    public void onResponse(Call<List<SiparisDetay>> call, Response<List<SiparisDetay>> response) {
+                                        if (!response.isSuccessful()) {
+                                            progressDoalog.dismiss();
+                                            //MessageBox.showAlert(mActivity, "Servisle bağlantı sırasında hata oluştu...", false);
+                                            return;
+                                        }
+                                        if (response.isSuccessful()) {
+                                            progressDoalog.dismiss();
+                                            db.siparisDetayDao().updateSiparisDetayQuery(gelenSiparis.get(0).getMid(), true);
+
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<List<SiparisDetay>> call, Throwable t) {
+                                        progressDoalog.dismiss();
+                                        //  MessageBox.showAlert(mActivity, "Hata Oluştu.. " + t.getMessage(), false);
+                                    }
+                                });
+
+
+                            }
+                        });
+                    }
+                }
+                if (gelenSiparis != null && gelenSiparis.size() > 0 && gelenSiparis.get(0).processInstanceId == null) {
+                    postSiparisSureciBaslatService(gelenSiparis.get(0));
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                progressDoalog.dismiss();
+                //  MessageBox.showAlert(mActivity, "Hata Oluştu.. " + t.getMessage(), false);
+            }
+        });
+
+    }
+
+
+    String gelenProcessId = null;
+
+    public void postSiparisSureciBaslatService(final Siparis item) {
+        progressDoalog.show();
+        RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
+        JsonObject object = new JsonObject();
+        object.addProperty("subeId", item.getSubeId());
+        object.addProperty("musteriId", item.getMusteriId());
+        if (item.getTeslimAlinacak() != null)
+            object.addProperty("teslimAlinacak", item.getTeslimAlinacak() == true ? "Evet" : "Hayır");
+        else
+            object.addProperty("teslimAlinacak", "Hayır");
+        object.addProperty("siparisId", item.getId());
+
+
+        progressDoalog.show();
+        Call<String> call = refrofitRestApi.startSiparisSureci(OrtakFunction.authorization, OrtakFunction.tenantId, object.toString());
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (!response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    // MessageBox.showAlert(mActivity, "Servisle bağlantı sırasında hata oluştu...", false);
+                    return;
+                }
+                if (response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    gelenProcessId = response.body();
+                    if (!gelenProcessId.equalsIgnoreCase("")) {
+                        JSONObject gelenObject = null;
+                        try {
+                            gelenObject = new JSONObject(gelenProcessId);
+                            /*if (item.getTeslimAlinacak() != null && item.getTeslimAlinacak() == true)
+                                db.siparisDao().updateSiparisProcessId(Long.valueOf(gelenObject.getString("processInstanceId")), item.getId(), "Teslim Alınacak");
+                            if (item.getTeslimAlinacak() == null || item.getTeslimAlinacak() == false)
+                                db.siparisDao().updateSiparisProcessId(Long.valueOf(gelenObject.getString("processInstanceId")), item.getId(), "Yıkamada");*/
+
+                            //  MessageBox.showAlert(mActivity, "Sipariş süreci başarılı bir şekilde başlatılmıştır.", false);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                     /*   try {
+                            getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }*/
+
+
+                    } /*else
+                        MessageBox.showAlert(mActivity, "Kayıt bulunamamıştır..", false);*/
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                progressDoalog.dismiss();
+                //  MessageBox.showAlert(mActivity, "Hata Oluştu.. " + t.getMessage(), false);
+            }
+        });
+
+    }
+
+
+    List<Siparis> gelenSiparisList;
+    List<SiparisDetay> gelenSiparisDetayList2;
+
+    void getSiparisListFromService() {
+        final RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
+        progressDoalog.show();
+        Call<List<Siparis>> call = refrofitRestApi.getSiparisList(OrtakFunction.authorization, OrtakFunction.tenantId);
+        call.enqueue(new Callback<List<Siparis>>() {
+            @Override
+            public void onResponse(Call<List<Siparis>> call, Response<List<Siparis>> response) {
+                if (!response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    // MessageBox.showAlert(mActivity, "Servisle bağlantı sırasında hata oluştu...", false);
+                    return;
+                }
+                if (response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    gelenSiparisList = response.body();
+                    if (gelenSiparisList != null && gelenSiparisList.size() > 0) {
+
+
+                        mActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                for (final Siparis item : gelenSiparisList) {
+                                    List<Siparis> urunVarMi = db.siparisDao().getSiparisForSiparisId(item.getId());
+                                    item.setSenkronEdildi(true);
+                                    if (urunVarMi.size() > 0) {
+                                        item.setMid(urunVarMi.get(0).getMid());
+                                        item.setMusteriMid(urunVarMi.get(0).getMusteriMid());
+                                        item.setSubeMid(urunVarMi.get(0).getSubeMid());
+                                        item.setKaynakMid(urunVarMi.get(0).getKaynakMid());
+                                        db.siparisDao().updateSiparis(item);
+                                    } else
+                                        db.siparisDao().setSiparis(item);
+
+
+                                    Call<List<SiparisDetay>> call = refrofitRestApi.getSiparisDetayList("hy/siparis/siparisUrunler/" + item.getId(), OrtakFunction.authorization, OrtakFunction.tenantId);
+                                    call.enqueue(new Callback<List<SiparisDetay>>() {
+                                        @Override
+                                        public void onResponse(Call<List<SiparisDetay>> call, Response<List<SiparisDetay>> response) {
+                                            if (!response.isSuccessful()) {
+                                                progressDoalog.dismiss();
+                                                //  MessageBox.showAlert(mActivity, "Servisle bağlantı sırasında hata oluştu...", false);
+                                                return;
+                                            }
+                                            if (response.isSuccessful()) {
+                                                progressDoalog.dismiss();
+                                                gelenSiparisDetayList2 = response.body();
+
+                                                mActivity.runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+
+                                                        for (SiparisDetay i : gelenSiparisDetayList2) {
+                                                            i.setSenkronEdildi(true);
+                                                            List<Siparis> siparis = db.siparisDao().getSiparisForSiparisId(item.getId());
+                                                            List<SiparisDetay> urunVarMi = db.siparisDetayDao().getSiparisDetayForId(i.getId());
+                                                            if (siparis != null && siparis.size() > 0) {
+                                                                i.setMustId(siparis.get(0).getMid());
+                                                                i.setSiparisMid(siparis.get(0).getMid());
+                                                            }
+                                                            if (urunVarMi.size() > 0) {
+                                                                i.setMid(urunVarMi.get(0).getMid());
+                                                                i.setUrunMid(urunVarMi.get(0).getUrunMid());
+                                                                i.setOlcuBirimMid(urunVarMi.get(0).getOlcuBirimMid());
+                                                                db.siparisDetayDao().updateSiparisDetay(i);
+                                                            } else
+                                                                db.siparisDetayDao().setSiparisDetay(i);
+                                                        }
+
+
+                                                    }
+                                                });
+
+
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<List<SiparisDetay>> call, Throwable t) {
+                                            progressDoalog.dismiss();
+                                            // MessageBox.showAlert(mActivity, "Hata Oluştu.. " + t.getMessage(), false);
+                                        }
+                                    });
+
+
+                                }
+
+
+                            }
+                        });
+
+
+                    } /*else
+                        MessageBox.showAlert(mActivity, "Kayıt bulunamamıştır..", false);*/
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Siparis>> call, Throwable t) {
+                progressDoalog.dismiss();
+                // MessageBox.showAlert(mActivity, "Hata Oluştu.. " + t.getMessage(), false);
+            }
+        });
+
 
     }
 

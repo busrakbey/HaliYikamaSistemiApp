@@ -231,7 +231,7 @@ public class HesapActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 progressDoalog.dismiss();
-                MessageBox.showAlert(HesapActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+              //  MessageBox.showAlert(HesapActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
 
@@ -299,7 +299,7 @@ public class HesapActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Hesap> call, Throwable t) {
                 progressDoalog.dismiss();
-                MessageBox.showAlert(HesapActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+               // MessageBox.showAlert(HesapActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
     }

@@ -1,5 +1,6 @@
 package com.example.haliyikamaapp.UI;
 
+import android.accounts.AccountAuthenticatorResponse;
 import android.animation.Animator;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -303,4 +304,6 @@ public class LoginActivity extends AppCompatActivity {
             OrtakFunction.getTtoken(LoginActivity.this, currentUserList.get(0).getUserName(), currentUserList.get(0).getPassword(), currentUserList.get(0).getTenantId());
         }
     }
+
+
 }

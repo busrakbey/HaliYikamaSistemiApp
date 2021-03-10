@@ -146,6 +146,20 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/urun_guncelle_button"
+                style="@style/tamamlaButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:layout_weight="0.5"
+                android:drawableLeft="@drawable/ic_check_black_24dp"
+                android:paddingLeft="10dp"
+                android:text="G Ü N C E L L E"
+                android:onClick="urunGuncelleClick"
+                android:textColor="@color/text"
+                android:visibility="gone" />
+
+            <Button
                 android:id="@+id/urun_ekle_button"
                 style="@style/tamamlaButton"
                 android:layout_width="wrap_content"

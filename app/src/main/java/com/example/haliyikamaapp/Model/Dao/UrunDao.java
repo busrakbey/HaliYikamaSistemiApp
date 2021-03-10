@@ -17,6 +17,9 @@ public interface UrunDao {
     @Query("SELECT * FROM URUN where senkronEdildi = 0")
     List<Urun> getSenkronEdilmeyenUrunAll();
 
+    @Query("SELECT * FROM URUN where id is null")
+    List<Urun> getAllIdNull();
+
     @Insert
     long setUrun(Urun musteri);
 

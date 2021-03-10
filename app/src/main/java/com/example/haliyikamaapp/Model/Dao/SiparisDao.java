@@ -14,6 +14,10 @@ public interface SiparisDao {
     @Query("SELECT * FROM SIPARIS order by siparisTarihi desc")
     List<Siparis> getSiparisAll();
 
+    @Query("SELECT s.* FROM SIPARIS s, MUSTERI m where s.musteriId = m.id and s.siparisDurumu = 'Teslim Edildi' and s.kaynakId = :kaynakId and" +
+            " (m.musteriAdi LIKE :parameter || '%' or m.bolge LIKE  :parameter || '%' or m.telefonNumarasi LIKE '%' ||" + ":parameter || '%') ")
+    List<Siparis> getSiparisTelsimEdildiList(Long kaynakId, String parameter);
+
     @Insert
     long setSiparis(Siparis siparis);
 
@@ -60,7 +64,7 @@ public interface SiparisDao {
     int updateSiparisDurumu(Long id, String siparisDurumu);
 
     @Query("UPDATE SIPARIS SET musteriId = :musteriId WHERE mid = :mid")
-    int updateSiparisId(Long mid, Long musteriId);
+    int updateSiparisMusteriId(Long mid, Long musteriId);
 
     @Query("UPDATE SIPARIS SET  senkronEdildi = :senkronEdildi WHERE mid = :mid")
     int updateSiparisSenkronDurum(Long mid ,Boolean senkronEdildi);

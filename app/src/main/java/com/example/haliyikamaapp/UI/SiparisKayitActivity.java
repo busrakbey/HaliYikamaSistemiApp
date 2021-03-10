@@ -132,8 +132,6 @@ public class SiparisKayitActivity extends AppCompatActivity {
         sharedPreferencesSettings = new SharedPreferencesSettings();
 
 
-
-
         Calendar calendar = Calendar.getInstance();
         final int year = calendar.get(Calendar.YEAR);
         final int month = calendar.get(Calendar.MONTH);
@@ -193,14 +191,14 @@ public class SiparisKayitActivity extends AppCompatActivity {
             }
         });
 
-        if(sharedPreferencesSettings.getValues(getApplicationContext(), "siparis_gun") != null &&
-                !sharedPreferencesSettings.getValues(getApplicationContext(), "siparis_gun").equals("")){
+        if (sharedPreferencesSettings.getValues(getApplicationContext(), "siparis_gun") != null &&
+                !sharedPreferencesSettings.getValues(getApplicationContext(), "siparis_gun").equals("")) {
             Calendar calendar2 = Calendar.getInstance();
             calendar2.add(Calendar.DATE, sharedPreferencesSettings.getValues(getApplicationContext(), "siparis_gun"));
             final int year2 = calendar2.get(Calendar.YEAR);
             final int month2 = calendar2.get(Calendar.MONTH);
             final int dayOfMonth2 = calendar2.get(Calendar.DAY_OF_MONTH);
-            teslimEdilmeTarihi.setText(dayOfMonth2 + "." + Integer.valueOf(month2 + 1) + "." + year2 );
+            teslimEdilmeTarihi.setText(dayOfMonth2 + "." + Integer.valueOf(month2 + 1) + "." + year2);
         }
 
         siparisBarkodYazdirButton.setOnClickListener(new View.OnClickListener() {
@@ -304,6 +302,7 @@ public class SiparisKayitActivity extends AppCompatActivity {
             }
         });
 
+
         kaynakList.add(null);
         kaynakList = db.kaynakDao().getkaynakAll();
         kaynakListString.add("Kaynak");
@@ -311,10 +310,30 @@ public class SiparisKayitActivity extends AppCompatActivity {
             kaynakListString.add(item.getKaynakAdi());
         }
 
+        try {
+            secili_kaynak = null;
+            for (Kaynak item : kaynakList)
+                if (item.getSecilenKaynakMi() != null && item.getSecilenKaynakMi() == true)
+                    secili_kaynak = item;
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         ArrayAdapter<String> dataAdapter_kaynak = new ArrayAdapter<String>(SiparisKayitActivity.this, android.R.layout.simple_spinner_item, kaynakListString);
         dataAdapter_kaynak.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         kaynak_spinner.setAdapter(dataAdapter_kaynak);
-        kaynak_spinner.setSelection(0);
+        // kaynak_spinner.setSelection(0);
+
+
+        if (kaynakList.size() > 0) {
+            for (Kaynak item : kaynakList) {
+                kaynak_spinner.setSelection(kaynakListString.indexOf(secili_kaynak.getKaynakAdi()));
+            }
+        }
+
 
         kaynak_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -336,10 +355,6 @@ public class SiparisKayitActivity extends AppCompatActivity {
             }
         });
 
-        if (gelenSiparisMid != null)
-            getEditMode(Long.valueOf(gelenSiparisMid));
-        else
-            teslim_alinacak_checkbox.setChecked(true);
 
         if (gelenMusteriMid != null) {
             musteri_edittw.setEnabled(false);
@@ -359,8 +374,16 @@ public class SiparisKayitActivity extends AppCompatActivity {
             seciliSubeAdi = allSube.get(0).getSubeAdi();
 
         }
+
+
         if (allSube != null && allSube.size() > 0)
             sube_spinner.setSelection(subeListString.indexOf(allSube.get(0).getSubeAdi()));
+
+        if (gelenSiparisMid != null)
+            getEditMode(Long.valueOf(gelenSiparisMid));
+        else
+            teslim_alinacak_checkbox.setChecked(true);
+
     }
 
     public void musteriKayitOnclik(View v) {
@@ -373,10 +396,9 @@ public class SiparisKayitActivity extends AppCompatActivity {
     }
 
     void yeni_musteri_kayit(final Boolean tamamla) {
-        if(secili_kaynak == null){
+        if (secili_kaynak == null) {
             MessageBox.showAlert(SiparisKayitActivity.this, "Lütfen kaynak seçimi yapınız.", false);
-        }
-         else{
+        } else {
             final Siparis siparis = new Siparis();
 
             siparis.setMusteriMid(gelenMusteriMid != null ? Long.valueOf(gelenMusteriMid) : null);
@@ -412,7 +434,6 @@ public class SiparisKayitActivity extends AppCompatActivity {
                         public void run() {
                             if (gelenSiparisMid == null && Integer.valueOf(String.valueOf(finalYeniKayitSiparisMid)) > 0) {
                                 if (tamamla) {
-                                    db.siparisDao().updateSiparisBarkod(createBarkocImage(String.valueOf("00000" + finalYeniKayitSiparisMid)), finalYeniKayitSiparisMid);
                                     MessageBox.showAlert(SiparisKayitActivity.this, "Sipariş oluşturuldu. \n", false);
                                     Intent i = new Intent(SiparisKayitActivity.this, MainActivity.class);
                                     // i.putExtra("gelenPage", "gorevlerim");
@@ -457,7 +478,7 @@ public class SiparisKayitActivity extends AppCompatActivity {
 
     void getEditMode(Long siparisMid) {
         List<Siparis> updateKayitList = db.siparisDao().getSiparisForMid(siparisMid);
-        if (updateKayitList != null && updateKayitList.size() > 0 && updateKayitList.get(0).getMid() == siparisMid) {
+        if (updateKayitList != null && updateKayitList.size() > 0 && updateKayitList.get(0).getMid().toString().equalsIgnoreCase(siparisMid.toString())) {
             if (updateKayitList.get(0).getMusteriMid() != null) {
                 List<Musteri> allMusteri = db.musteriDao().getMusteriForMid(updateKayitList.get(0).getMusteriMid());
                 musteri_edittw.setText(allMusteri.get(0).getMusteriAdi() + " " + allMusteri.get(0).getMusteriSoyadi());
@@ -490,6 +511,9 @@ public class SiparisKayitActivity extends AppCompatActivity {
                 }
             }
             aciklama_edittw.setText(updateKayitList.get(0).getAciklama());
+
+            if (updateKayitList.get(0).getTeslimAlinacak() != null && updateKayitList.get(0).getTeslimAlinacak() == true)
+                teslim_alinacak_checkbox.setChecked(true);
 
 
         }

@@ -133,7 +133,7 @@ public class SiparisActivity extends AppCompatActivity {
             try {
                 if (item.getMusteriId() == null) {
                     Musteri musteri = db.musteriDao().getMusteriForMid(item.getMusteriMid()).get(0);
-                    db.siparisDao().updateSiparisId(item.getMid(), musteri.getId());
+                    db.siparisDao().updateSiparisMusteriId(item.getMid(), musteri.getId());
                     item.setMusteriId(musteri.getId());
                 }
                 item.setMustId(null);
@@ -162,7 +162,7 @@ public class SiparisActivity extends AppCompatActivity {
             siparisler = db.siparisDao().getSiparisForSiparisId(Long.valueOf(gelenSiparisId));
         } else
             siparisler = db.siparisDao().getSiparisAll();
-        siparisAdapter = new SiparisAdapter(SiparisActivity.this, siparisler);
+        siparisAdapter = new SiparisAdapter(SiparisActivity.this, siparisler,false);
         siparisAdapter.notifyDataSetChanged();
 
         recyclerView.setHasFixedSize(true);
@@ -177,12 +177,12 @@ public class SiparisActivity extends AppCompatActivity {
 
     }
 
-    @Override
+    /*@Override
     public void onResume() {
         super.onResume();
         get_list();
 
-    }
+    }*/
 
     @Override
     public void onPause() {
@@ -459,7 +459,7 @@ public class SiparisActivity extends AppCompatActivity {
                                     @Override
                                     public void onFailure(Call<List<SiparisDetay>> call, Throwable t) {
                                         progressDoalog.dismiss();
-                                        MessageBox.showAlert(SiparisActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                                       // MessageBox.showAlert(SiparisActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
                                     }
                                 });
 
@@ -475,7 +475,7 @@ public class SiparisActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 progressDoalog.dismiss();
-                MessageBox.showAlert(SiparisActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+             //   MessageBox.showAlert(SiparisActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
 

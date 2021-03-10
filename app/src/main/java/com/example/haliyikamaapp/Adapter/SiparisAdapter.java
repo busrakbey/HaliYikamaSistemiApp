@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -40,13 +41,15 @@ public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHo
     private List<Siparis> data;
     private List<Siparis> itemsFiltered;
     private Context mContext;
+    private Boolean gorevEkraniMi;
     HaliYikamaDatabase db;
 
 
-    public SiparisAdapter(Context mContext, List<Siparis> data) {
+    public SiparisAdapter(Context mContext, List<Siparis> data, Boolean gorevEkraniMi) {
         this.data = data;
         this.itemsFiltered = data;
         this.mContext = mContext;
+        this.gorevEkraniMi = gorevEkraniMi;
     }
 
     @Override
@@ -88,10 +91,18 @@ public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHo
         List<SiparisDetay> siparisDetayList = db.siparisDetayDao().getSiparisDetayForSiparisMid(itemsFiltered.get(position).getMid());
         List<SiparisDetay> siparisDetayList2 = db.siparisDetayDao().getSiparisDetayForSiparisId(itemsFiltered.get(position).getId());
         for (SiparisDetay item : siparisDetayList2)
-            holder.siparis_tutari_item.setText(String.valueOf(Double.valueOf(holder.siparis_tutari_item.getText().toString()) + item.getBirimFiyat() * item.getMiktar()));
+            if (holder.siparis_tutari_item.getText().toString() != null && item.getBirimFiyat()!= null && item.getMiktar() != null)
+                holder.siparis_tutari_item.setText(String.valueOf(Double.valueOf(holder.siparis_tutari_item.getText().toString()) + item.getBirimFiyat() * item.getMiktar()));
+            else
+                holder.siparis_tutari_item.setText(holder.siparis_tutari_item.getText().toString());
         if (siparisDetayList2.size() == 0) {
             for (SiparisDetay item : siparisDetayList)
-                holder.siparis_tutari_item.setText(String.valueOf(Double.valueOf(holder.siparis_tutari_item.getText().toString()) + item.getBirimFiyat() * item.getMiktar()));
+                if (holder.siparis_tutari_item.getText().toString() != null && item.getBirimFiyat()!= null && item.getMiktar() != null)
+                    holder.siparis_tutari_item.setText(String.valueOf(Double.valueOf(holder.siparis_tutari_item.getText().toString()) + item.getBirimFiyat() * item.getMiktar()));
+                else
+                    holder.siparis_tutari_item.setText(holder.siparis_tutari_item.getText().toString());
+
+
         }
         List<Sube> sube = db.subeDao().getSubeForId(itemsFiltered.get(position).getSubeId());
         List<Sube> sube2 = db.subeDao().getSubeForMid(itemsFiltered.get(position).getSubeMid());
@@ -103,12 +114,12 @@ public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHo
 
         List<Musteri> musteriListId = db.musteriDao().getMusteriForId(itemsFiltered.get(position).getMusteriId());
         if (musteriListId.size() > 0) {
-            holder.adres_item.setText((musteriListId.get(0).getAdres()  != null ? musteriListId.get(0).getAdres()  :"" )+ " / " +
+            holder.adres_item.setText((musteriListId.get(0).getAdres() != null ? musteriListId.get(0).getAdres() : "") + " / " +
                     (musteriListId.get(0).getBolge() != null ? musteriListId.get(0).getBolge() : ""));
             holder.musteri_adi.setText(musteriListId.get(0).getMusteriAdi() + " " + musteriListId.get(0).getMusteriSoyadi());
         } else {
             musteriListId = db.musteriDao().getMusteriForMid(itemsFiltered.get(position).getMusteriMid());
-            holder.adres_item.setText((musteriListId.get(0).getAdres()  != null ? musteriListId.get(0).getAdres()  :"" )+ " / " +
+            holder.adres_item.setText((musteriListId.get(0).getAdres() != null ? musteriListId.get(0).getAdres() : "") + " / " +
                     (musteriListId.get(0).getBolge() != null ? musteriListId.get(0).getBolge() : ""));
             holder.musteri_adi.setText(musteriListId.get(0).getMusteriAdi() + " " + musteriListId.get(0).getMusteriSoyadi());
 
@@ -166,6 +177,25 @@ public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHo
                     ((MainActivity) mContext).postSiparisSureciBaslatService(itemsFiltered.get(position));
             }
         });
+
+        if (gorevEkraniMi != null && gorevEkraniMi == true) {
+            holder.gorev_siparis_layout.setVisibility(View.VISIBLE);
+            holder.gorev_siparis_layout2.setVisibility(View.GONE);
+        }
+
+
+        if (data.get(position).getSiparisDurumu() != null) {
+
+            if (data.get(position).getSiparisDurumu().equalsIgnoreCase("Teslim Edildi")) {
+                holder.sipariş_durumu_item.setTextColor(Color.parseColor("#5cee36"));
+                holder.siparis_no_item.setBackgroundColor(Color.parseColor("#5cee36"));
+
+            }
+
+        }
+
+        holder.siparis_no_item.setText("\n000" + data.get(position).getId().toString() + "\n");
+
     }
 
     @Override
@@ -243,8 +273,9 @@ public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHo
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         RelativeLayout relativeLayout;
-        public TextView tarih_item, sipariş_durumu_item, siparis_tutari_item, sube_item, adres_item, musteri_adi, aciklama_item;
+        public TextView tarih_item, sipariş_durumu_item, siparis_tutari_item, sube_item, adres_item, musteri_adi, aciklama_item, siparis_no_item;
         ImageView edit_item, senkron_siparis;
+        LinearLayout gorev_siparis_layout, gorev_siparis_layout2;
 
 
         public MyViewHolder(View itemView) {
@@ -258,8 +289,9 @@ public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHo
             this.adres_item = (TextView) itemView.findViewById(R.id.siparis_adres_item);
             this.musteri_adi = (TextView) itemView.findViewById(R.id.siparis_musteri_adi);
             this.aciklama_item = (TextView) itemView.findViewById(R.id.siparis_aciklama_item);
-
-
+            this.gorev_siparis_layout = (LinearLayout) itemView.findViewById(R.id.gorev_siparis_layout);
+            this.siparis_no_item = (TextView) itemView.findViewById(R.id.siparis_no_item);
+            this.gorev_siparis_layout2 = (LinearLayout) itemView.findViewById(R.id.gorev_siparis_layout2);
             relativeLayout = (RelativeLayout) itemView.findViewById(R.id.relativeLayout);
         }
     }

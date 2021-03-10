@@ -55,7 +55,7 @@ public class SiparisDetayAdapter extends RecyclerView.Adapter<SiparisDetayAdapte
 
 
         List<OlcuBirim> olcuBirim = db.olcuBirimDao().getOlcuBirimForMid(data.get(position).getOlcuBirimMid());
-        if(olcuBirim.size() == 0)
+        if (olcuBirim.size() == 0)
             olcuBirim = db.olcuBirimDao().getOlcuBirimForId(data.get(position).getOlcuBirimId());
         if (olcuBirim != null && olcuBirim.size() > 0)
             holder.olcu_birimi_item.setText("Ölçü Birimi : " + olcuBirim.get(0).getOlcuBirimi());
@@ -63,8 +63,11 @@ public class SiparisDetayAdapter extends RecyclerView.Adapter<SiparisDetayAdapte
 
         holder.miktar_item.setText("Miktarı : " + (data.get(position).getMiktar() != null ? data.get(position).getMiktar().toString() : ""));
         holder.fiyat_item.setText(data.get(position).getBirimFiyat() != null ? data.get(position).getBirimFiyat().toString() + " TL" : "");
-        holder.siparis_detay_toplam_tutar_item2.setText("Toplam Tutar: " + String.valueOf(data.get(position).getMiktar() * data.get(position).getBirimFiyat()));
 
+        if (data.get(position).getMiktar() != null && data.get(position).getBirimFiyat() != null)
+            holder.siparis_detay_toplam_tutar_item2.setText("Toplam Tutar: " + String.valueOf(data.get(position).getMiktar() * data.get(position).getBirimFiyat()));
+        else
+            holder.siparis_detay_toplam_tutar_item2.setText("Toplam Tutar: ");
 
 
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
@@ -74,13 +77,13 @@ public class SiparisDetayAdapter extends RecyclerView.Adapter<SiparisDetayAdapte
                 musteri.putExtra("siparisDetayMid", String.valueOf(data.get(position).getMid()));
                 musteri.putExtra("siparisMid", String.valueOf(data.get(position).getMustId()));
 
-                if(data.get(position).getSiparisId()!= null)
-                     siparisList = db.siparisDao().getSiparisForSiparisId(data.get(position).getSiparisId());
+                if (data.get(position).getSiparisId() != null)
+                    siparisList = db.siparisDao().getSiparisForSiparisId(data.get(position).getSiparisId());
                 else
                     siparisList = db.siparisDao().getSiparisForMid(data.get(position).getSiparisMid());
 
-                musteri.putExtra("subeId" , String.valueOf(siparisList.get(0).getSubeId()));
-              //  musteri.putExtra("subeMid" , String.valueOf(data.get(position).getSubeMid()));
+                musteri.putExtra("subeId", String.valueOf(siparisList.get(0).getSubeId()));
+                //  musteri.putExtra("subeMid" , String.valueOf(data.get(position).getSubeMid()));
                 musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.getApplicationContext().startActivity(musteri);
             }
@@ -110,7 +113,7 @@ public class SiparisDetayAdapter extends RecyclerView.Adapter<SiparisDetayAdapte
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         RelativeLayout relativeLayout;
-        public TextView urun_adi_item, olcu_birimi_item, miktar_item, fiyat_item,siparis_detay_toplam_tutar_item2;
+        public TextView urun_adi_item, olcu_birimi_item, miktar_item, fiyat_item, siparis_detay_toplam_tutar_item2;
         // ImageView isimBasHarfi_item;
 
 

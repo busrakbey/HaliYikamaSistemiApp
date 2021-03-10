@@ -11,10 +11,10 @@ import java.util.List;
 
 @Dao
 public interface GorevlerDao {
-    @Query("SELECT * FROM GOREVLER")
+    @Query("SELECT * FROM GOREVLER order by taskCreateTime desc")
     List<Gorevler> getGorevAll();
 
-    @Query("SELECT * FROM GOREVLER where kaynakId = :kaynakId")
+    @Query("SELECT * FROM GOREVLER where kaynakId = :kaynakId order by taskId desc")
     List<Gorevler> getGorevAllForKaynakId(Long kaynakId);
 
     @Query("SELECT * FROM GOREVLER where siparisDurumu in (:siparisDurumu)")
@@ -22,13 +22,13 @@ public interface GorevlerDao {
 
     @Query("SELECT g.* FROM GOREVLER g JOIN MUSTERI m ON g.musteriId = m.id  where  kaynakId = :kaynakId and " +
             "(m.musteriAdi LIKE :parameter || '%' or m.bolge LIKE  :parameter || '%' or m.telefonNumarasi LIKE '%' ||" +
-            " :parameter || '%')  and (siparisTarihi > :siparisTarihi) and (siparisDurumu in (:siparisDurumu)) order by siparisTarihi desc")
+            " :parameter || '%')  and (siparisTarihi > :siparisTarihi) and (siparisDurumu in (:siparisDurumu)) order by taskId desc")
     List<Gorevler> getQueryIleriTarihTeslimAlmaTarihi(String parameter,List<String> siparisDurumu, String siparisTarihi,Long kaynakId);
 
 
     @Query("SELECT g.* FROM GOREVLER g JOIN MUSTERI m ON g.musteriId = m.id  where  kaynakId = :kaynakId and " +
             "(m.musteriAdi LIKE :parameter || '%' or m.bolge LIKE  :parameter || '%' or m.telefonNumarasi LIKE '%' ||" +
-            " :parameter || '%') and ((siparisTarihi <= :siparisTarihi) ) and (siparisDurumu in (:siparisDurumu))  order by siparisTarihi desc ")
+            " :parameter || '%') and ((siparisTarihi <= :siparisTarihi) ) and (siparisDurumu in (:siparisDurumu))  order by taskId desc ")
     List<Gorevler> getGorevQueryPrameterTeslimAlmaTarihi(String parameter,List<String> siparisDurumu, String siparisTarihi, Long kaynakId);
 
 

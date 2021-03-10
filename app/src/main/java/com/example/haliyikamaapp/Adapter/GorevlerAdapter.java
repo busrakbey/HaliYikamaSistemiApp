@@ -312,7 +312,7 @@ public class GorevlerAdapter extends RecyclerView.Adapter<GorevlerAdapter.MyView
                         List<Musteri> musteriList = null;
                         musteriList = db.musteriDao().getMusteriForId(data.get(position).getMusteriId());
 
-                        String url = "https://api.whatsapp.com/send?phone=+9" + musteriList.get(0).getTelefonNumarasi() + "&text=Merhabalar! ...";
+                        String url = "https://api.whatsapp.com/send?phone=+90" + musteriList.get(0).getTelefonNumarasi() + "&text=Merhabalar! ...";
                         try {
                             PackageManager pm = mContext.getApplicationContext().getPackageManager();
                             pm.getPackageInfo("com.whatsapp", PackageManager.GET_ACTIVITIES);

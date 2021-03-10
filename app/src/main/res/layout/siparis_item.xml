@@ -18,6 +18,40 @@
         android:orientation="horizontal">
 
         <LinearLayout
+            android:id="@+id/gorev_siparis_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="0.2"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tarih"
+                android:textColor="@color/grey"
+                android:textSize="@dimen/text_size_small"
+                android:visibility="gone" />
+
+
+            <TextView
+                android:id="@+id/siparis_no_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_weight="0.5"
+                android:background="@color/orange2"
+                android:gravity="center"
+                android:text="Merkez Şubesi"
+                android:textColor="@color/beyaz"
+                android:textSize="@dimen/text_size_medium"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/gorev_siparis_layout2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"

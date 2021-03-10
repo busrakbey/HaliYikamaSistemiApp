@@ -101,7 +101,7 @@ public class SiparisFragment extends Fragment {
             try {
                 if (item.getMusteriId() == null) {
                     Musteri musteri = db.musteriDao().getMusteriForMid(item.getMusteriMid()).get(0);
-                    db.siparisDao().updateSiparisId(item.getMid(), musteri.getId());
+                    db.siparisDao().updateSiparisMusteriId(item.getMid(), musteri.getId());
                     item.setMusteriId(musteri.getId());
                 }
                 item.setMustId(null);
@@ -130,7 +130,7 @@ public class SiparisFragment extends Fragment {
             siparisler = db.siparisDao().getSiparisForSiparisId(Long.valueOf(gelenSiparisId));
         } else
             siparisler = db.siparisDao().getSiparisAll();
-        siparisAdapter = new SiparisAdapter(getContext(), siparisler);
+        siparisAdapter = new SiparisAdapter(getContext(), siparisler,false);
         siparisAdapter.notifyDataSetChanged();
 
         recyclerView.setHasFixedSize(true);

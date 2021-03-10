@@ -12,6 +12,11 @@ android {
         multiDexEnabled true
     }
 
+    dexOptions {
+        incremental true
+        javaMaxHeapSize "4g"
+    }
+
     packagingOptions {
         //exclude 'META-INF/services/javax.annotation.processing.Processor'
         exclude 'META-INF/DEPENDENCIES'
@@ -74,17 +79,7 @@ dependencies {
     implementation 'org.honorato.multistatetogglebutton:multistatetogglebutton:0.2.2'
     implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
 
-
     implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
-
-
-
-
-
-
-
-
-
 
 
 
