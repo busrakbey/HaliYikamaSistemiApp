@@ -70,7 +70,7 @@ import com.example.haliyikamaapp.Model.Entity.UserPermissions;
         S_IL.class, S_ILCE.class, Bolge.class, User.class,
         Permissions.class, SubPermissions.class, S_User.class,
         UserPermissions.class, Sms.class, Hesap.class, Kaynak.class} ,
-        version = 1, exportSchema = false)
+        version = 2, exportSchema = false)
 public abstract class HaliYikamaDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "SATIS_OTOMASYON_DB";
 

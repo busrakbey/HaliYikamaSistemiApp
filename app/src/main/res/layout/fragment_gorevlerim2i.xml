@@ -105,6 +105,17 @@
             android:textColor="@color/colorPrimary" />
 
 
+        <ImageView
+            android:id="@+id/barcode_scanner"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:background="@drawable/barcode"
+            android:minHeight="34dp"
+            android:textColor="@color/colorPrimary"
+            android:visibility="gone" />
+
+
     </RadioGroup>
 
 

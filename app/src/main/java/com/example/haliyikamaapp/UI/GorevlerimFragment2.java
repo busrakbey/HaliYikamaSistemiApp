@@ -72,6 +72,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -90,7 +92,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 
 public class GorevlerimFragment2 extends Fragment {
     ProgressDialog progressDoalog, pd;
@@ -117,13 +118,14 @@ public class GorevlerimFragment2 extends Fragment {
     Snackbar snackbar;
     int position;
     Long seciliKaynakId = null;
+    ImageView barcode_scanner;
+    Long okunanSiparisId = null;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_gorevlerim2i, container, false);
-
 
     }
 
@@ -137,9 +139,6 @@ public class GorevlerimFragment2 extends Fragment {
             for (Kaynak item : kaynakList)
                 if (item.getSecilenKaynakMi() != null && item.getSecilenKaynakMi() == true)
                     seciliKaynakId = item.getId();
-
-
-            //   getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -152,8 +151,6 @@ public class GorevlerimFragment2 extends Fragment {
         pd.show();
         ((MainActivity) getContext()).getMusteriListFromService();
         siparis_islemleri();
-        //  getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
-
         get_list(null, "", seciliKaynakId);
 
         new Handler().postDelayed(new Runnable() {
@@ -164,14 +161,13 @@ public class GorevlerimFragment2 extends Fragment {
                 pd.dismiss();
 
             }
-        }, 3000);
+        }, 4000);
 
 
     }
 
     void siparis_islemleri() {
 
-        getSiparisListFromService();
 
         for (Siparis item : db.siparisDao().getSiparisAll()) {
             if (item.getMusteriId() == null && db.musteriDao().getMusteriForMid(item.getMusteriMid()).size() > 0) {
@@ -184,6 +180,7 @@ public class GorevlerimFragment2 extends Fragment {
             item.setMusteriMid(null);
             postSiparisListFromService(item, item.getMid());
         }
+        getSiparisListFromService();
 
 
         try {
@@ -193,9 +190,23 @@ public class GorevlerimFragment2 extends Fragment {
         }
 
 
-
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (scanningResult != null) {
+            String scanContent = scanningResult.getContents();
+            okunanSiparisId = Long.valueOf(scanningResult.getContents());
+
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://34.91.29.223/siparisiniz/" + okunanSiparisId));
+            startActivity(browserIntent);
+        } else
+            Toast.makeText(getContext(), "Sipariş bulunamamıştır.", Toast.LENGTH_SHORT).show();
+
+
+    }
 
     void init_item(View view) {
         refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
@@ -214,6 +225,16 @@ public class GorevlerimFragment2 extends Fragment {
         tarihRadioGrup = (RadioGroup) view.findViewById(R.id.tarih_radio_group);
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_to_refresh_layout);
+        barcode_scanner = (ImageView) view.findViewById(R.id.barcode_scanner);
+
+        barcode_scanner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                IntentIntegrator scanIntegrator = new IntentIntegrator(mActivity);
+                scanIntegrator.initiateScan();
+            }
+        });
 
 
         RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
@@ -244,7 +265,6 @@ public class GorevlerimFragment2 extends Fragment {
                 try {
                     ((MainActivity) getContext()).getMusteriListFromService();
                     siparis_islemleri();
-                    get_list(durumList, searchviewText, seciliKaynakId);
                     swipeRefreshLayout.setRefreshing(false);
 
                 } catch (Exception e) {
@@ -421,14 +441,14 @@ public class GorevlerimFragment2 extends Fragment {
                                             List<Siparis> siparisList = db.siparisDao().getSiparisForSiparisId(gorevlerList.get(0).getSiparisId());
                                             if (siparisList.size() > 0) {
                                                 siparisDetayList = db.siparisDetayDao().getSiparisDetayForSiparisId(siparisList.get(0).getId());
-                                                if (siparisDetayList.size() == 0)
+                                                if (siparisDetayList.size() > 0) {
+
+                                                } else
                                                     siparisDetayList = db.siparisDetayDao().getSiparisDetayForSiparisMid(siparisList.get(0).getMid());
                                             }
 
                                             if (siparisDetayList == null || siparisDetayList.size() == 0) {
                                                 MessageBox.showAlert(getContext(), "Görevi tamamlamak için ürün eklemeniz lazım.", false);
-
-
                                                 Intent i = new Intent(mContext, SiparisDetayActivity.class);
                                                 // i.putExtra("gelenPage", "sipariş");
                                                 i.putExtra("siparisId", String.valueOf(gorevlerAdapter.getData().get(position).getSiparisId()));
@@ -437,13 +457,8 @@ public class GorevlerimFragment2 extends Fragment {
                                                 i.putExtra("siparisMid", siparisList != null ? siparisList.get(0).getMid().toString() : null);
                                                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                                 mContext.getApplicationContext().startActivity(i);
-
-
                                                 return;
-
-
                                             } else
-
                                                 alert_dialog_gorev_tamamla("TeslimAl", gorevlerAdapter.getData().get(position).getTaskId());
 
                                         }
@@ -478,20 +493,24 @@ public class GorevlerimFragment2 extends Fragment {
 
         if (searchViewText == null)
             searchViewText = "";
-
         if ((siparisDurumu != null && siparisDurumu.size() > 0) || (searchViewText != null && !searchViewText.equalsIgnoreCase("")))
-            if (tarihBugundeMi)
+
+            gorevlerList = db.gorevlerDao().getquery(searchViewText, siparisDurumu, seciliKaynakId);
+
+           /* if (tarihBugundeMi)
                 gorevlerList = db.gorevlerDao().getQueryIleriTarihTeslimAlmaTarihi(searchViewText, siparisDurumu, dateFiltre, seciliKaynakId);
             else
-                gorevlerList = db.gorevlerDao().getGorevQueryPrameterTeslimAlmaTarihi(searchViewText, siparisDurumu, dateFiltre, seciliKaynakId);
+                gorevlerList = db.gorevlerDao().getGorevQueryPrameterTeslimAlmaTarihi(searchViewText, siparisDurumu, dateFiltre, seciliKaynakId);*/
 
         else
+            //  gorevlerList = db.gorevlerDao().getQueryIleriTarihTeslimAlmaTarihi(searchViewText, siparisDurumu, dateFiltre, seciliKaynakId);
             gorevlerList = db.gorevlerDao().getGorevAllForKaynakId(seciliKaynakId);
         gorevlerAdapter = new GorevlerAdapter(getContext(), gorevlerList);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         gorevlerAdapter.notifyDataSetChanged();
         recyclerView.setAdapter(gorevlerAdapter);
+        gorevlerAdapter.notifyDataSetChanged();
 
 
     }
@@ -549,9 +568,6 @@ public class GorevlerimFragment2 extends Fragment {
                             JSONArray rowArray = new JSONArray(gelenObject.getString("rows"));
                             for (int i = 0; i < rowArray.length(); i++) {
                                 JSONObject rowObject = new JSONObject(rowArray.getString(i));
-                            /*   JSONObject processVariablesObject = new JSONObject(rowObject.getString("processVariables"));
-                                rowObject.put("siparisId", processVariablesObject.get("siparisId"));
-                                rowObject.put("musteriId", processVariablesObject.get("musteriId"));*/
                                 List<Gorevler> gorevlerList = Arrays.asList(gson.fromJson(rowObject.toString(), Gorevler.class));
                                 for (Gorevler item : allGorevList) {
                                     if (item.getTaskId() != null && item.getTaskId().toString().equalsIgnoreCase(rowObject.getString("taskId"))) {
@@ -564,20 +580,10 @@ public class GorevlerimFragment2 extends Fragment {
                                     else {
                                         item.setMid(item.getMid());
                                         db.gorevlerDao().updateGorev(item);
-
                                     }
                                 }
                                 if (allGorevList != null && allGorevList.size() == 0)
                                     db.gorevlerDao().setGorevList(gorevlerList);
-
-                              /*  JSONObject musteriObject = new JSONObject(processVariablesObject.getString("musteri"));
-                                List<Musteri> gelenMusteriList = Arrays.asList(gson.fromJson(musteriObject.toString(), Musteri.class));
-
-                                JSONObject siparisObject = new JSONObject(processVariablesObject.getString("siparis"));
-                                List<Siparis> gelenSiparisList = Arrays.asList(gson.fromJson(siparisObject.toString(), Siparis.class));*/
-
-
-                                // get_list(null, null, null);
                                 gorevlerAdapter.notifyDataSetChanged();
 
                             }
@@ -593,8 +599,8 @@ public class GorevlerimFragment2 extends Fragment {
                         mActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-
                                 get_list(durumList, searchviewText, seciliKaynakId);
+
                                 List<Gorevler> totalGorevList = db.gorevlerDao().getGorevAll();
                                 for (Gorevler item : totalGorevList) {
                                     try {
@@ -612,6 +618,8 @@ public class GorevlerimFragment2 extends Fragment {
                     } /*else
                         MessageBox.showAlert(getContext(), "Kayıt bulunamamıştır..", false);*/
                 }
+                get_list(durumList, "", seciliKaynakId);
+
             }
 
             @Override
@@ -992,11 +1000,6 @@ public class GorevlerimFragment2 extends Fragment {
 
                 }
 
-                try {
-                    getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
 
             }
 
@@ -1024,8 +1027,7 @@ public class GorevlerimFragment2 extends Fragment {
             @Override
             public void onResponse(Call<Siparis> call, Response<Siparis> response) {
                 if (!response.isSuccessful()) {
-                    //progressDoalog.dismiss();
-                    // MessageBox.showAlert(mActivity, "Servisle bağlantı sırasında hata oluştu...", false);
+                    progressDoalog.dismiss();
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -1041,7 +1043,7 @@ public class GorevlerimFragment2 extends Fragment {
                                 List<SiparisDetay> senkronEdilecekler = new ArrayList<>();
 
                                 for (SiparisDetay item : siparisdetayList) {
-                                    if (item.getSenkronEdildi() == null || item.getSenkronEdildi() == false)
+                                    if (/*item.getSenkronEdildi() == null || item.getSenkronEdildi() == false  || */item.getId() == null)
                                         senkronEdilecekler.add(item);
                                 }
 
@@ -1052,7 +1054,7 @@ public class GorevlerimFragment2 extends Fragment {
 
                                 } else {
 
-                                    if (gelenSiparis.processInstanceId == null ) {
+                                    if (gelenSiparis.processInstanceId == null) {
                                         postSiparisSureciBaslatService(gelenSiparis);
                                     }
 
@@ -1070,7 +1072,6 @@ public class GorevlerimFragment2 extends Fragment {
             @Override
             public void onFailure(Call<Siparis> call, Throwable t) {
                 progressDoalog.dismiss();
-                //  MessageBox.showAlert(mActivity, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
     }
@@ -1114,7 +1115,7 @@ public class GorevlerimFragment2 extends Fragment {
             datas.add(object);
         }
 
-        progressDoalog.show();
+
         Call<String> call = refrofitRestApi.postSiparisDetay(OrtakFunction.authorization, OrtakFunction.tenantId, datas.toString());
 
         call.enqueue(new Callback<String>() {
@@ -1122,11 +1123,11 @@ public class GorevlerimFragment2 extends Fragment {
             public void onResponse(Call<String> call, Response<String> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
+
                     // MessageBox.showAlert(mActivity, "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
-                    progressDoalog.dismiss();
                     gelenSiparisDetayList = response.body();
                     if (gelenSiparisDetayList != null) {
 
@@ -1145,11 +1146,13 @@ public class GorevlerimFragment2 extends Fragment {
                                             //MessageBox.showAlert(mActivity, "Servisle bağlantı sırasında hata oluştu...", false);
                                             return;
                                         }
-                                        if (response.isSuccessful()) {
-                                            progressDoalog.dismiss();
-                                            db.siparisDetayDao().updateSiparisDetayQuery(gelenSiparis.get(0).getMid(), true);
 
+
+                                        for(SiparisDetay item :response.body()){
+                                            db.siparisDetayDao().updateSiparisDetay(gelenSiparis.get(0).getMid(), item.getId() ,  true);
                                         }
+
+                                        progressDoalog.dismiss();
                                     }
 
                                     @Override
@@ -1195,7 +1198,6 @@ public class GorevlerimFragment2 extends Fragment {
         object.addProperty("siparisId", item.getId());
 
 
-        progressDoalog.show();
         Call<String> call = refrofitRestApi.startSiparisSureci(OrtakFunction.authorization, OrtakFunction.tenantId, object.toString());
 
         call.enqueue(new Callback<String>() {
@@ -1203,6 +1205,7 @@ public class GorevlerimFragment2 extends Fragment {
             public void onResponse(Call<String> call, Response<String> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
+
                     // MessageBox.showAlert(mActivity, "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
                 }
@@ -1213,25 +1216,14 @@ public class GorevlerimFragment2 extends Fragment {
                         JSONObject gelenObject = null;
                         try {
                             gelenObject = new JSONObject(gelenProcessId);
-                            /*if (item.getTeslimAlinacak() != null && item.getTeslimAlinacak() == true)
-                                db.siparisDao().updateSiparisProcessId(Long.valueOf(gelenObject.getString("processInstanceId")), item.getId(), "Teslim Alınacak");
-                            if (item.getTeslimAlinacak() == null || item.getTeslimAlinacak() == false)
-                                db.siparisDao().updateSiparisProcessId(Long.valueOf(gelenObject.getString("processInstanceId")), item.getId(), "Yıkamada");*/
+                            db.siparisDao().updateSiparisProcessId(Long.valueOf(gelenObject.getString("processInstanceId")), item.getId());
+                            get_list(null, "", seciliKaynakId);
 
-                            //  MessageBox.showAlert(mActivity, "Sipariş süreci başarılı bir şekilde başlatılmıştır.", false);
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
-                     /*   try {
-                            getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }*/
-
-
-                    } /*else
-                        MessageBox.showAlert(mActivity, "Kayıt bulunamamıştır..", false);*/
+                    }
                 }
 
 
@@ -1317,8 +1309,6 @@ public class GorevlerimFragment2 extends Fragment {
                                                             } else
                                                                 db.siparisDetayDao().setSiparisDetay(i);
                                                         }
-
-
                                                     }
                                                 });
 
@@ -1339,12 +1329,9 @@ public class GorevlerimFragment2 extends Fragment {
 
                             }
                         });
-
-
                     } /*else
-                        MessageBox.showAlert(mActivity, "Kayıt bulunamamıştır..", false);*/
+                       MessageBox.showAlert(mActivity, "Kayıt bulunamamıştır..", false);*/
                 }
-
             }
 
             @Override
@@ -1353,8 +1340,6 @@ public class GorevlerimFragment2 extends Fragment {
                 // MessageBox.showAlert(mActivity, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
-
-
     }
 
 

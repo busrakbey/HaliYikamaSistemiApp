@@ -97,6 +97,11 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
     ImageView konum_button;
     GPSTracker mGPS;
     double latitude  ,longitude; // latitude
+    LinearLayout layout_musteri_islemleri;
+    ProgressDialog progressDoalog;
+    RefrofitRestApi refrofitRestApi;
+
+
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -162,6 +167,7 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
         il_spinner = (Spinner) findViewById(R.id.il);
         ilce_spinner = (Spinner) findViewById(R.id.ilce);
         konum_button = (ImageView) findViewById(R.id.musteri_konum_button);
+        layout_musteri_islemleri = (LinearLayout)findViewById(R.id.layout_musteri_islemleri);
         mGPS = new GPSTracker(this);
 
         konum_button.setOnClickListener(new View.OnClickListener() {
@@ -286,8 +292,8 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
                         public void run() {
 
                             if (gelenMusteriMid == null && Integer.valueOf(String.valueOf(finalMusteriMid)) > 0) {
-                                MessageBox.showAlert(MusteriKayitActivity.this, "Kayıt Başarılı.\n", false);
-                                finish();
+                                postMusteriListFromService(musteri);
+
                             }
                             if (gelenMusteriMid != null && finalMusteriMid == 1) {
                                 MessageBox.showAlert(MusteriKayitActivity.this, "Güncelleme Başarılı.\n", false);
@@ -503,9 +509,12 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
         });
 
         musteriTuruStringList.add("Müşteri Türü");
-        for (MusteriTuru item : db.musteriTuruDao().getMusteriAll()) {
-            musteriTuruStringList.add(item.getMusteriTuru());
-        }
+        musteriTuruStringList.add("Şahıs");
+        musteriTuruStringList.add("Firma");
+      /*  for (MusteriTuru item : db.musteriTuruDao().getMusteriAll()) {
+            musteriTuruStringList.add("Şahıs");
+            musteriTuruStringList.add("Firma");
+        }*/
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, musteriTuruStringList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -563,8 +572,12 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
 
         gelenMusteriMid = getIntent().getStringExtra("musteriMid");
         gelenMusteriId = getIntent().getStringExtra("musteriId");
-        if (gelenMusteriMid != null)
+        if (gelenMusteriMid != null) {
+            layout_musteri_islemleri.setVisibility(View.VISIBLE);
             getEditMode(Long.valueOf(gelenMusteriMid));
+        }else
+            layout_musteri_islemleri.setVisibility(View.GONE);
+
         if (gelenMusteriMid != null && gelenMusteriMid.equalsIgnoreCase("null"))
             gelenMusteriMid = null;
 
@@ -684,6 +697,70 @@ public class MusteriKayitActivity extends AppCompatActivity implements Expandabl
 
 
 
+
+
+    Musteri gelenMusteri;
+
+    public void postMusteriListFromService(final Musteri musteri) {
+        progressDoalog = new ProgressDialog(MusteriKayitActivity.this);
+        progressDoalog.setMessage("Lütfen bekleyiniz..");
+        progressDoalog.setTitle("SİSTEM");
+        progressDoalog.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
+        progressDoalog.show();
+        refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
+
+        Call<Musteri> call;
+        final Long musteriMid = musteri.getMid();
+        musteri.setMid(null);
+        musteri.setMusteriSoyadi("  ");
+        musteri.setxKoor(null);
+        musteri.setyKoor(null);
+        musteri.setSubeMid(null);
+        if (musteri.getId() != null)
+            call = refrofitRestApi.putMusteriList("hy/musteri/" + musteri.getId().toString(), OrtakFunction.authorization, OrtakFunction.tenantId, musteri);
+        else
+            call = refrofitRestApi.postMusteriList(OrtakFunction.authorization, OrtakFunction.tenantId, musteri);
+
+        call.enqueue(new Callback<Musteri>() {
+            @Override
+            public void onResponse(Call<Musteri> call, Response<Musteri> response) {
+                if (!response.isSuccessful()) {
+                    progressDoalog.dismiss();
+                    return;
+                }
+                if (response.isSuccessful()) {
+                    gelenMusteri = response.body();
+                    if (gelenMusteri != null) {
+                        MusteriKayitActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                db.musteriDao().updateMusteriQuery(musteriMid, gelenMusteri.getId(), true);
+                                progressDoalog.dismiss();
+
+                                MessageBox.showAlert(MusteriKayitActivity.this, "Kayıt Başarılı.\n", false);
+                                Intent activity = new Intent(MusteriKayitActivity.this, MusteriKayitActivity.class);
+                                activity.putExtra("musteriMid", String.valueOf(musteriMid));
+                                activity.putExtra("musteriId", String.valueOf(gelenMusteri.getId()));
+                                activity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(activity);
+
+
+                            }
+                        });
+
+
+                    } else
+                        MessageBox.showAlert(MusteriKayitActivity.this, "Kayıt bulunamamıştır..", false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Musteri> call, Throwable t) {
+                progressDoalog.dismiss();
+                MessageBox.showAlert(MusteriKayitActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+            }
+        });
+    }
 
 
 

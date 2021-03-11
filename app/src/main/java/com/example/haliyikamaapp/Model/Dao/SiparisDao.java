@@ -36,8 +36,8 @@ public interface SiparisDao {
     @Query("UPDATE SIPARIS SET id = :id, senkronEdildi = :senkronEdildi WHERE mid = :mid")
    int updateSiparisQuery(Long mid, Long id, Boolean senkronEdildi);
 
-    @Query("UPDATE SIPARIS SET processInstanceId = :processInstanceId, siparisDurumu = :siparisDurumu WHERE id = :id")
-    int updateSiparisProcessId(Long processInstanceId, Long id, String siparisDurumu);
+    @Query("UPDATE SIPARIS SET processInstanceId = :processInstanceId WHERE id = :id")
+    int updateSiparisProcessId(Long processInstanceId, Long id);
 
     @Query("DELETE FROM SIPARIS where mid = :mid")
     int deletedSiparisForMid(Long mid );

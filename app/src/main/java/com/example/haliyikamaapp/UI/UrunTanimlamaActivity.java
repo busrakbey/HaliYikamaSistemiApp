@@ -243,6 +243,8 @@ public class UrunTanimlamaActivity extends AppCompatActivity {
 
             }
         } catch (Exception e) {
+           if( progressDoalog.isShowing())
+               progressDoalog.dismiss();
             e.printStackTrace();
         }
 

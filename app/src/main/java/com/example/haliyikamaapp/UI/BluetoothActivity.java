@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -56,14 +57,14 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
     protected static final String TAG = "TAG";
     private static final int REQUEST_CONNECT_DEVICE = 1;
     private static final int REQUEST_ENABLE_BT = 2;
-    Button mScan, mPrint, mDisc;
+    Button mScan, mPrint, mDisc, barkod_siparis_takip;
     BluetoothAdapter mBluetoothAdapter;
     private UUID applicationUUID = UUID
             .fromString("00001101-0000-1000-8000-00805F9B34FB");
     private ProgressDialog mBluetoothConnectProgressDialog;
     private BluetoothSocket mBluetoothSocket;
     BluetoothDevice mBluetoothDevice;
-    String gelenSiparisId, gelenSiparisMid, gelenSubeAdi;
+    String gelenSiparisId="0", gelenSiparisMid, gelenSubeAdi;
     String mDeviceAddress = "02:3C:6E:1A:2F:7F";
 
     @Override
@@ -134,6 +135,19 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
             public void onClick(View mView) {
                 if (mBluetoothAdapter != null)
                     mBluetoothAdapter.disable();
+            }
+        });
+
+        barkod_siparis_takip = (Button) findViewById(R.id.barkod_siparis_takip);
+        barkod_siparis_takip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(gelenSiparisId != null) {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://34.91.29.223/siparisiniz/" + gelenSiparisId));
+                    startActivity(browserIntent);
+                }else
+                    Toast.makeText(BluetoothActivity.this, "Sipariş bulunamamıştır.", Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -260,11 +274,11 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
         return buffer.array();
     }
 
-    public byte[] createBarkocImage(Long siparisId) {
+    public byte[] createBarkocImage(String siparisId) {
 
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         try {
-            BitMatrix bitMatrix = multiFormatWriter.encode(siparisId.toString(), BarcodeFormat.QR_CODE, 200, 200);
+            BitMatrix bitMatrix = multiFormatWriter.encode(siparisId, BarcodeFormat.QR_CODE, 200, 200);
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
             // imageView.setImageBitmap(bitmap);
@@ -316,7 +330,7 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
                 os.write((" " + trEngCevir(subeAdi).toUpperCase() + " HALI YIKAMA " + "\n").getBytes());
 
 
-                os.write(createBarkocImage(Long.valueOf(gelenSiparisId)));
+                os.write(createBarkocImage("http://34.91.29.223/siparisiniz/" + gelenSiparisId));
 
                 // os.write(new byte[]{0x1b, 'a', 0x01});
                 change[2] = (byte) (0x3); //small

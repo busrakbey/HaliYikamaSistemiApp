@@ -56,6 +56,9 @@ public interface SiparisDetayDao {
     @Query("UPDATE SIPARIS_DETAY SET senkronEdildi = :senkronEdildi WHERE siparisMid = :siparisMid")
     int updateSiparisDetayQuery(Long siparisMid, Boolean senkronEdildi);
 
+    @Query("UPDATE SIPARIS_DETAY SET senkronEdildi = :senkronEdildi, id = :id WHERE siparisMid = :siparisMid")
+    int updateSiparisDetay(Long siparisMid, Long id,  Boolean senkronEdildi);
+
     @Query("UPDATE SIPARIS_DETAY SET siparisId = :siparisId WHERE mustId = :siparisMid")
     int updateSiparisId(Long siparisMid, Long siparisId);
 

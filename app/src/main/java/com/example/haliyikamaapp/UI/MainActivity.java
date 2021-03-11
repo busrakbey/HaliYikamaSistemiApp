@@ -68,6 +68,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.Twilio;
 import com.twilio.type.PhoneNumber;
@@ -112,6 +114,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     RefrofitRestApi refrofitRestApi;
     ProgressDialog progressDoalog, pd;
     MusteriAdapter adapter;
+    Long okunanSiparisId = null;
+
 
 
     @SuppressLint("RestrictedApi")
@@ -177,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     pd.dismiss();
 
                 }
-            }, 11000);
+            }, 12000);
 
         }
 
@@ -189,6 +193,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         getUrunListFromService();
       //  siparis_islemleri();
         getKaynakListFromService();
+        getSiparisListFromService();
+        //getIlAndIlceFromService();
 
       /*  try {
             getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
@@ -749,7 +755,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                                     return;
                                                 }
                                                 if (response.isSuccessful()) {
-                                                    // progressDoalog.dismiss();
+                                                     progressDoalog.dismiss();
                                                     List<MusteriTuru> kayitOlunacakMusteriList = null;
                                                     gelenMusteriTuruList = response.body();
                                                     if (gelenMusteriTuruList != null && gelenMusteriTuruList.size() > 0) {
@@ -802,7 +808,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
                     } /*else
                         MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);*/
-                    getIlAndIlceFromService();
+
                 }
             }
 
@@ -848,10 +854,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                         JSONObject gelenObject = null;
                         try {
                             gelenObject = new JSONObject(gelenProcessId);
-                            if (item.getTeslimAlinacak() != null && item.getTeslimAlinacak() == true)
-                                db.siparisDao().updateSiparisProcessId(Long.valueOf(gelenObject.getString("processInstanceId")), item.getId(), "Teslim Alınacak");
-                            if (item.getTeslimAlinacak() == null || item.getTeslimAlinacak() == false)
-                                db.siparisDao().updateSiparisProcessId(Long.valueOf(gelenObject.getString("processInstanceId")), item.getId(), "Yıkamada");
+                            db.siparisDao().updateSiparisProcessId(Long.valueOf(gelenObject.getString("processInstanceId")), item.getId());
 
                             //  MessageBox.showAlert(MainActivity.this, "Sipariş süreci başarılı bir şekilde başlatılmıştır.", false);
                         } catch (JSONException e) {
@@ -1070,6 +1073,20 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                // MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
+
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (scanningResult != null) {
+            String scanContent = scanningResult.getContents();
+            okunanSiparisId = Long.valueOf(scanningResult.getContents());
+
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://34.91.29.223/siparisiniz/" + okunanSiparisId));
+            startActivity(browserIntent);
+        }
+
 
     }
 

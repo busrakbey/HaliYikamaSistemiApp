@@ -41,6 +41,8 @@ import com.example.haliyikamaapp.Adapter.MyDateTypeAdapter;
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Dao.AuthTokenDao;
 import com.example.haliyikamaapp.Model.Entity.AuthToken;
+import com.example.haliyikamaapp.Model.Entity.S_User;
+import com.example.haliyikamaapp.Model.Entity.User;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
 import com.example.haliyikamaapp.UI.LoginActivity;
 import com.example.haliyikamaapp.UI.MainActivity;
@@ -69,6 +71,10 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -79,16 +85,23 @@ import static androidx.core.content.PermissionChecker.checkSelfPermission;
 
 public class OrtakFunction {
     public static List<AuthToken> tokenList = null;
+    public static List<User> userList = null;
     public static String serviceUrl = "http://35.204.214.240:80/haliBackend/";
     public static HaliYikamaDatabase db = null;
     public static String authorization = null;
-    public static String tenantId = "test";
+    public static String tenantId = null;
 
     public static void tokenControl(Context context) {
         db = HaliYikamaDatabase.getInstance(context);
         tokenList = db.authToken().getAuthTokenAll();
         if (tokenList.size() > 0)
             authorization = "Bearer " + tokenList.get(0).getAccess_token();
+
+        userList = db.userDao().getUserAll();
+        if(userList.size() > 0)
+            tenantId = userList.get(0).getTenantId();
+
+
     }
 
     public static TelephonyManager tm;
@@ -203,7 +216,7 @@ public class OrtakFunction {
                 headers.put("Accept", "application/json");
                 headers.put("Content-Type", "application/x-www-form-urlencoded");
                 headers.put("tenant-id", tenantId);
-              headers.put("Connection", "keep-alive");
+             // headers.put("Connection", "keep-alive");
                 headers.put("Authorization", "Basic " + base64);
 
 
@@ -245,12 +258,28 @@ public class OrtakFunction {
 
         };
        // request.setRetryPolicy(new DefaultRetryPolicy(1000, 2, 1));
-            int socketTimeout = 5000;                                  // 5 seconds. You can change it
+        /*    int socketTimeout = 6000;                                  // 5 seconds. You can change it
             RetryPolicy policy = new DefaultRetryPolicy(socketTimeout,
-                    2,
+                    3,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-       // request.setRetryPolicy(policy);
+        request.setRetryPolicy(policy);*/
 
+        request.setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 50000;
+            }
+
+            @Override
+            public int getCurrentRetryCount() {
+                return 50000;
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+
+            }
+        });
         mQueue.add(request);
         dialog.show();
 
@@ -318,7 +347,6 @@ public class OrtakFunction {
 
 
 
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create(gson))
@@ -331,6 +359,9 @@ public class OrtakFunction {
         return refrofitRestApi;
 
     }
+
+
+
 
     public static RefrofitRestApi refrofitRestApiForScalar() {
         String url = OrtakFunction.serviceUrl;

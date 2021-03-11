@@ -205,7 +205,7 @@ public class LoginActivity extends AppCompatActivity {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setDateFormat("M/d/yy hh:mm a");
         final Gson gson = gsonBuilder.create();
-        Call<String> call = refrofitRestApi.getCurrentUserList(OrtakFunction.authorization, OrtakFunction.tenantId, "application/json");
+        Call<String> call = refrofitRestApi.getCurrentUserList(OrtakFunction.authorization, tenantId, "application/json");
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {

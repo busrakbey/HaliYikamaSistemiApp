@@ -21,9 +21,17 @@
         android:text="YAZDIR"></Button>
 
     <Button
+        android:id="@+id/barkod_siparis_takip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="SİPARİŞ TAKİBİ"></Button>
+
+    <Button
         android:id="@+id/dis"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="BLUETOOTH KAPAT"></Button>
+
 </LinearLayout>
