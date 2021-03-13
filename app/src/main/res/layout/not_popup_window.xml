@@ -114,6 +114,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:hint="Tahsilat Tutarı(*)"
+                android:inputType="numberDecimal"
                 android:textColor="@color/text"
                 android:textSize="@dimen/mr_dialog_title_text" />
 

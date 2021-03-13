@@ -71,6 +71,7 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
     LinearLayout siparisUrunEklemeLinear;
 
 
+
     @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +136,7 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
         siparisDetayMid = intent.getStringExtra("siparisDetayMid");
         subeId = intent.getStringExtra("subeId");
         subeMid = intent.getStringExtra("subeMid");
+
 
 
         if (siparisMid != null && siparisMid.equalsIgnoreCase("null"))
@@ -331,15 +333,17 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
                                     MessageBox.showAlert(SiparisDetayKayitActivity.this, "Kayıt Başarılı..\n", false);
                                     Intent i = new Intent(SiparisDetayKayitActivity.this, SiparisDetayActivity.class);
                                     i.putExtra("siparisMid", String.valueOf(siparisMid));
-                                    finish();
-                                    startActivity(i);
+                                   finish();
+                                    //startActivityForResult(i,1);
                                 } else {
                                     Intent i = new Intent(SiparisDetayKayitActivity.this, SiparisDetayKayitActivity.class);
                                     i.putExtra("siparisMid", siparisMid);
                                     i.putExtra("subeId", subeId);
                                     i.putExtra("subeMid", subeMid);
                                     finish();
-                                    startActivity(i);
+                                   // startActivityForResult(i,1);
+
+                                    //startActivity(i);
                                 }
 
                             }
@@ -481,8 +485,12 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
                     yeniKayitSiparisMidList = db.siparisDetayDao().setSiparisDetayList(siparisDetayListTemp);
                 Intent i = new Intent(SiparisDetayKayitActivity.this, SiparisDetayActivity.class);
                 i.putExtra("siparisMid", String.valueOf(siparisMid));
+             //   startActivityForResult(i,0);
+                setResult(RESULT_OK,i);
                 finish();
-                startActivity(i);
+
+               // finish();
+               // startActivity(i);
             }
         });
 

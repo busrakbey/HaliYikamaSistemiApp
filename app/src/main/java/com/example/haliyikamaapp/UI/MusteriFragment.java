@@ -102,6 +102,7 @@ public class MusteriFragment extends Fragment {
                 try {
                     senkronEdilmeyenKayitlariGonder();
                     getMusteriListFromService();
+                    (( MainActivity) mActivity).getServisler();
                     swipeRefreshLayout.setRefreshing(false);
 
                 } catch (Exception e) {

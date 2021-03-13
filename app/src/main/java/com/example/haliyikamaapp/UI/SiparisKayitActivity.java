@@ -2,6 +2,7 @@ package com.example.haliyikamaapp.UI;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -32,10 +33,13 @@ import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.Kaynak;
 import com.example.haliyikamaapp.Model.Entity.Musteri;
 import com.example.haliyikamaapp.Model.Entity.Siparis;
+import com.example.haliyikamaapp.Model.Entity.SiparisDetay;
 import com.example.haliyikamaapp.Model.Entity.Sms;
 import com.example.haliyikamaapp.Model.Entity.Sube;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.ToolLayer.MessageBox;
+import com.example.haliyikamaapp.ToolLayer.OrtakFunction;
+import com.example.haliyikamaapp.ToolLayer.RefrofitRestApi;
 import com.example.haliyikamaapp.ToolLayer.SharedPreferencesSettings;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.zxing.BarcodeFormat;
@@ -48,6 +52,10 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SiparisKayitActivity extends AppCompatActivity {
     Toolbar toolbar;
@@ -71,6 +79,10 @@ public class SiparisKayitActivity extends AppCompatActivity {
     ImageView siparisBarkodYazdirButton;
     EditText teslimEdilmeTarihi, teslimAlinmaTarihi;
     SharedPreferencesSettings sharedPreferencesSettings;
+    ProgressDialog progressDoalog;
+    RefrofitRestApi refrofitRestApi;
+
+
 
 
     @SuppressLint("RestrictedApi")
@@ -130,6 +142,14 @@ public class SiparisKayitActivity extends AppCompatActivity {
         teslimAlinmaTarihi = (EditText) findViewById(R.id.siparis_teslim_alinma_tarihi);
         teslimEdilmeTarihi = (EditText) findViewById(R.id.siparis_teslim_tarihi);
         sharedPreferencesSettings = new SharedPreferencesSettings();
+        refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
+
+
+        progressDoalog = new ProgressDialog(SiparisKayitActivity.this);
+        progressDoalog.setMessage("Lütfen bekleyiniz..");
+        progressDoalog.setTitle("SİSTEM");
+        progressDoalog.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
+
 
 
         Calendar calendar = Calendar.getInstance();
@@ -436,8 +456,9 @@ public class SiparisKayitActivity extends AppCompatActivity {
                                 if (tamamla) {
                                     MessageBox.showAlert(SiparisKayitActivity.this, "Sipariş oluşturuldu. \n", false);
                                     Intent i = new Intent(SiparisKayitActivity.this, MainActivity.class);
-                                    // i.putExtra("gelenPage", "gorevlerim");
                                     i.putExtra("gelenPage", "müşteri_görevlerim");
+                                    i.putExtra("siparisMid", String.valueOf(finalYeniKayitSiparisMid));
+                                    i.putExtra("siparisId", siparis.getId() != null ? String.valueOf(siparis.getId()) : null);
                                     finish();
                                     startActivity(i);
 
@@ -541,23 +562,10 @@ public class SiparisKayitActivity extends AppCompatActivity {
         return null;
     }
 
-    void otomatikSmsGonder(String siparisDurumu) {
-        List<Sms> smsList = db.smsDao().getSmsForSiparisDurumu(siparisDurumu);
-        if (smsList != null && smsList.size() > 0) {
-            try {
-                SmsManager smsManager = SmsManager.getDefault();
-                smsManager.sendTextMessage("+905543283278", null, "selammm", null, null);
-                getContentResolver().delete(Uri.parse("content://sms/outbox"), "address = ? and body = ?", new String[]{"+905543283278", smsList.get(0).getAciklama()});
 
-                Toast.makeText(getApplicationContext(), "Message Sent",
-                        Toast.LENGTH_LONG).show();
-            } catch (Exception ex) {
-                Toast.makeText(getApplicationContext(), ex.getMessage().toString(),
-                        Toast.LENGTH_LONG).show();
-                ex.printStackTrace();
-            }
-        }
-    }
+
+
+
 
 
 }

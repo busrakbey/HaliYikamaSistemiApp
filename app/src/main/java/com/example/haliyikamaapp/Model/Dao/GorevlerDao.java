@@ -68,4 +68,10 @@ public interface GorevlerDao {
     @Query("SELECT * FROM GOREVLER where siparisId = :siparisId")
     List<Gorevler> getGorevForSiparisId(Long siparisId);
 
+    @Query("DELETE FROM GOREVLER where siparisId = :siparisId")
+    int deletedGorevForSiparisId(Long siparisId);
+
+    @Query("DELETE FROM GOREVLER where taskId = :taskId")
+    int deletedGorevForTaskId(Long taskId);
+
 }

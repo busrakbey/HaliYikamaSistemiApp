@@ -32,6 +32,8 @@ public interface GorevFormBilgileriDao {
     @Query("DELETE FROM GOREV_FORM_BILGILERI where gorevId = :gorevId")
     void deletedGorevForGorevId(Long gorevId);
 
+
+
     @Query("SELECT * FROM GOREV_FORM_BILGILERI where mid = :mid")
     List<GorevFomBilgileri> getGorevForMid(Long mid);
 

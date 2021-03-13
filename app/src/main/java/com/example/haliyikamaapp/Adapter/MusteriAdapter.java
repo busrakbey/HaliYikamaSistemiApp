@@ -67,7 +67,7 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final Musteri myListData = data.get(position);
-        holder.adiSoyadi_item.setText(itemsFiltered.get(position).getMusteriAdi() + " " + (itemsFiltered.get(position).getMusteriSoyadi() != null ? itemsFiltered.get(position).getMusteriSoyadi() : null));
+        holder.adiSoyadi_item.setText(itemsFiltered.get(position).getMusteriAdi());
         holder.telefonNo_item.setText(itemsFiltered.get(position).getTelefonNumarasi());
         holder.musteri_turu_item.setText((itemsFiltered.get(position).getAdres() != null ? itemsFiltered.get(position).getAdres() : "") + " / "  + ( itemsFiltered.get(position).getBolge() != null ?  itemsFiltered.get(position).getBolge() : ""));
 

@@ -72,6 +72,10 @@ public interface RefrofitRestApi {
     @POST("hy/siparis")
     Call<Siparis> postSiparis (@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body Siparis siparis);
 
+    @Headers({"Content-Type: application/json"})
+    @PUT()
+    Call<Siparis> putSiparis (@Url String url, @Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body Siparis siparis);
+
     @POST("hy/siparis/siparisDetaylariKaydet")
     Call<String>  postSiparisDetay (@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body String siparisDetay);
 

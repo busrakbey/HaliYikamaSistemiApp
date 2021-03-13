@@ -232,6 +232,7 @@ public class KaynakActivity extends AppCompatActivity {
                                 db.kaynakDao().setkaynak(i);
 
                         }
+                        get_list();
                     }
 
                 }

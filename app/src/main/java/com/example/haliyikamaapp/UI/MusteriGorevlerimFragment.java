@@ -61,7 +61,7 @@ public class MusteriGorevlerimFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_musterigorevlerim, container, false);
 
     }
-
+/////////////////////Bu fragment artık kullanılmamaktadır. GorevlerimFragment2 kullanılıyor.
     @Override
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

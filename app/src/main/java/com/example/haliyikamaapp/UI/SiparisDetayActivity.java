@@ -1,21 +1,25 @@
 package com.example.haliyikamaapp.UI;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,6 +54,7 @@ public class SiparisDetayActivity extends AppCompatActivity {
     FloatingActionButton yeni_siparis_detay_button;
     BottomNavigationView bottomNavigationView;
     Toolbar toolbar;
+    Long gelenGorevId = null;
 
 
     @Override
@@ -85,6 +90,7 @@ public class SiparisDetayActivity extends AppCompatActivity {
         subeId = intent.getStringExtra("subeId");
         subeMid = intent.getStringExtra("subeMid");
         siparisId = intent.getStringExtra("siparisId");
+        gelenGorevId = intent.getLongExtra("gorevId", 0L);
 
 
         yeni_siparis_detay_button.setOnClickListener(new View.OnClickListener() {
@@ -94,19 +100,36 @@ public class SiparisDetayActivity extends AppCompatActivity {
                 i.putExtra("siparisMid", siparisMid);
                 i.putExtra("subeId", subeId);
                 i.putExtra("subeMid", subeMid);
-
-                finish();
-                startActivity(i);
+                startActivityForResult(i, 1);
             }
         });
     }
+
+
+    @Override
+    public void onActivityResult(int mRequestCode, int mResultCode,
+                                 Intent mDataIntent) {
+        super.onActivityResult(mRequestCode, mResultCode, mDataIntent);
+        if (mResultCode == RESULT_OK) {
+            if (mRequestCode == 1) {
+                Log.e("check", "check");
+
+                if (gelenGorevId > 0) {
+
+              finish();
+                }
+            }
+        }
+
+    }
+
 
     public void get_list() {
         final List<SiparisDetay> kisiler;
         final List<SiparisDetay> kisiler2;
 
-        if(siparisId != null && siparisMid != null && !siparisId.equalsIgnoreCase("null") && !siparisMid.equalsIgnoreCase("null") )
-            kisiler = db.siparisDetayDao().getSiparisDetayForSiparisIdSiparisMid(Long.valueOf(siparisId), Long.valueOf(siparisMid) );
+        if (siparisId != null && siparisMid != null && !siparisId.equalsIgnoreCase("null") && !siparisMid.equalsIgnoreCase("null"))
+            kisiler = db.siparisDetayDao().getSiparisDetayForSiparisIdSiparisMid(Long.valueOf(siparisId), Long.valueOf(siparisMid));
 
         else if (siparisId != null && !siparisId.equalsIgnoreCase("null"))
             kisiler = db.siparisDetayDao().getSiparisDetayForSiparisId(Long.valueOf(siparisId));

@@ -62,7 +62,9 @@ public interface SiparisDetayDao {
     @Query("UPDATE SIPARIS_DETAY SET siparisId = :siparisId WHERE mustId = :siparisMid")
     int updateSiparisId(Long siparisMid, Long siparisId);
 
-
     @Query("SELECT * FROM SIPARIS_DETAY where senkronEdildi = 0")
     List<SiparisDetay> getSenkronEdilmeyenAll();
+
+    @Query("DELETE FROM SIPARIS_DETAY where siparisId = :siparisId")
+    int deletedSiparisDetayForSiparisId(Long siparisId);
 }

@@ -19,6 +19,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -45,6 +47,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -88,6 +91,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -113,13 +119,14 @@ public class GorevlerimFragment2 extends Fragment {
     String gorevNotu = "", secilenTeslimEtDurumu = "", girilenTahsilatTutari = "", gorevTamamlamaNotu = "";
     Boolean hesapKapatCheckbox = false, teslimEdilmeTarihiMi = false;
     String tahsilEdilecekTuar = "";
-    List<SiparisDetay> siparisDetayList = null;
+    List<SiparisDetay> siparisDetayListGorevTamamlama = null;
     private SwipeRefreshLayout swipeRefreshLayout;
     Snackbar snackbar;
     int position;
     Long seciliKaynakId = null;
     ImageView barcode_scanner;
     Long okunanSiparisId = null;
+    Gorevler urunEklendiktenSonraGorev= null;
 
 
     @Nullable
@@ -144,31 +151,44 @@ public class GorevlerimFragment2 extends Fragment {
         }
 
 
-        pd = ProgressDialog.show(getContext(), "Sistem",
-                "Lütfen bekleyiniz", true);
-        pd.setCancelable(false);
-        pd.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
-        pd.show();
-        ((MainActivity) getContext()).getMusteriListFromService();
-        siparis_islemleri();
         get_list(null, "", seciliKaynakId);
 
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
+     /*   ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
+        scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
             public void run() {
 
-                pd.dismiss();
+                try {
+                    getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
             }
-        }, 4000);
+        }, 0, 10, TimeUnit.SECONDS);*/
+
+        final Handler handler = new Handler();
+        final int delay = 120000; // 1000 milliseconds == 1 second
+
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                System.out.println("myHandler: here!"); // Do your work here
+                try {
+                    getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                handler.postDelayed(this, delay);
+            }
+        }, delay);
 
 
     }
 
+
+
+
+
     void siparis_islemleri() {
-
-
         for (Siparis item : db.siparisDao().getSiparisAll()) {
             if (item.getMusteriId() == null && db.musteriDao().getMusteriForMid(item.getMusteriMid()).size() > 0) {
                 Musteri musteri = db.musteriDao().getMusteriForMid(item.getMusteriMid()).get(0);
@@ -214,7 +234,7 @@ public class GorevlerimFragment2 extends Fragment {
         pd = new ProgressDialog(getContext());
 
         progressDoalog.setMessage("Lütfen bekleyiniz..");
-        progressDoalog.setTitle("SİSTEM");
+        progressDoalog.setTitle("Sistem");
         progressDoalog.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
         db = HaliYikamaDatabase.getInstance(getContext());
         recyclerView = (RecyclerView) view.findViewById(R.id.musterigorevlerim_recyclerview);
@@ -222,6 +242,12 @@ public class GorevlerimFragment2 extends Fragment {
         filtre_tarih_bugun = (RadioButton) view.findViewById(R.id.filtre_tarih_bugun);
         filtre_tarih_yarin = (RadioButton) view.findViewById(R.id.filtre_tarih_yarin);
         durumList = new ArrayList<String>();
+        if (durumList.size() == 0 || durumList.get(0).equalsIgnoreCase("")) {
+            durumList.add("Teslim Alınacak");
+            durumList.add("Teslime Hazır");
+            durumList.add("Teslime Çıktı");
+            durumList.add("Yıkanacak");
+        }
         tarihRadioGrup = (RadioGroup) view.findViewById(R.id.tarih_radio_group);
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_to_refresh_layout);
@@ -258,19 +284,21 @@ public class GorevlerimFragment2 extends Fragment {
             @Override
             public void onRefresh() {
                 pd = ProgressDialog.show(getContext(), "Sistem",
-                        "Lütfen bekleyiniz", true);
+                        "Tüm bilgiler güncellenmektedir.Bu işlem yaklaşık 5 sn. sürmektedir. \nLütfen bekleyiniz.", true);
                 pd.setCancelable(false);
                 pd.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
                 pd.show();
                 try {
-                    ((MainActivity) getContext()).getMusteriListFromService();
                     siparis_islemleri();
+                    ((MainActivity) getContext()).getServisler();
+                    ((MainActivity) getContext()).getMusteriListFromService();
+                    get_list(durumList, "", seciliKaynakId);
+
                     swipeRefreshLayout.setRefreshing(false);
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                //  getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
 
 
                 new Handler().postDelayed(new Runnable() {
@@ -281,7 +309,7 @@ public class GorevlerimFragment2 extends Fragment {
                         pd.dismiss();
 
                     }
-                }, 3500);
+                }, 7000);
 
 
             }
@@ -435,31 +463,44 @@ public class GorevlerimFragment2 extends Fragment {
                                     }
 
                                     if (gorevlerAdapter.getData().get(position).getTaskName().equalsIgnoreCase("TeslimAl")) {
-
+                                        siparisDetayListGorevTamamlama = null;
+                                        urunEklendiktenSonraGorev = gorevlerAdapter.getData().get(pos);
                                         List<Gorevler> gorevlerList = db.gorevlerDao().getGorevForId(Long.valueOf(gorevlerAdapter.getData().get(position).getTaskId()));
                                         if (gorevlerList.size() > 0) {
                                             List<Siparis> siparisList = db.siparisDao().getSiparisForSiparisId(gorevlerList.get(0).getSiparisId());
                                             if (siparisList.size() > 0) {
-                                                siparisDetayList = db.siparisDetayDao().getSiparisDetayForSiparisId(siparisList.get(0).getId());
-                                                if (siparisDetayList.size() > 0) {
+                                                siparisDetayListGorevTamamlama = db.siparisDetayDao().getSiparisDetayForSiparisId(siparisList.get(0).getId());
+                                                if (siparisDetayListGorevTamamlama.size() > 0) {
+                                                    alert_dialog_gorev_tamamla("TeslimAl", gorevlerAdapter.getData().get(position).getTaskId());
 
-                                                } else
-                                                    siparisDetayList = db.siparisDetayDao().getSiparisDetayForSiparisMid(siparisList.get(0).getMid());
+                                                } else {
+                                                    siparisDetayListGorevTamamlama = db.siparisDetayDao().getSiparisDetayForSiparisMid(siparisList.get(0).getMid());
+                                                    if (siparisDetayListGorevTamamlama != null && siparisDetayListGorevTamamlama.size() > 0)
+                                                        postSiparisListFromService(siparisList.get(0), siparisList.get(0).getMid());
+                                                    else {
+                                                       // MessageBox.showAlert(getContext(), "Görevi tamamlamak için ürün eklemeniz lazım.", false);
+                                                        Toast.makeText(mContext,"Görevi tamamlamak için ürün eklemeniz lazım.",Toast.LENGTH_LONG).show();
+                                                        Intent i = new Intent(mContext, SiparisDetayActivity.class);
+                                                        // i.putExtra("gelenPage", "sipariş");
+                                                        i.putExtra("siparisId", String.valueOf(gorevlerAdapter.getData().get(position).getSiparisId()));
+                                                        i.putExtra("subeMid", siparisList.get(0).getSubeMid() != null ? siparisList.get(0).getSubeMid().toString() : null);
+                                                        i.putExtra("subeId", siparisList.get(0).getSubeId() != null ? siparisList.get(0).getSubeId().toString() : null);
+                                                        i.putExtra("siparisMid", siparisList.size() > 0 ? siparisList.get(0).getMid().toString() : null);
+                                                        i.putExtra("gorevId", gorevlerAdapter.getData().get(position).getTaskId());
+                                                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                        mContext.getApplicationContext().startActivity(i);
+                                                        return;
+
+                                                    }
+
+                                                }
+
+
                                             }
 
-                                            if (siparisDetayList == null || siparisDetayList.size() == 0) {
-                                                MessageBox.showAlert(getContext(), "Görevi tamamlamak için ürün eklemeniz lazım.", false);
-                                                Intent i = new Intent(mContext, SiparisDetayActivity.class);
-                                                // i.putExtra("gelenPage", "sipariş");
-                                                i.putExtra("siparisId", String.valueOf(gorevlerAdapter.getData().get(position).getSiparisId()));
-                                                i.putExtra("subeMid", siparisList.get(0).getSubeMid() != null ? siparisList.get(0).getSubeMid().toString() : null);
-                                                i.putExtra("subeId", siparisList.get(0).getSubeId() != null ? siparisList.get(0).getSubeId().toString() : null);
-                                                i.putExtra("siparisMid", siparisList != null ? siparisList.get(0).getMid().toString() : null);
-                                                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                mContext.getApplicationContext().startActivity(i);
-                                                return;
-                                            } else
-                                                alert_dialog_gorev_tamamla("TeslimAl", gorevlerAdapter.getData().get(position).getTaskId());
+                                      /*else
+
+                                            alert_dialog_gorev_tamamla("TeslimAl", gorevlerAdapter.getData().get(position).getTaskId());*/
 
                                         }
 
@@ -481,6 +522,7 @@ public class GorevlerimFragment2 extends Fragment {
     public void get_list(List<String> siparisDurumu, String searchViewText, Long seciliKaynakId) {
         List<Gorevler> gorevlerList;
 
+        // durumList = new ArrayList<String>();
 
         if (durumList.size() == 0 || durumList.get(0).equalsIgnoreCase("")) {
             durumList.add("Teslim Alınacak");
@@ -508,9 +550,9 @@ public class GorevlerimFragment2 extends Fragment {
         gorevlerAdapter = new GorevlerAdapter(getContext(), gorevlerList);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        gorevlerAdapter.notifyDataSetChanged();
         recyclerView.setAdapter(gorevlerAdapter);
         gorevlerAdapter.notifyDataSetChanged();
+        recyclerView.invalidate();
 
 
     }
@@ -518,7 +560,7 @@ public class GorevlerimFragment2 extends Fragment {
 
     String gelenGorevList = null;
 
-    public void getGorevlerimFromService(Long kullaniciId) throws Exception {
+    public void getGorevlerimFromService(Long kullaniciId) {
         progressDoalog.show();
         RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
         GsonBuilder gsonBuilder = new GsonBuilder();
@@ -526,28 +568,33 @@ public class GorevlerimFragment2 extends Fragment {
         final Gson gson = gsonBuilder.create();
         JSONObject object = new JSONObject();
 
+        try {
+            JSONObject object2 = new JSONObject();
+            object2.put("musteriler", new JSONArray());
+            object2.put("subeler", new JSONArray());
+            object2.put("kaynaklar", new JSONArray());
+            object2.put("durum", new JSONArray());
+            object2.put("ilkTarih", null);
+            object2.put("sonTarih", null);
+            object.put("model", object2);
 
-        JSONObject object2 = new JSONObject();
-        object2.put("musteriler", new JSONArray());
-        object2.put("subeler", new JSONArray());
-        object2.put("kaynaklar", new JSONArray());
-        object2.put("durum", new JSONArray());
-        object2.put("ilkTarih", null);
-        object2.put("sonTarih", null);
-        object.put("model", object2);
+            JSONObject object1 = new JSONObject();
+            object1.put("pageSize", 99999);
+            object1.put("pageNumber", 0);
+            object1.put("sortField", "siparis_tarihi");
+            object1.put("sortOrder", -1);
 
-        JSONObject object1 = new JSONObject();
-        object1.put("pageSize", 99999);
-        object1.put("pageNumber", 0);
-        object1.put("sortField", "siparis_tarihi");
-        object1.put("sortOrder", -1);
-        object.put("pageParams", object1);
+            object.put("pageParams", object1);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         Call<String> call = refrofitRestApi.getKullaniciGorevList("hy/process/userTasks", OrtakFunction.authorization, OrtakFunction.tenantId, object.toString());
 
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (!response.isSuccessful()) {
+
                     progressDoalog.dismiss();
                     //  MessageBox.showAlert(getContext(), "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
@@ -560,32 +607,38 @@ public class GorevlerimFragment2 extends Fragment {
 
                         List<Gorevler> allGorevList = db.gorevlerDao().getGorevAll();
                         JSONObject gelenObject = null;
-                        //db.gorevlerDao().deleteGorevAll();
-                        Boolean yeniKayitMi = true;
-                        Long gorevMid;
                         try {
+
                             gelenObject = new JSONObject(gelenGorevList);
                             JSONArray rowArray = new JSONArray(gelenObject.getString("rows"));
                             for (int i = 0; i < rowArray.length(); i++) {
+                                Boolean yeniKayitMi = true;
+                                Boolean kayitSilinecekMi = true;
                                 JSONObject rowObject = new JSONObject(rowArray.getString(i));
-                                List<Gorevler> gorevlerList = Arrays.asList(gson.fromJson(rowObject.toString(), Gorevler.class));
-                                for (Gorevler item : allGorevList) {
-                                    if (item.getTaskId() != null && item.getTaskId().toString().equalsIgnoreCase(rowObject.getString("taskId"))) {
-                                        yeniKayitMi = false;
-                                    }
-
-                                    if (yeniKayitMi)
-                                        db.gorevlerDao().setGorev(item);
-
-                                    else {
-                                        item.setMid(item.getMid());
-                                        db.gorevlerDao().updateGorev(item);
-                                    }
-                                }
+                                List<Gorevler> gelenGorevList = Arrays.asList(gson.fromJson(rowObject.toString(), Gorevler.class));
                                 if (allGorevList != null && allGorevList.size() == 0)
-                                    db.gorevlerDao().setGorevList(gorevlerList);
-                                gorevlerAdapter.notifyDataSetChanged();
+                                    db.gorevlerDao().setGorevList(gelenGorevList);
+                                else {
+                                    for (Gorevler gelenGorev : gelenGorevList) {
+                                        for (Gorevler item : allGorevList) {
+                                            kayitSilinecekMi = true;
 
+                                            if (item.getSiparisId() != null && item.getSiparisId().toString().equalsIgnoreCase(gelenGorev.getSiparisId().toString())) {
+                                                db.gorevlerDao().deletedGorevForSiparisId(gelenGorev.getSiparisId());
+                                                yeniKayitMi = false;
+                                                db.gorevlerDao().setGorev(gelenGorev);
+                                            }
+                                            if (item.getTaskId() == gelenGorev.getTaskId())
+                                                kayitSilinecekMi = false;
+
+                                        }
+                                        if (yeniKayitMi)
+                                            db.gorevlerDao().setGorev(gelenGorev);
+                                        if (kayitSilinecekMi)
+                                            db.gorevlerDao().deletedGorevForTaskId(gelenGorev.getTaskId());
+                                    }
+
+                                }
                             }
 
 
@@ -595,30 +648,29 @@ public class GorevlerimFragment2 extends Fragment {
                             e.printStackTrace();
                         }
 
+                        get_list(durumList, "", seciliKaynakId);
+                        if (gorevTamamlandiMi) {
+                            MessageBox.showAlert(getContext(), "Görev başarıyla tamamlanmıştır..", false);
+                            // Toast.makeText(getContext(), "Görev başarıyla tamamlanmıştır.", Toast.LENGTH_LONG).show();
+                            gorevTamamlandiMi = false;
+                        }
 
-                        mActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                get_list(durumList, searchviewText, seciliKaynakId);
+                        progressDoalog.dismiss();
+                        get_list(durumList, "", seciliKaynakId);
 
-                                List<Gorevler> totalGorevList = db.gorevlerDao().getGorevAll();
-                                for (Gorevler item : totalGorevList) {
-                                    try {
-                                        progressDoalog.dismiss();
-                                        getFormBilgilerimList(item.getTaskId());
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-
+                        List<Gorevler> totalGorevList = db.gorevlerDao().getGorevAll();
+                        for (Gorevler item : totalGorevList) {
+                            try {
+                                getFormBilgilerimList(item.getTaskId());
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        });
+                        }
 
 
-                    } /*else
-                        MessageBox.showAlert(getContext(), "Kayıt bulunamamıştır..", false);*/
+                    }
                 }
-                get_list(durumList, "", seciliKaynakId);
+
 
             }
 
@@ -649,11 +701,9 @@ public class GorevlerimFragment2 extends Fragment {
             public void onResponse(Call<String> call, Response<String> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                    //   MessageBox.showAlert(mContext, "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
-                    progressDoalog.dismiss();
                     gelenFormList = response.body();
                     if (!gelenFormList.equalsIgnoreCase("")) {
                         JSONArray gelenArray = null;
@@ -672,20 +722,8 @@ public class GorevlerimFragment2 extends Fragment {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        //   db.siparisDao().updateSiparisProcessId(Long.valueOf(gelenObject.getString("processInstanceId")), item.get(0).getId());
 
-
-                        mActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                             /*   if (gelenMusteriList.size() != kayitList.size())
-                                    MessageBox.showAlert(MusteriKayitActivity.this, "Müşteri listesi senkron edilirken hata oluştu.", false);
-                                else
-                                    ();*/
-
-                            }
-                        });
+                        progressDoalog.dismiss();
                         get_list(durumList, searchviewText, seciliKaynakId);
 
 
@@ -710,7 +748,22 @@ public class GorevlerimFragment2 extends Fragment {
             mActivity = (Activity) context;
             mContext = (Context) context;
         }
+
+
+
     }
+
+    public  void urunEkleGorevTamamla(){
+        if (urunEklendiktenSonraGorev != null) {
+            List<Siparis> siparisList = db.siparisDao().getSiparisForSiparisId(urunEklendiktenSonraGorev.getSiparisId());
+            if (siparisList.size() > 0) {
+                siparisDetayListGorevTamamlama = db.siparisDetayDao().getSiparisDetayForSiparisMid(siparisList.get(0).getMid());
+                if (siparisDetayListGorevTamamlama != null && siparisDetayListGorevTamamlama.size() > 0)
+                    postSiparisListFromService(siparisList.get(0), siparisList.get(0).getMid());
+            }
+        }
+    }
+
 
 
     private void setupSearchView() {
@@ -928,8 +981,11 @@ public class GorevlerimFragment2 extends Fragment {
     }
 
 
+    public Boolean gorevTamamlandiMi = false;
+
     public void gorevTamamlaPostService(final Long gorevId, final Long kaynakId, String taskName) throws Exception {
         progressDoalog.show();
+        gorevTamamlandiMi = false;
         RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setDateFormat("M/d/yy hh:mm a");
@@ -948,19 +1004,19 @@ public class GorevlerimFragment2 extends Fragment {
 
         if (taskName.equalsIgnoreCase("TeslimAl")) {
             disObje.put("notlar", gorevNotu);
-            if (siparisDetayList != null && siparisDetayList.size() > 0)
-                for (SiparisDetay item : siparisDetayList) {
+            if (siparisDetayListGorevTamamlama != null && siparisDetayListGorevTamamlama.size() > 0)
+                for (SiparisDetay item : siparisDetayListGorevTamamlama) {
                     JSONObject icObje = new JSONObject();
                     icObje.put("id", item.getId());
                     icObje.put("siparisId", item.getSiparisId());
                     icObje.put("urunId", item.getUrunId());
                     icObje.put("urunAdi", item.getUrunId() != null ? db.urunDao().getUrunForId(item.getUrunId()).get(0).getUrunAdi() : null);
                     icObje.put("olcuBirimId", item.getOlcuBirimId());
-                    icObje.put("olcuBirimAdi", "M2");
+                    icObje.put("olcuBirimAdi", item.getOlcuBirimId() != null ? db.olcuBirimDao().getOlcuBirimForId(item.getOlcuBirimId()).get(0).getOlcuBirimi() : null);
                     icObje.put("birimFiyat", item.getBirimFiyat());
                     icObje.put("miktar", item.getMiktar());
                     icObje.put("toplamTutar", item.getBirimFiyat() * item.getMiktar());
-                    icObje.put("musteriNotu", null);
+                    icObje.put("musteriNotu", db.siparisDao().getSiparisForSiparisId(item.getSiparisId()).get(0).getAciklama());
                     urunArray.put(icObje);
                 }
             disObje.put("urunListesi", urunArray);
@@ -984,18 +1040,12 @@ public class GorevlerimFragment2 extends Fragment {
                 }
                 if (response.isSuccessful()) {
                     progressDoalog.dismiss();
-                    /*if (urunArray != null && urunArray.length() > 0) {
-                        db.siparisDao().updateSiparisDurumu(gorevId, "Yıkanacak");
-                    }
-
-                    if (gorevlerList.get(0).getName().equalsIgnoreCase("TeslimEt")){
-                        db.siparisDao().updateSiparisDurumu(gorevId, )
-                    }*/
-                    MessageBox.showAlert(getContext(), "Görev başarıyla tamamlanmıştır..", false);
+                    get_list(durumList, "", seciliKaynakId);
 
 
-                    gorevlerAdapter.notifyDataSetChanged();
-                    get_list(null, "", seciliKaynakId);
+                    getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
+                    gorevTamamlandiMi = true;
+                    //   MessageBox.showAlert(getContext(), "Görev başarıyla tamamlanmıştır..", false);
 
 
                 }
@@ -1022,7 +1072,14 @@ public class GorevlerimFragment2 extends Fragment {
         siparis.setSubeMid(null);
         siparis.setSiparisTarihi(siparis.getSiparisTarihi() + " 00:00");
         siparis.setKaynakMid(null);
-        Call<Siparis> call = refrofitRestApi.postSiparis(OrtakFunction.authorization, OrtakFunction.tenantId, siparis);
+        siparis.setSenkronEdildi(null);
+        siparis.setMusteriMid(null);
+        siparis.setMustId(null);
+        Call<Siparis> call;
+        if (siparis.getId() == null)
+            call = refrofitRestApi.postSiparis(OrtakFunction.authorization, OrtakFunction.tenantId, siparis);
+        else
+            call = refrofitRestApi.putSiparis("hy/siparis/" + siparis.getId(), OrtakFunction.authorization, OrtakFunction.tenantId, siparis);
         call.enqueue(new Callback<Siparis>() {
             @Override
             public void onResponse(Call<Siparis> call, Response<Siparis> response) {
@@ -1043,7 +1100,7 @@ public class GorevlerimFragment2 extends Fragment {
                                 List<SiparisDetay> senkronEdilecekler = new ArrayList<>();
 
                                 for (SiparisDetay item : siparisdetayList) {
-                                    if (/*item.getSenkronEdildi() == null || item.getSenkronEdildi() == false  || */item.getId() == null)
+                                    if (item.getSenkronEdildi() == null || item.getSenkronEdildi() == false)
                                         senkronEdilecekler.add(item);
                                 }
 
@@ -1080,6 +1137,7 @@ public class GorevlerimFragment2 extends Fragment {
     String gelenSiparisDetayList = null;
 
     public void postSiparisDetayListFromService(final List<SiparisDetay> siparisDetayList, final List<Siparis> gelenSiparis) {
+        final ProgressDialog progressDoalog = new ProgressDialog((Activity) getContext());
         progressDoalog.show();
         final RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiForScalar();
         final List<Long> midList = new ArrayList<>();
@@ -1131,10 +1189,14 @@ public class GorevlerimFragment2 extends Fragment {
                     gelenSiparisDetayList = response.body();
                     if (gelenSiparisDetayList != null) {
 
+                        progressDoalog.dismiss();
 
                         mActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+
+                                // db.siparisDetayDao().updateSiparisDetayQuery(gelenSiparis.get(0).getMid(), true);
+
 
                                 final RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
                                 Call<List<SiparisDetay>> call = refrofitRestApi.getSiparisDetayList("hy/siparis/siparisUrunler/" + gelenSiparis.get(0).getId(), OrtakFunction.authorization, OrtakFunction.tenantId);
@@ -1146,13 +1208,30 @@ public class GorevlerimFragment2 extends Fragment {
                                             //MessageBox.showAlert(mActivity, "Servisle bağlantı sırasında hata oluştu...", false);
                                             return;
                                         }
+                                        if (response.isSuccessful()) {
+                                            db.siparisDetayDao().deletedSiparisDetayForSiparisId(gelenSiparis.get(0).getId());
+
+                                            for (SiparisDetay item : response.body()) {
+                                                item.setSiparisMid(gelenSiparis.get(0).getMid());
+                                                item.setMustId(gelenSiparis.get(0).getMid());
+                                                item.setSenkronEdildi(true);
+                                                db.siparisDetayDao().setSiparisDetay(item);
+
+                                            }
 
 
-                                        for(SiparisDetay item :response.body()){
-                                            db.siparisDetayDao().updateSiparisDetay(gelenSiparis.get(0).getMid(), item.getId() ,  true);
+                                            progressDoalog.dismiss();
+
+                                            if (siparisDetayListGorevTamamlama != null && siparisDetayListGorevTamamlama.size() > 0) {
+
+                                                siparisDetayListGorevTamamlama = db.siparisDetayDao().getSiparisDetayForSiparisId(gelenSiparis.get(0).getId());
+
+                                                if (siparisDetayListGorevTamamlama.size() > 0)
+                                                    alert_dialog_gorev_tamamla("TeslimAl", gorevlerAdapter.getData().get(position).getTaskId());
+
+
+                                            }
                                         }
-
-                                        progressDoalog.dismiss();
                                     }
 
                                     @Override
@@ -1217,7 +1296,7 @@ public class GorevlerimFragment2 extends Fragment {
                         try {
                             gelenObject = new JSONObject(gelenProcessId);
                             db.siparisDao().updateSiparisProcessId(Long.valueOf(gelenObject.getString("processInstanceId")), item.getId());
-                            get_list(null, "", seciliKaynakId);
+                            get_list(durumList, "", seciliKaynakId);
 
 
                         } catch (JSONException e) {
