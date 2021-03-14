@@ -58,6 +58,7 @@ public class KaynakActivity extends AppCompatActivity {
     ProgressDialog progressDoalog;
     BottomNavigationView bottomNavigationView;
     FloatingActionButton yeni_kaynak_button;
+    Boolean gorevdenMi = false;
 
 
     @Override
@@ -72,9 +73,8 @@ public class KaynakActivity extends AppCompatActivity {
         setContentView(R.layout.kaynak_activity);
         init_item();
         initToolBar();
-        senkronEdilmeyenKayitlariGonder();
-        getKaynakListFromService();
-        get_list();
+
+        //get_list();
 
 
     }
@@ -125,6 +125,7 @@ public class KaynakActivity extends AppCompatActivity {
             }
         });
 
+        gorevdenMi = getIntent().getBooleanExtra("gorevdenMi", gorevdenMi);
 
     }
 
@@ -167,7 +168,12 @@ public class KaynakActivity extends AppCompatActivity {
 
 
     public void get_list() {
-        final List<Kaynak> kaynakList = db.kaynakDao().getkaynakAll();
+        List<Kaynak> kaynakList = null;
+        if (gorevdenMi)
+            kaynakList = db.kaynakDao().getkaynakAllForArac();
+        else
+            kaynakList = db.kaynakDao().getkaynakAll();
+
         kaynakAdapter = new KaynakAdapter(KaynakActivity.this, kaynakList);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(KaynakActivity.this));
@@ -205,13 +211,9 @@ public class KaynakActivity extends AppCompatActivity {
                 }
                 if (response.isSuccessful()) {
                     Boolean yeniKayitMi = true;
-                    progressDoalog.dismiss();
-                    //db.kaynakDao().deletekaynakAll();
                     gelenKaynakList = response.body();
-
-                   // db.kaynakDao().setkaynakList(gelenKaynakList);
                     for (Kaynak i : gelenKaynakList) {
-
+                        yeniKayitMi = true;
                         i.setSenkronEdildi(true);
 
                         if (db.kaynakDao().getkaynakAll().size() == 0) {
@@ -219,7 +221,6 @@ public class KaynakActivity extends AppCompatActivity {
 
                         } else {
                             for (Kaynak all : db.kaynakDao().getkaynakAll()) {
-
                                 if (all.getId() != null && all.getId().toString().equalsIgnoreCase(i.getId().toString())) {
                                     yeniKayitMi = false;
                                     i.setMid(all.getMid());
@@ -228,12 +229,31 @@ public class KaynakActivity extends AppCompatActivity {
                                 }
                             }
 
+
                             if (yeniKayitMi)
                                 db.kaynakDao().setkaynak(i);
 
                         }
-                        get_list();
                     }
+
+                    Boolean kayitSilinecekMi;
+                    if (db.kaynakDao().getkaynakAll().size() > gelenKaynakList.size())
+                        for (Kaynak all : db.kaynakDao().getkaynakAll()) {
+                            kayitSilinecekMi = true;
+                            for (Kaynak i : gelenKaynakList) {
+                                if (all.getId() != null && all.getId().toString().equalsIgnoreCase(i.getId().toString())) {
+                                    kayitSilinecekMi = false;
+                                }
+                            }
+                            if (kayitSilinecekMi)
+                                db.kaynakDao().deletedkaynakForMid(all.getMid());
+                        }
+
+
+                    get_list();
+
+                    progressDoalog.dismiss();
+
 
                 }
             }
@@ -257,6 +277,8 @@ public class KaynakActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+        if (db.kaynakDao().getSenkronEdilmeyenAll().size() == 0)
+            getKaynakListFromService();
     }
 
 
@@ -270,8 +292,10 @@ public class KaynakActivity extends AppCompatActivity {
         kaynak.setMustId(null);
         kaynak.setSenkronEdildi(null);
         kaynak.setSecilenKaynakMi(null);
-
-        call = refrofitRestApi.postKaynak(OrtakFunction.authorization, OrtakFunction.tenantId, "application/json", kaynak);
+        if (kaynak.getId() != null)
+            call = refrofitRestApi.putKaynak("hy/kaynak/" + kaynak.getId(), OrtakFunction.authorization, OrtakFunction.tenantId, "application/json", kaynak);
+        else
+            call = refrofitRestApi.postKaynak(OrtakFunction.authorization, OrtakFunction.tenantId, "application/json", kaynak);
 
         call.enqueue(new Callback<Kaynak>() {
             @Override
@@ -282,27 +306,21 @@ public class KaynakActivity extends AppCompatActivity {
                     return;
                 }
                 if (response.isSuccessful()) {
-                    progressDoalog.dismiss();
                     gelenKaynak = response.body();
                     if (gelenKaynak != null) {
-
                         db.kaynakDao().updatekaynakQuery(kaynakMid, gelenKaynak.getId(), true);
+                        progressDoalog.dismiss();
+
                         KaynakActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
 
-                             /*   if (gelenHesapList.size() != kayitList.size())
-                                    MessageBox.showAlert(HesapKayitActivity.this, "Müşteri listesi senkron edilirken hata oluştu.", false);
-                                else
-                                    get_list();*/
-
                             }
                         });
-
-
                     } else
                         MessageBox.showAlert(KaynakActivity.this, "Kayıt bulunamamıştır..", false);
                 }
+                getKaynakListFromService();
             }
 
             @Override
@@ -319,7 +337,8 @@ public class KaynakActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        get_list();
+        senkronEdilmeyenKayitlariGonder();
+
     }
 
 

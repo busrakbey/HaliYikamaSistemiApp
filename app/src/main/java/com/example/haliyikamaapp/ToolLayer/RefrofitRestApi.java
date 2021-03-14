@@ -148,6 +148,11 @@ public interface RefrofitRestApi {
 
     @POST("hy/kaynak/")
     Call<Kaynak> postKaynak (@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Header("Content-Type") String content, @Body Kaynak kaynak);
+
+    @PUT()
+    Call<Kaynak> putKaynak (@Url String url,@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Header("Content-Type") String content, @Body Kaynak kaynak);
 }
+
+
 
 

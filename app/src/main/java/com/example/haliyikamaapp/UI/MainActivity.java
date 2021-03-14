@@ -177,6 +177,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             MessageBox.showAlert(MainActivity.this, "İnternet bağlantınız mevcut değildir.", false);
 
 
+
+
           /*  try {
                 OrtakFunction.GetLocation(MainActivity.this, getApplicationContext());
             } catch (IOException e) {
@@ -1768,10 +1770,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     public void onResume() {
         super.onResume();
-
-
-        GorevlerimFragment2 fragment = (GorevlerimFragment2) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        fragment.urunEkleGorevTamamla();
+        FragmentManager fm = getSupportFragmentManager();
+        if(fm.getFragments() != null && fm.getFragments().get(0).toString().contains("GorevlerimFragment2")) {
+            GorevlerimFragment2 fragment = (GorevlerimFragment2) fm.findFragmentById(R.id.fragment_container);
+            fragment.urunEkleGorevTamamla();
+        }
     }
+
+
+
 
 }

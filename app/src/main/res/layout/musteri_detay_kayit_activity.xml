@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:clipChildren="true"
     android:fitsSystemWindows="true"
-
+    android:focusableInTouchMode="true"
     android:background="@drawable/ic_bg_top"
 
     tools:context="com.example.haliyikamaapp.UI.MainActivity">

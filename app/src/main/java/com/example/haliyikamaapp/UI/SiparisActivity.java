@@ -177,7 +177,7 @@ public class SiparisActivity extends AppCompatActivity {
 
     }
 
-    /*@Override
+   /* @Override
     public void onResume() {
         super.onResume();
         get_list();

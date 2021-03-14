@@ -9,6 +9,7 @@
     android:layout_marginBottom="@dimen/loginViewsMargin"
     android:background="@color/whiteCardColor"
     android:elevation="5dp"
+    android:focusableInTouchMode="true"
     app:cardCornerRadius="@dimen/loginCardRadius">
 
     <LinearLayout
@@ -58,6 +59,9 @@
                 android:id="@+id/kaynak_edinim_tarihi"
                 style="@style/modifiedEditText"
                 android:hint="Edinim Tarihi"
+                android:drawableRight="@android:drawable/ic_menu_my_calendar"
+                android:clickable="true"
+
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -70,6 +74,9 @@
                 android:id="@+id/kaynak_terk_tarihi"
                 style="@style/modifiedEditText"
                 android:hint="Terk Tarihi"
+                android:drawableRight="@android:drawable/ic_menu_my_calendar"
+                android:clickable="true"
+
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>

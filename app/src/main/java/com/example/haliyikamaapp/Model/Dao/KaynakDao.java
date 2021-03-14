@@ -40,6 +40,9 @@ public interface KaynakDao {
     @Query("DELETE FROM KAYNAK where mid = :mid")
     int deletedkaynakForMid(Long mid);
 
+    @Query("DELETE FROM KAYNAK where id = :id")
+    int deletedkaynakForId(Long id);
+
     @Query("SELECT * FROM KAYNAK where mid = :mid")
     List<Kaynak> getkaynakForMid(Long mid);
 

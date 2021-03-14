@@ -194,6 +194,7 @@ public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHo
 
         }
 
+        if(data.get(position).getId() != null)
         holder.siparis_no_item.setText("\n000" + data.get(position).getId().toString() + "\n");
 
     }

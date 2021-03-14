@@ -333,17 +333,19 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
                                     MessageBox.showAlert(SiparisDetayKayitActivity.this, "Kayıt Başarılı..\n", false);
                                     Intent i = new Intent(SiparisDetayKayitActivity.this, SiparisDetayActivity.class);
                                     i.putExtra("siparisMid", String.valueOf(siparisMid));
-                                   finish();
-                                    //startActivityForResult(i,1);
+                                    i.putExtra("subeId", subeId);
+                                    i.putExtra("subeMid", subeMid);
+                                   //finish();
+                                  //  startActivityForResult(i,2);
+                                    setResult(RESULT_OK,i);
+                                    finish();
                                 } else {
                                     Intent i = new Intent(SiparisDetayKayitActivity.this, SiparisDetayKayitActivity.class);
                                     i.putExtra("siparisMid", siparisMid);
                                     i.putExtra("subeId", subeId);
                                     i.putExtra("subeMid", subeMid);
                                     finish();
-                                   // startActivityForResult(i,1);
-
-                                    //startActivity(i);
+                                    startActivity(i);
                                 }
 
                             }
@@ -353,15 +355,19 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
                                     MessageBox.showAlert(SiparisDetayKayitActivity.this, "Güncelleme işlemi başarılı..\n", false);
                                     Intent i = new Intent(SiparisDetayKayitActivity.this, SiparisDetayActivity.class);
                                     i.putExtra("siparisMid", String.valueOf(siparisMid));
+
+                                    i.putExtra("subeId", subeId);
+                                    i.putExtra("subeMid", subeMid);
+                                    //finish();
+                                    setResult(RESULT_OK,i);
                                     finish();
-                                    startActivity(i);
+                                   // startActivity(i);
                                 } else {
                                     Intent i = new Intent(SiparisDetayKayitActivity.this, SiparisDetayKayitActivity.class);
                                     i.putExtra("siparisMid", siparisMid);
-                                    i.putExtra("siparisMid", siparisMid);
                                     i.putExtra("subeId", subeId);
                                     i.putExtra("subeMid", subeMid);
-                                    finish();
+                                   // finish();
                                     startActivity(i);
                                 }
 
@@ -485,7 +491,6 @@ public class SiparisDetayKayitActivity extends AppCompatActivity {
                     yeniKayitSiparisMidList = db.siparisDetayDao().setSiparisDetayList(siparisDetayListTemp);
                 Intent i = new Intent(SiparisDetayKayitActivity.this, SiparisDetayActivity.class);
                 i.putExtra("siparisMid", String.valueOf(siparisMid));
-             //   startActivityForResult(i,0);
                 setResult(RESULT_OK,i);
                 finish();
 

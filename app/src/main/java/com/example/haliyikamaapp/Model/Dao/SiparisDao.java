@@ -45,10 +45,10 @@ public interface SiparisDao {
     @Query("SELECT * FROM SIPARIS where mid = :mid")
     List<Siparis> getSiparisForMid(Long mid);
 
-    @Query("SELECT * FROM SIPARIS where musteriMid = :musteriMid")
+    @Query("SELECT * FROM SIPARIS where musteriMid = :musteriMid order by siparisTarihi desc")
     List<Siparis> getSiparisForMusteriMid(Long musteriMid);
 
-    @Query("SELECT * FROM SIPARIS where id = :id")
+    @Query("SELECT * FROM SIPARIS where id = :id order by siparisTarihi desc")
     List<Siparis> getSiparisForSiparisId(Long id);
 
     @Query("UPDATE SIPARIS SET barkod = :barkod WHERE mid = :mid")
@@ -57,7 +57,7 @@ public interface SiparisDao {
     @Query("SELECT * FROM SIPARIS where senkronEdildi = 0")
     List<Siparis> getSenkronEdilmeyenAll();
 
-    @Query("SELECT * FROM SIPARIS where musteriId = :musteriId")
+    @Query("SELECT * FROM SIPARIS where musteriId = :musteriId order by siparisTarihi desc")
     List<Siparis> getSiparisForMusterIid(Long musteriId);
 
     @Query("UPDATE SIPARIS SET siparisDurumu = :siparisDurumu WHERE id = :id")

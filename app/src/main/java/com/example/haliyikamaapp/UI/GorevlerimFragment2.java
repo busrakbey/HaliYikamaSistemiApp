@@ -127,6 +127,7 @@ public class GorevlerimFragment2 extends Fragment {
     ImageView barcode_scanner;
     Long okunanSiparisId = null;
     Gorevler urunEklendiktenSonraGorev= null;
+    Button gorev_kaynak_secimi;
 
 
     @Nullable
@@ -180,6 +181,16 @@ public class GorevlerimFragment2 extends Fragment {
                 handler.postDelayed(this, delay);
             }
         }, delay);
+
+
+       /* if (urunEklendiktenSonraGorev != null) {
+            List<Siparis> siparisList = db.siparisDao().getSiparisForSiparisId(urunEklendiktenSonraGorev.getSiparisId());
+            if (siparisList.size() > 0) {
+                siparisDetayListGorevTamamlama = db.siparisDetayDao().getSiparisDetayForSiparisMid(siparisList.get(0).getMid());
+                if (siparisDetayListGorevTamamlama != null && siparisDetayListGorevTamamlama.size() > 0)
+                    postSiparisListFromService(siparisList.get(0), siparisList.get(0).getMid());
+            }
+        }*/
 
 
     }
@@ -252,6 +263,7 @@ public class GorevlerimFragment2 extends Fragment {
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_to_refresh_layout);
         barcode_scanner = (ImageView) view.findViewById(R.id.barcode_scanner);
+        gorev_kaynak_secimi = (Button) view.findViewById(R.id.gorev_kaynak_secimi);
 
         barcode_scanner.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -259,6 +271,15 @@ public class GorevlerimFragment2 extends Fragment {
 
                 IntentIntegrator scanIntegrator = new IntentIntegrator(mActivity);
                 scanIntegrator.initiateScan();
+            }
+        });
+
+        gorev_kaynak_secimi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getContext(), KaynakActivity.class);
+                i.putExtra("gorevdenMi" , true);
+                startActivity(i);
             }
         });
 

@@ -43,7 +43,7 @@
                 android:fontFamily="@font/museosans"
                 android:text="Kaynaklar"
                 android:textColor="@color/text"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 app:fontFamily="@font/segoeuib" />
 

@@ -63,13 +63,14 @@ public class KaynakAdapter extends RecyclerView.Adapter<KaynakAdapter.MyViewHold
             @Override
             public void onClick(View view) {
                 Intent musteri = new Intent(mContext, KaynakKayitActivity.class);
-                musteri.putExtra("kaynakId", String.valueOf(data.get(position).getMid()));
-                musteri.putExtra("kaynakMid", String.valueOf(data.get(position).getId()));
+                musteri.putExtra("kaynakId", String.valueOf(data.get(position).getId()));
+                musteri.putExtra("kaynakMid", String.valueOf(data.get(position).getMid()));
+                musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.getApplicationContext().startActivity(musteri);
             }
         });
 
-        if(data.get(position).getSecilenKaynakMi() != null && data.get(position).getSecilenKaynakMi() == true) {
+        if (data.get(position).getSecilenKaynakMi() != null && data.get(position).getSecilenKaynakMi() == true) {
             holder.relativeLayout.setBackgroundResource(R.drawable.para_giris_shape_bk);
         }
 
@@ -77,29 +78,33 @@ public class KaynakAdapter extends RecyclerView.Adapter<KaynakAdapter.MyViewHold
         holder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
             public boolean onLongClick(View arg0) {
 
+                if (data.get(position).getKaynakTuru() != null && !data.get(position).getKaynakTuru().equalsIgnoreCase("Araç")) {
+                    MessageBox.showAlert(mContext, "Yalnızca araç türündeki kaynağı seçebilirsiniz.", false);
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle("Sistem");
-                builder.setMessage("Kaynak seçilecektir. Devam etmek istiyor musunuz?");
-                builder.setNegativeButton("Hayır", null);
-                builder.setPositiveButton("Evet", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        int xx = db.kaynakDao().updateSecilenKaynakMiAll();
-                        int yy = db.kaynakDao().updateSecilenKaynakMi(data.get(position).getMid(), true);
-                        if (xx > 0 && yy > 0) {
-                            MessageBox.showAlert(mContext, "Kaynak seçimi başarılı bir şekilde gerçekleşmiştir.", false);
-                            ((KaynakActivity) mContext).get_list();
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setTitle("Sistem");
+                    builder.setMessage("Kaynak seçilecektir. Devam etmek istiyor musunuz?");
+                    builder.setNegativeButton("Hayır", null);
+                    builder.setPositiveButton("Evet", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            int xx = db.kaynakDao().updateSecilenKaynakMiAll();
+                            int yy = db.kaynakDao().updateSecilenKaynakMi(data.get(position).getMid(), true);
+                            if (xx > 0 && yy > 0) {
+                                MessageBox.showAlert(mContext, "Kaynak seçimi başarılı bir şekilde gerçekleşmiştir.", false);
+                                ((KaynakActivity) mContext).get_list();
+                            }
+
+
                         }
-
-
-                    }
-                });
-                builder.show();
-
+                    });
+                    builder.show();
+                }
 
                 return true;
             }
+
         });
 
 

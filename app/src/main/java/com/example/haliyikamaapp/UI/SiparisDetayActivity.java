@@ -119,6 +119,11 @@ public class SiparisDetayActivity extends AppCompatActivity {
               finish();
                 }
             }
+
+
+
+
+
         }
 
     }

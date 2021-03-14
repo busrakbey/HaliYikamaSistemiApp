@@ -1,6 +1,7 @@
 package com.example.haliyikamaapp.UI;
 
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
@@ -12,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -39,6 +41,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import retrofit2.Call;
@@ -59,6 +62,8 @@ public class KaynakKayitActivity extends AppCompatActivity {
     Button kaydet_button;
     List<String> kaynakTuruStringList;
     String seciliKaynakTuru, gelenKaynakMid, gelenKaynakId;
+    private DatePickerDialog datePickerDialog;
+
 
 
     @Override
@@ -75,7 +80,8 @@ public class KaynakKayitActivity extends AppCompatActivity {
         initToolBar();
         //senkronEdilmeyenKayitlariGonder();
         spinner_items();
-
+        if (gelenKaynakMid != null || gelenKaynakId != null)
+            getEditMode(Long.valueOf(gelenKaynakMid));
 
     }
 
@@ -129,6 +135,46 @@ public class KaynakKayitActivity extends AppCompatActivity {
 
         gelenKaynakId = getIntent().getStringExtra("kaynakId");
         gelenKaynakMid = getIntent().getStringExtra("kaynakMid");
+
+        Calendar calendar = Calendar.getInstance();
+        final int year = calendar.get(Calendar.YEAR);
+        final int month = calendar.get(Calendar.MONTH);
+        final int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+        kaynak_edinim_tarihi_edittext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                datePickerDialog = new DatePickerDialog(KaynakKayitActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                                kaynak_edinim_tarihi_edittext.setText(day + "." + Integer.valueOf(month + 1) + "." + year);
+                            }
+                        }, year, month, dayOfMonth);
+                datePickerDialog.show();
+
+            }
+        });
+
+
+        kaynak_terk_tarihi_edittext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                datePickerDialog = new DatePickerDialog(KaynakKayitActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                                kaynak_terk_tarihi_edittext.setText(day + "." + Integer.valueOf(month + 1) + "." + year);
+                            }
+                        }, year, month, dayOfMonth);
+                datePickerDialog.show();
+
+            }
+        });
+
     }
 
     public BottomNavigationView.OnNavigationItemSelectedListener navListener =
@@ -190,21 +236,25 @@ public class KaynakKayitActivity extends AppCompatActivity {
         if (gelenKaynakMid != null || gelenKaynakId != null) {
             List<Kaynak> updateKaynakList = null;
             if (gelenKaynakId != null)
-                db.kaynakDao().getkaynakForkaynakId(Long.valueOf(gelenKaynakId));
+                updateKaynakList = db.kaynakDao().getkaynakForkaynakId(Long.valueOf(gelenKaynakId));
             else
-                db.kaynakDao().getkaynakForMid(Long.valueOf(gelenKaynakMid));
+                updateKaynakList = db.kaynakDao().getkaynakForMid(Long.valueOf(gelenKaynakMid));
 
             kaynak.setMid(updateKaynakList.get(0).getMid());
             kaynak.setId(updateKaynakList.get(0).getId());
            int updateMid = db.kaynakDao().updatekaynak(kaynak);
-           if(updateMid > 0)
-             MessageBox.showAlert(KaynakKayitActivity.this, "Güncelleme işlemi başarılı.", false);
+           if(updateMid > 0) {
+               MessageBox.showAlert(KaynakKayitActivity.this, "Güncelleme işlemi başarılı.", false);
+               finish();
+           }
 
 
         } else {
             long kayitMid = db.kaynakDao().setkaynak(kaynak);
-            if(kayitMid > 0)
-            MessageBox.showAlert(KaynakKayitActivity.this, "Kayıt işlemi başarılı.", false);
+            if(kayitMid > 0) {
+                MessageBox.showAlert(KaynakKayitActivity.this, "Kayıt işlemi başarılı.", false);
+                finish();
+            }
 
         }
 
@@ -293,4 +343,27 @@ public class KaynakKayitActivity extends AppCompatActivity {
 
 
     }
+
+
+
+    void getEditMode(Long kaynakMid) {
+        kaydet_button.setText("GÜNCELLE");
+        List<Kaynak> updateKayitList = db.kaynakDao().getkaynakForMid(kaynakMid);
+        if (updateKayitList != null && updateKayitList.size() > 0) {
+            kaynak_adi_edittext.setText(updateKayitList.get(0).getKaynakAdi());
+            kaynak_edinim_tarihi_edittext.setText(updateKayitList.get(0).getEdinimTarihi());
+            kaynak_terk_tarihi_edittext.setText(updateKayitList.get(0).getTerkTarihi());
+            kaynak_marka_editetxt.setText(updateKayitList.get(0).getMarka());
+            kaynak_model_edittext.setText(updateKayitList.get(0).getModel());
+            kaynak_seri_no_editetxt.setText(updateKayitList.get(0).getSeriNo());
+            kaynak_plaka_edittext.setText(updateKayitList.get(0).getPlakaNo());
+            kaynak_aciklama_adittext.setText(updateKayitList.get(0).getAciklama());
+            kaynak_turu_spinner.setSelection(kaynakTuruStringList.indexOf(updateKayitList.get(0).getKaynakTuru()));
+
+
+
+        }
+
+    }
+
 }

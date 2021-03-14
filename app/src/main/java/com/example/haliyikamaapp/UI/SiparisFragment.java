@@ -57,7 +57,7 @@ public class SiparisFragment extends Fragment {
     RefrofitRestApi refrofitRestApi;
     String gelenMusteriId, gelenMusteriMid, gelenSiparisId, allSiparis;
 
-
+/////////////////// bu fragmente gerek kalmadı. o yuzden activity'e çevrildi.
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

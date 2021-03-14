@@ -60,6 +60,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -213,8 +214,13 @@ public class OrtakFunction {
                 String username = "hy";
                 String password = "hy-secret";
                 String auth = username + ":" + password;
-                byte[] data = auth.getBytes();
+                /*byte[] data = auth.getBytes();
+                String base64 = Base64.encodeToString(data, Base64.DEFAULT);*/
+
+                byte[] data = auth.getBytes(StandardCharsets.UTF_8);
                 String base64 = Base64.encodeToString(data, Base64.DEFAULT);
+
+
                 headers.put("Accept", "application/json");
                 headers.put("Content-Type", "application/x-www-form-urlencoded");
                 headers.put("tenant-id", tenantId);
@@ -342,7 +348,7 @@ public class OrtakFunction {
                 .create();
 
         final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(4, TimeUnit.MINUTES)
+                .connectTimeout(6, TimeUnit.MINUTES)
                 .writeTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .build();
@@ -368,7 +374,7 @@ public class OrtakFunction {
     public static RefrofitRestApi refrofitRestApiForScalar() {
         String url = OrtakFunction.serviceUrl;
         final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(4, TimeUnit.MINUTES)
+                .connectTimeout(6, TimeUnit.MINUTES)
                 .writeTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(false)
