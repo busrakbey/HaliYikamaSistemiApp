@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             getCallLogs();
         permissonControl();
 
-        if(db.olcuBirimDao().getOlcuBirimAll().size() == 0){
+        if (db.olcuBirimDao().getOlcuBirimAll().size() == 0) {
             OlcuBirim olcuBirim = new OlcuBirim();
             olcuBirim.setAktif(true);
             olcuBirim.setSenkronEdildi(true);
@@ -180,14 +180,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
 
           /*  try {
-                OrtakFunction.GetLocation(MainActivity.this, getApplicationContext());
+                OrtakFunction.GetLocation(MainActivity2.this, getApplicationContext());
             } catch (IOException e) {
                 e.printStackTrace();
             }*/
 
 
        /* if (getIntent().getStringExtra("login") != null && getIntent().getStringExtra("login").equalsIgnoreCase("login")) {
-            pd = ProgressDialog.show(MainActivity.this, "Lütfen bekleyiniz",
+            pd = ProgressDialog.show(MainActivity2.this, "Lütfen bekleyiniz",
                     "Veriler güncelleniyor..", true);
             pd.setCancelable(false);
             pd.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
@@ -226,8 +226,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         getKaynakListFromService();
         getSiparisListFromService();
         getBolgeList();
-
-
 
         //getIlAndIlceFromService();
 
@@ -697,7 +695,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     void getAuth() {
         OrtakFunction.tokenControl(MainActivity.this);
         // if (OrtakFunction.tokenList == null || OrtakFunction.tokenList.size() == 0)
-        // OrtakFunction.getTtoken(MainActivity.this);
+        // OrtakFunction.getTtoken(MainActivity2.this);
     }
 
     List<Urun> gelenUrunList = null;
@@ -715,29 +713,23 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void onResponse(Call<List<Urun>> call, Response<List<Urun>> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                    //  MessageBox.showAlert(MainActivity.this, "Ürün bilgileri alınırken hata oluştu...", false);
+                    //  MessageBox.showAlert(MainActivity2.this, "Ürün bilgileri alınırken hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
-                    //progressDoalog.dismiss();
+                    progressDoalog.dismiss();
                     gelenUrunList = response.body();
                     if (gelenUrunList != null && gelenUrunList.size() > 0) {
-                        //  db.urunDao().deleteUrunAll();
                         for (Urun item : gelenUrunList) {
                             List<Urun> urunVarMi = db.urunDao().getUrunForId(item.getId());
                             if (urunVarMi.size() > 0) {
+                                item.setSenkronEdildi(true);
                                 item.setMid(urunVarMi.get(0).getMid());
                                 db.urunDao().updateUrun(item);
                             } else
                                 db.urunDao().setUrun(item);
                         }
-                        //final List<Long> kayitList = db.urunDao().setUrunList(gelenUrunList);
 
-
-                        ////////urune ait sube listesi geliyor...////
-                        for (Urun item : gelenUrunList) {
-                            //getUruneGoreSubeService(item.getId().toString());
-                        }
 
                         /////şube listesi geliyor  //////
                         progressDoalog.show();
@@ -747,11 +739,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                             public void onResponse(Call<List<Sube>> call2, Response<List<Sube>> response) {
                                 if (!response.isSuccessful()) {
                                     progressDoalog.dismiss();
-                                    //  MessageBox.showAlert(MainActivity.this, "Şube verileri alınırken hata oluştu...", false);
+                                    //  MessageBox.showAlert(MainActivity2.this, "Şube verileri alınırken hata oluştu...", false);
                                     return;
                                 }
                                 if (response.isSuccessful()) {
-                                    //  progressDoalog.dismiss();
+                                    progressDoalog.dismiss();
                                     gelenSubeList = response.body();
                                     if (gelenSubeList != null && gelenSubeList.size() > 0) {
                                         // db.subeDao().deleteSubeAll();
@@ -759,20 +751,19 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                         for (Sube item : gelenSubeList) {
                                             List<Sube> subeVarMi = db.subeDao().getSubeForId(item.getId());
                                             if (subeVarMi.size() > 0) {
+                                                item.setSenkronEdildi(true);
                                                 item.setMid(subeVarMi.get(0).getMid());
                                                 db.subeDao().updateSube(item);
                                             } else
                                                 db.subeDao().setSube(item);
                                         }
 
-                                        //  final List<Long> kayitList = db.subeDao().setSubeList(gelenSubeList);
 
-                                                     /*   if (kayitList.size() != gelenSubeList.size())
-                                                            MessageBox.showAlert(MainActivity.this, "Şube listesi alınırken hata oluştu.", false);
-                                                        else {*/
-                                        getUrunFiyatSubeAndOlcuBirimFromService(gelenSubeList);
+                                        //////////////////// ürüne ait şubeler geliyor...
+                                        getUruneGoreSubeService(db.urunDao().getUrunAll());
+
+
                                         //////// müşteri türü listesi geliyor //////////
-
                                         Call<List<String>> call = refrofitRestApi.getMusteriTuruList(OrtakFunction.authorization, OrtakFunction.tenantId);
                                         call.enqueue(new Callback<List<String>>() {
                                             @Override
@@ -805,7 +796,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                                             });
                                                         }
                                                     } /*else
-                                                                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);*/
+                                                                        MessageBox.showAlert(MainActivity2.this, "Kayıt bulunamamıştır..", false);*/
                                                 }
 
                                             }
@@ -813,21 +804,20 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                             @Override
                                             public void onFailure(Call<List<String>> call, Throwable t) {
                                                 progressDoalog.dismiss();
-                                                //  MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                                                //  MessageBox.showAlert(MainActivity2.this, "Hata Oluştu.. " + t.getMessage(), false);
                                             }
                                         });
-                                        //  }
 
 
                                     } /*else
-                                                MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);*/
+                                                MessageBox.showAlert(MainActivity2.this, "Kayıt bulunamamıştır..", false);*/
                                 }
                             }
 
                             @Override
                             public void onFailure(Call<List<Sube>> call2, Throwable t) {
                                 progressDoalog.dismiss();
-                                //  MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                                //  MessageBox.showAlert(MainActivity2.this, "Hata Oluştu.. " + t.getMessage(), false);
                             }
                         });
 
@@ -835,7 +825,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
 
                     } /*else
-                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);*/
+                        MessageBox.showAlert(MainActivity2.this, "Kayıt bulunamamıştır..", false);*/
 
                 }
             }
@@ -843,7 +833,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onFailure(Call<List<Urun>> call, Throwable t) {
                 progressDoalog.dismiss();
-                // MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                // MessageBox.showAlert(MainActivity2.this, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
 
@@ -873,7 +863,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void onResponse(Call<String> call, Response<String> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                    // MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                    // MessageBox.showAlert(MainActivity2.this, "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -885,14 +875,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                             gelenObject = new JSONObject(gelenProcessId);
                             db.siparisDao().updateSiparisProcessId(Long.valueOf(gelenObject.getString("processInstanceId")), item.getId());
 
-                            //  MessageBox.showAlert(MainActivity.this, "Sipariş süreci başarılı bir şekilde başlatılmıştır.", false);
+                            //  MessageBox.showAlert(MainActivity2.this, "Sipariş süreci başarılı bir şekilde başlatılmıştır.", false);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
 
                     } /*else
-                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);*/
+                        MessageBox.showAlert(MainActivity2.this, "Kayıt bulunamamıştır..", false);*/
                 }
 
                 try {
@@ -906,7 +896,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 progressDoalog.dismiss();
-                //  MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                //  MessageBox.showAlert(MainActivity2.this, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
 
@@ -931,7 +921,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 public void onResponse(Call<String> call, Response<String> response) {
                     if (!response.isSuccessful()) {
                         progressDoalog.dismiss();
-                        // MessageBox.showAlert(MainActivity.this, "Ürüne ait bilgiler alınırken hata oluştu...", false);
+                        // MessageBox.showAlert(MainActivity2.this, "Ürüne ait bilgiler alınırken hata oluştu...", false);
                         return;
                     }
                     if (response.isSuccessful()) {
@@ -993,14 +983,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
 
                         } /*else
-                            MessageBox.showAlert(MainActivity.this, "Ürün-fiyat listesi bulunamamıştır..", false);*/
+                            MessageBox.showAlert(MainActivity2.this, "Ürün-fiyat listesi bulunamamıştır..", false);*/
                     }
                 }
 
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
                     progressDoalog.dismiss();
-                    // MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                    // MessageBox.showAlert(MainActivity2.this, "Hata Oluştu.. " + t.getMessage(), false);
                 }
             });
         }
@@ -1017,7 +1007,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void onResponse(Call<String> call, Response<String> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                    //  MessageBox.showAlert(MainActivity.this, "İl verisi alınırken  hata oluştu...", false);
+                    //  MessageBox.showAlert(MainActivity2.this, "İl verisi alınırken  hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -1048,7 +1038,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                     public void onResponse(Call<String> call, Response<String> response) {
                                         if (!response.isSuccessful()) {
                                             progressDoalog.dismiss();
-                                            //  MessageBox.showAlert(MainActivity.this, "İlçe verisi alınırken hata oluştu...", false);
+                                            //  MessageBox.showAlert(MainActivity2.this, "İlçe verisi alınırken hata oluştu...", false);
                                             return;
                                         }
                                         if (response.isSuccessful()) {
@@ -1075,7 +1065,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
 
                                             }/* else
-                                                MessageBox.showAlert(MainActivity.this, "Ürün-fiyat listesi bulunamamıştır..", false);*/
+                                                MessageBox.showAlert(MainActivity2.this, "Ürün-fiyat listesi bulunamamıştır..", false);*/
                                         }
 
                                     }
@@ -1083,7 +1073,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                     @Override
                                     public void onFailure(Call<String> call, Throwable t) {
                                         progressDoalog.dismiss();
-                                        //  MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                                        //  MessageBox.showAlert(MainActivity2.this, "Hata Oluştu.. " + t.getMessage(), false);
                                     }
                                 });
                             }
@@ -1094,7 +1084,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
 
                     } /*else
-                        MessageBox.showAlert(MainActivity.this, "Ürün-fiyat listesi bulunamamıştır..", false);*/
+                        MessageBox.showAlert(MainActivity2.this, "Ürün-fiyat listesi bulunamamıştır..", false);*/
                     getBolgeList();
 
                 }
@@ -1103,7 +1093,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 progressDoalog.dismiss();
-                // MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                // MessageBox.showAlert(MainActivity2.this, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
 
@@ -1126,39 +1116,55 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
 
     List<UrunSube> gelenUrunSubeList = null;
-
-    public void getUruneGoreSubeService(final String urunId) {
+    public void getUruneGoreSubeService(List<Urun> urunList) {
         RefrofitRestApi refrofitRestApi = OrtakFunction.refrofitRestApiSetting();
-        progressDoalog.show();
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.setDateFormat("M/d/yy hh:mm a");
-        final Gson gson = gsonBuilder.create();
-        Call<List<UrunSube>> call = refrofitRestApi.getUrunSube("hy/urun/urunSubeler/" + urunId, OrtakFunction.authorization, OrtakFunction.tenantId);
-        call.enqueue(new Callback<List<UrunSube>>() {
-            @Override
-            public void onResponse(Call<List<UrunSube>> call, Response<List<UrunSube>> response) {
-                if (!response.isSuccessful()) {
-                    //  progressDoalog.dismiss();
-                    //  MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
-                    return;
-                }
-                if (response.isSuccessful()) {
-                    progressDoalog.dismiss();
-                    gelenUrunSubeList = response.body();
-                    if (gelenUrunSubeList != null) {
-                        final List<Long> kayitList = db.urunSubeDao().setUrunSubeList(gelenUrunSubeList);
+        for (Urun urun : urunList) {
+            if (urun.getId() != null) {
+                progressDoalog.show();
+                GsonBuilder gsonBuilder = new GsonBuilder();
+                gsonBuilder.setDateFormat("M/d/yy hh:mm a");
+                final Gson gson = gsonBuilder.create();
+                Call<List<UrunSube>> call = refrofitRestApi.getUrunSube("hy/urun/urunSubeler/" + urun.getId(), OrtakFunction.authorization, OrtakFunction.tenantId);
+                call.enqueue(new Callback<List<UrunSube>>() {
+                    @Override
+                    public void onResponse(Call<List<UrunSube>> call, Response<List<UrunSube>> response) {
+                        if (!response.isSuccessful()) {
+                            progressDoalog.dismiss();
+                            //  MessageBox.showAlert(MainActivity2.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                            return;
+                        }
+                        if (response.isSuccessful()) {
+                            gelenUrunSubeList = response.body();
+                            if (gelenUrunSubeList != null) {
+                                // final List<Long> kayitList = db.urunSubeDao().setUrunSubeList(gelenUrunSubeList)
+                                for (UrunSube item : gelenUrunSubeList) {
+                                    List<UrunSube> urunSubeVarMi = db.urunSubeDao().getUrunSubeForId(item.getId());
+                                    if (urunSubeVarMi.size() > 0) {
+                                        item.setSenkronEdildi(true);
+                                        item.setMustId(urunSubeVarMi.get(0).getMustId());
+                                        item.setSubeMid(urunSubeVarMi.get(0).getSubeMid());
+                                        item.setUrunMid(urunSubeVarMi.get(0).getUrunMid());
+                                        item.setMid(urunSubeVarMi.get(0).getMid());
+                                        db.urunSubeDao().updateUrunSube(item);
+                                    } else
+                                        db.urunSubeDao().setUrunSube(item);
+                                }
+                                progressDoalog.dismiss();
 
-                    } else
-                        MessageBox.showAlert(MainActivity.this, "Ürün-fiyat listesi bulunamamıştır..", false);
-                }
-            }
 
-            @Override
-            public void onFailure(Call<List<UrunSube>> call, Throwable t) {
-                progressDoalog.dismiss();
-                // MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                            } else
+                                MessageBox.showAlert(MainActivity.this, "Ürün-fiyat listesi bulunamamıştır..", false);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<UrunSube>> call, Throwable t) {
+                        progressDoalog.dismiss();
+                        // MessageBox.showAlert(MainActivity2.this, "Hata Oluştu.. " + t.getMessage(), false);
+                    }
+                });
             }
-        });
+        }
 
     }
 
@@ -1172,7 +1178,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void onResponse(Call<List<String>> call, Response<List<String>> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                    //  MessageBox.showAlert(MainActivity.this, "Bölge listesi alınırken hata oluştu...", false);
+                    //  MessageBox.showAlert(MainActivity2.this, "Bölge listesi alınırken hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -1188,14 +1194,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
                         }
                     } /*else
-                       MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);*/
+                       MessageBox.showAlert(MainActivity2.this, "Kayıt bulunamamıştır..", false);*/
                 }
             }
 
             @Override
             public void onFailure(Call<List<String>> call, Throwable t) {
                 progressDoalog.dismiss();
-                //  MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                //  MessageBox.showAlert(MainActivity2.this, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
     }
@@ -1274,7 +1280,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void onResponse(Call<Siparis> call, Response<Siparis> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                    // MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                    // MessageBox.showAlert(MainActivity2.this, "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -1317,7 +1323,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onFailure(Call<Siparis> call, Throwable t) {
                 progressDoalog.dismiss();
-                //  MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                //  MessageBox.showAlert(MainActivity2.this, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
     }
@@ -1371,7 +1377,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void onResponse(Call<String> call, Response<String> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                    // MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                    // MessageBox.showAlert(MainActivity2.this, "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -1391,7 +1397,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                     public void onResponse(Call<List<SiparisDetay>> call, Response<List<SiparisDetay>> response) {
                                         if (!response.isSuccessful()) {
                                             progressDoalog.dismiss();
-                                            //MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                                            //MessageBox.showAlert(MainActivity2.this, "Servisle bağlantı sırasında hata oluştu...", false);
                                             return;
                                         }
                                         if (response.isSuccessful()) {
@@ -1405,7 +1411,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                     @Override
                                     public void onFailure(Call<List<SiparisDetay>> call, Throwable t) {
                                         progressDoalog.dismiss();
-                                        //  MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                                        //  MessageBox.showAlert(MainActivity2.this, "Hata Oluştu.. " + t.getMessage(), false);
                                     }
                                 });*/
 
@@ -1423,7 +1429,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 progressDoalog.dismiss();
-                //  MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                //  MessageBox.showAlert(MainActivity2.this, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
 
@@ -1442,7 +1448,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void onResponse(Call<List<Siparis>> call, Response<List<Siparis>> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                    // MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                    // MessageBox.showAlert(MainActivity2.this, "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -1473,7 +1479,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                         public void onResponse(Call<List<SiparisDetay>> call, Response<List<SiparisDetay>> response) {
                                             if (!response.isSuccessful()) {
                                                 progressDoalog.dismiss();
-                                                //  MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                                                //  MessageBox.showAlert(MainActivity2.this, "Servisle bağlantı sırasında hata oluştu...", false);
                                                 return;
                                             }
                                             if (response.isSuccessful()) {
@@ -1512,7 +1518,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                         @Override
                                         public void onFailure(Call<List<SiparisDetay>> call, Throwable t) {
                                             progressDoalog.dismiss();
-                                            // MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                                            // MessageBox.showAlert(MainActivity2.this, "Hata Oluştu.. " + t.getMessage(), false);
                                         }
                                     });
 
@@ -1525,7 +1531,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
 
                     } /*else
-                        MessageBox.showAlert(MainActivity.this, "Kayıt bulunamamıştır..", false);*/
+                        MessageBox.showAlert(MainActivity2.this, "Kayıt bulunamamıştır..", false);*/
                 }
 
             }
@@ -1533,7 +1539,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onFailure(Call<List<Siparis>> call, Throwable t) {
                 progressDoalog.dismiss();
-                // MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                // MessageBox.showAlert(MainActivity2.this, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
 
@@ -1552,7 +1558,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void onResponse(Call<List<Musteri>> call, Response<List<Musteri>> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                    //  //  MessageBox.showAlert(MainActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                    //  //  MessageBox.showAlert(MainActivity2.this, "Servisle bağlantı sırasında hata oluştu...", false);
                     return;
                 }
                 if (response.isSuccessful()) {
@@ -1592,7 +1598,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onFailure(Call<List<Musteri>> call, Throwable t) {
                 progressDoalog.dismiss();
-                // MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                // MessageBox.showAlert(MainActivity2.this, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
     }
@@ -1662,7 +1668,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onFailure(Call<List<Kaynak>> call, Throwable t) {
                 progressDoalog.dismiss();
-                // MessageBox.showAlert(MainActivity.this, "Hata Oluştu.. " + t.getMessage(), false);
+                // MessageBox.showAlert(MainActivity2.this, "Hata Oluştu.. " + t.getMessage(), false);
             }
         });
 
@@ -1771,13 +1777,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     public void onResume() {
         super.onResume();
         FragmentManager fm = getSupportFragmentManager();
-        if(fm.getFragments() != null && fm.getFragments().get(0).toString().contains("GorevlerimFragment2")) {
+        if (fm.getFragments() != null && fm.getFragments().get(0).toString().contains("GorevlerimFragment2")) {
             GorevlerimFragment2 fragment = (GorevlerimFragment2) fm.findFragmentById(R.id.fragment_container);
             fragment.urunEkleGorevTamamla();
         }
     }
-
-
 
 
 }

@@ -107,6 +107,7 @@ public interface RefrofitRestApi {
     @POST("hy/urun")
     Call<Urun> postUrun (@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body Urun urun);
 
+    @PUT()
     Call<Urun> putUrun (@Url String url, @Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body Urun urun);
 
     @GET() //hy/urun/urunSubeler/1
@@ -114,6 +115,9 @@ public interface RefrofitRestApi {
 
     @POST("hy/urun/subeyeUrunEkle")
     Call<UrunSube> postUruneSubeEkle (@Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body UrunSube urunSube);
+
+    @PUT()
+    Call<UrunSube> putUruneSubeEkle (@Url String url, @Header("Authorization") String auth, @Header("tenant-id") String tenantId, @Body UrunSube urunSube);
 
     @Headers({"Content-Type: application/json"})
     @PUT("hy/urun/urunFiyatKaydet")

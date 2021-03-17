@@ -211,7 +211,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<String> call, Response<String> response) {
                 if (!response.isSuccessful()) {
                     progressDoalog.dismiss();
-                   // MessageBox.showAlert(LoginActivity.this, "Servisle bağlantı sırasında hata oluştu...", false);
+                   // MessageBox.showAlert(LoginActivity2.this, "Servisle bağlantı sırasında hata oluştu...", false);
                     Intent i = new Intent(LoginActivity.this, MainActivity.class);
                     i.putExtra("login" , "login");
                     startActivity(i);
@@ -260,11 +260,11 @@ public class LoginActivity extends AppCompatActivity {
                         Intent i = new Intent(LoginActivity.this, MainActivity.class);
                         i.putExtra("login" , "login");
                         startActivity(i);
-                        // Toast.makeText(LoginActivity.this, " " + "Giriş başarılı..", Toast.LENGTH_SHORT).show();
+                        // Toast.makeText(LoginActivity2.this, " " + "Giriş başarılı..", Toast.LENGTH_SHORT).show();
 
 
                     } /*else
-                        MessageBox.showAlert(LoginActivity.this, "Kayıt bulunamamıştır..", false);*/
+                        MessageBox.showAlert(LoginActivity2.this, "Kayıt bulunamamıştır..", false);*/
                 }
             }
 

@@ -538,7 +538,7 @@ public class SiparisActivity extends AppCompatActivity {
                     Intent i = null;
                     switch (item.getItemId()) {
                        /* case R.id.nav_home:
-                            i = new Intent(SiparisActivity.this, MainActivity.class);
+                            i = new Intent(SiparisActivity.this, MainActivity2.class);
                             i.putExtra("gelenPage", "anasayfa");
                             startActivity(i);
                             break;*/
@@ -548,7 +548,7 @@ public class SiparisActivity extends AppCompatActivity {
                             startActivity(i);
                             break;
                         /*case R.id.nav_siparis:
-                            i = new Intent(SiparisActivity.this, MainActivity.class);
+                            i = new Intent(SiparisActivity.this, MainActivity2.class);
                             i.putExtra("gelenPage", "sipariş");
                             startActivity(i);
                             break;*/

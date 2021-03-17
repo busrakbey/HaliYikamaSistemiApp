@@ -51,4 +51,7 @@ public interface UrunDao {
     @Query("UPDATE URUN SET id = :id , senkronEdildi = :senkronEdildiMi WHERE mid = :mid")
     int updateUrunQuery(Long mid, Long id, Boolean senkronEdildiMi);
 
+    @Query("SELECT * FROM URUN where senkronEdildi = 0")
+    List<Urun> getSenkronEdilmeyenAll();
+
 }

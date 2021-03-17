@@ -173,9 +173,9 @@ public class OrtakFunction {
                                 public void run() {
                                     if (Integer.valueOf(String.valueOf(finalyeniKayit)) > 0) {
                                         tokenControl(context);
+
                                         if (authorization != null)
                                             ((LoginActivity) context).getCurrentUserFromService(tenantId, password);
-
 
                                     }
                                 }

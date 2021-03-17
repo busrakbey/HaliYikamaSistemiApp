@@ -19,8 +19,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.SEND_SMS"/>
-    <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
-        tools:ignore="ProtectedPermissions"/>
+
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"></uses-permission>
     <uses-permission android:name="android.permission.GET_ACCOUNTS"></uses-permission>
     <uses-permission android:name="android.permission.USE_CREDENTIALS"></uses-permission>
@@ -53,17 +52,6 @@
                 <action android:name="android.intent.action.CALL" />
             </intent-filter>
         </activity>
-
-
-        <service android:name=".ToolLayer.UdinicAuthenticatorService">
-        <intent-filter>
-
-        <action android:name="android.accounts.AccountAuthenticator"/>
-
-    </intent-filter>
-        <meta-data android:name="android.accounts.AccountAuthenticator" android:resource="@xml/authenticator"/>
-
-    </service>
 
 
 
@@ -121,17 +109,7 @@
 
         <activity android:name=".UI.SiparisActivity"></activity>
 
-
-        <activity android:name=".ToolLayer.SignUpActivity"></activity>
-
-
-
-
-
-
-
-
-
+        <activity android:name=".UI.UrunTanimlamaKayitActivity"></activity>
 
 
 

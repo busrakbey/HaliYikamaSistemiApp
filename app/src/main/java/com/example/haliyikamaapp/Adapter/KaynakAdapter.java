@@ -78,21 +78,17 @@ public class KaynakAdapter extends RecyclerView.Adapter<KaynakAdapter.MyViewHold
         holder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
             public boolean onLongClick(View arg0) {
 
-                if (data.get(position).getKaynakTuru() != null && !data.get(position).getKaynakTuru().equalsIgnoreCase("Araç")) {
-                    MessageBox.showAlert(mContext, "Yalnızca araç türündeki kaynağı seçebilirsiniz.", false);
-
-                } else {
+                if (data.get(position).getSecilenKaynakMi() != null && data.get(position).getSecilenKaynakMi() == true) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                     builder.setTitle("Sistem");
-                    builder.setMessage("Kaynak seçilecektir. Devam etmek istiyor musunuz?");
+                    builder.setMessage("Kaynak seçimden kaldırılacaktır. Devam etmek istiyor musunuz?");
                     builder.setNegativeButton("Hayır", null);
                     builder.setPositiveButton("Evet", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             int xx = db.kaynakDao().updateSecilenKaynakMiAll();
-                            int yy = db.kaynakDao().updateSecilenKaynakMi(data.get(position).getMid(), true);
-                            if (xx > 0 && yy > 0) {
-                                MessageBox.showAlert(mContext, "Kaynak seçimi başarılı bir şekilde gerçekleşmiştir.", false);
+                            if (xx > 0) {
+                                MessageBox.showAlert(mContext, "Kaynak başarılı bir şekilde kaldırılmıştır.", false);
                                 ((KaynakActivity) mContext).get_list();
                             }
 
@@ -100,8 +96,32 @@ public class KaynakAdapter extends RecyclerView.Adapter<KaynakAdapter.MyViewHold
                         }
                     });
                     builder.show();
-                }
+                } else {
 
+                    if (data.get(position).getKaynakTuru() != null && !data.get(position).getKaynakTuru().equalsIgnoreCase("Araç")) {
+                        MessageBox.showAlert(mContext, "Yalnızca araç türündeki kaynağı seçebilirsiniz.", false);
+
+                    } else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                        builder.setTitle("Sistem");
+                        builder.setMessage("Kaynak seçilecektir. Devam etmek istiyor musunuz?");
+                        builder.setNegativeButton("Hayır", null);
+                        builder.setPositiveButton("Evet", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                int xx = db.kaynakDao().updateSecilenKaynakMiAll();
+                                int yy = db.kaynakDao().updateSecilenKaynakMi(data.get(position).getMid(), true);
+                                if (xx > 0 && yy > 0) {
+                                    MessageBox.showAlert(mContext, "Kaynak seçimi başarılı bir şekilde gerçekleşmiştir.", false);
+                                    ((KaynakActivity) mContext).get_list();
+                                }
+
+
+                            }
+                        });
+                        builder.show();
+                    }
+                }
                 return true;
             }
 

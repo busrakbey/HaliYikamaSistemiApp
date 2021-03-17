@@ -7,8 +7,8 @@
     android:layout_height="match_parent"
     android:background="@drawable/ic_bg_top"
     android:clipChildren="true"
-    android:focusableInTouchMode="true"
     android:fitsSystemWindows="true"
+    android:focusableInTouchMode="true"
     tools:context="com.example.haliyikamaapp.UI.MainActivity">
 
 
@@ -42,7 +42,7 @@
                 android:fontFamily="@font/museosans"
                 android:text="Ürüne Ait Şubeler"
                 android:textColor="@color/text"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 app:fontFamily="@font/segoeuib" />
 
@@ -101,16 +101,6 @@
                                 android:inputType="text" />
                         </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/signup_text_margin_top">
-
-                            <Spinner
-                                android:id="@+id/urune_ait_sube_spinner"
-                                style="@style/modifiedEditText"
-                                android:hint="İl" />
-                        </com.google.android.material.textfield.TextInputLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -119,9 +109,21 @@
                             android:layout_weight="1"
                             android:orientation="horizontal">
 
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/signup_text_margin_top"
+                                android:layout_weight="0.5">
+
+                                <Spinner
+                                    android:id="@+id/urune_ait_sube_spinner"
+                                    style="@style/modifiedEditText"
+                                    android:hint="İl" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
 
                             <com.google.android.material.textfield.TextInputLayout
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/signup_text_margin_top"
 
@@ -133,8 +135,22 @@
                                     android:layout_weight="0.5"
                                     android:hint="İlçe" />
                             </com.google.android.material.textfield.TextInputLayout>
+
                         </LinearLayout>
 
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/parent"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="@dimen/signup_text_margin_top"
+                            android:layout_weight="0.5">
+
+                            <EditText
+                                android:id="@+id/urune_ait_fiyat"
+                                style="@style/modifiedEditText"
+                                android:hint="Fiyat"
+                                android:inputType="numberDecimal" />
+                        </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
                             style="@style/parent"
@@ -168,7 +184,6 @@
                                 android:id="@+id/sube_kayit_button"
                                 style="@style/loginButton"
                                 android:layout_width="wrap_content"
-                                android:layout_marginLeft="100dp"
                                 android:layout_marginTop="@dimen/signup_text_margin_top"
                                 android:layout_weight="0.5"
                                 android:onClick="uruneAitSubeKayitOnClick"
@@ -191,7 +206,8 @@
                     android:layout_weight="1"
                     android:background="@drawable/shadow"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
 
                     <LinearLayout
@@ -284,15 +300,16 @@
 
 
                 </LinearLayout>
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/urune_ait_sube_listview"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    tools:visibility="gone" />
             </LinearLayout>
 
         </RelativeLayout>
-
-
 
 
     </ScrollView>

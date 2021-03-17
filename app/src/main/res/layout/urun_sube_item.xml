@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="7dp"
+    android:layout_margin="2dp"
     android:background="@drawable/shadow">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
         android:layout_weight="1"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -31,10 +30,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:layout_weight="0.9"
+                android:gravity="center"
                 android:text="Ürün Adı"
                 android:textColor="@color/mr_toolbar2"
                 android:textSize="@dimen/text_size_medium"
                 android:textStyle="bold" />
+
+            <View
+                style="@style/listTable_satirAyracView"
+                android:layout_height="30dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"></View>
 
             <TextView
                 android:id="@+id/urun_birim_item"
@@ -42,10 +48,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:layout_weight="0.9"
+                android:gravity="center"
                 android:text="Ürün Adı"
                 android:textColor="@color/mr_toolbar2"
                 android:textSize="@dimen/text_size_medium"
                 android:textStyle="bold" />
+
+            <View
+                style="@style/listTable_satirAyracView"
+                android:layout_height="30dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"></View>
 
             <TextView
                 android:id="@+id/urun_durum_item"
@@ -53,10 +66,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:layout_weight="0.9"
+                android:gravity="center"
                 android:text="Ürün Adı"
                 android:textColor="@color/mr_toolbar2"
                 android:textSize="@dimen/text_size_medium"
                 android:textStyle="bold" />
+
+            <View
+                android:id="@+id/view"
+                style="@style/listTable_satirAyracView"
+                android:layout_height="30dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"></View>
 
             <TextView
                 android:id="@+id/urun_fiyat_item"
@@ -64,6 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:layout_weight="0.9"
+                android:gravity="center"
                 android:text="Ürün Adı"
                 android:textColor="@color/mr_toolbar2"
                 android:textSize="@dimen/text_size_medium"
@@ -76,7 +98,8 @@
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:orientation="horizontal"
-            android:padding="5dp">
+            android:padding="5dp"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/urun_fiyat_ekle"
@@ -84,7 +107,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="15dp"
                 android:src="@drawable/money"
-                android:visibility="visible" />
+                android:visibility="visible"
+                tools:visibility="gone" />
 
 
         </LinearLayout>

@@ -11,7 +11,7 @@ import java.util.List;
 
 @Dao
 public interface GorevlerDao {
-    @Query("SELECT * FROM GOREVLER order by taskCreateTime desc")
+    @Query("SELECT * FROM GOREVLER order by taskId desc")
     List<Gorevler> getGorevAll();
 
     @Query("SELECT * FROM GOREVLER where kaynakId = :kaynakId order by taskCreateTime desc")
@@ -25,10 +25,6 @@ public interface GorevlerDao {
             " :parameter || '%')  and (siparisDurumu in (:siparisDurumu)) order by taskCreateTime desc")
     List<Gorevler> getquery(String parameter,List<String> siparisDurumu, Long kaynakId);
 
-
-
-
-
     @Query("SELECT g.* FROM GOREVLER g JOIN MUSTERI m ON g.musteriId = m.id  where  kaynakId = :kaynakId and " +
             "(m.musteriAdi LIKE :parameter || '%' or m.bolge LIKE  :parameter || '%' or m.telefonNumarasi LIKE '%' ||" +
             " :parameter || '%')  and (siparisTarihi > :siparisTarihi) and (siparisDurumu in (:siparisDurumu)) order by taskCreateTime desc")
@@ -39,6 +35,26 @@ public interface GorevlerDao {
             "(m.musteriAdi LIKE :parameter || '%' or m.bolge LIKE  :parameter || '%' or m.telefonNumarasi LIKE '%' ||" +
             " :parameter || '%') and ((siparisTarihi <= :siparisTarihi) ) and (siparisDurumu in (:siparisDurumu))  order by taskCreateTime desc ")
     List<Gorevler> getGorevQueryPrameterTeslimAlmaTarihi(String parameter,List<String> siparisDurumu, String siparisTarihi, Long kaynakId);
+
+
+    @Query("SELECT q1.* from (SELECT * FROM GOREVLER g JOIN MUSTERI m ON g.musteriId = m.id   where  g.kaynakId = :kaynakId and" +
+            " (m.musteriAdi LIKE :parameter || '%' or m.bolge LIKE  :parameter || '%' or m.telefonNumarasi LIKE '%' || :parameter || '%')  and " +
+            "(siparisDurumu in (:siparisDurumu)) UNION all " +
+            "SELECT *  FROM GOREVLER g JOIN MUSTERI m ON g.musteriId = m.id    where    (g.taskName ='Yikama' or g.taskName = 'Araca Yükle') " +
+            "and g.kaynakId != :kaynakId and" +
+            "(m.musteriAdi LIKE :parameter || '%' or m.bolge LIKE  :parameter || '%' or m.telefonNumarasi LIKE '%' || :parameter || '%')  and " +
+            "(siparisDurumu in (:siparisDurumu)) ) q1 order by q1.taskCreateTime desc")
+    List<Gorevler> getYikamaAllAndKaynakId (String parameter,List<String> siparisDurumu,Long kaynakId);
+
+    @Query("SELECT q1.* from (SELECT * FROM GOREVLER g    where  g.kaynakId = :kaynakId  UNION all " +
+            "SELECT *  FROM GOREVLER g    where    (g.taskName ='Yikama' or g.taskName = 'Araca Yükle') and g.kaynakId != :kaynakId) q1 order by q1.taskCreateTime desc")
+    List<Gorevler> getYikamaAllForKaynakId (Long kaynakId);
+
+
+    @Query("SELECT g.* FROM GOREVLER g JOIN MUSTERI m ON g.musteriId = m.id  where  " +
+            "(m.musteriAdi LIKE :parameter || '%' or m.bolge LIKE  :parameter || '%' or m.telefonNumarasi LIKE '%' ||" +
+            " :parameter || '%')  and (siparisDurumu in (:siparisDurumu)) order by taskCreateTime desc")
+    List<Gorevler> getGorevAllForQuery(String parameter,List<String> siparisDurumu);
 
 
     @Insert

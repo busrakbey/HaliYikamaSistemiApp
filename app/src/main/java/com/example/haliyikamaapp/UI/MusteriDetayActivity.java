@@ -146,7 +146,7 @@ public class MusteriDetayActivity extends AppCompatActivity {
                     Intent i = null;
                     switch (item.getItemId()) {
                        /* case R.id.nav_home:
-                            i = new Intent(MusteriDetayActivity.this, MainActivity.class);
+                            i = new Intent(MusteriDetayActivity.this, MainActivity2.class);
                             i.putExtra("gelenPage", "anasayfa");
                             startActivity(i);
                             break;*/
@@ -156,7 +156,7 @@ public class MusteriDetayActivity extends AppCompatActivity {
                             startActivity(i);
                             break;
                        /* case R.id.nav_siparis:
-                            i = new Intent(MusteriDetayActivity.this, MainActivity.class);
+                            i = new Intent(MusteriDetayActivity.this, MainActivity2.class);
                             i.putExtra("gelenPage", "sipariş");
                             startActivity(i);
                             break;*/

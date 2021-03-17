@@ -63,9 +63,9 @@ public class HomeFragment extends Fragment {
              /*   Fragment selectedFragment = new MusteriFragment();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         selectedFragment).commit();
-                ((MainActivity) getActivity()).initToolBar("Müşteri");
-                ((MainActivity) getActivity()).ekleButon.setVisibility(View.VISIBLE);
-                ((MainActivity) getActivity()).click_ekle_button("Müşteri");*/
+                ((MainActivity2) getActivity()).initToolBar("Müşteri");
+                ((MainActivity2) getActivity()).ekleButon.setVisibility(View.VISIBLE);
+                ((MainActivity2) getActivity()).click_ekle_button("Müşteri");*/
                 ((MainActivity) getActivity()).bottomNavigationView.setSelectedItemId(R.id.nav_musteri);
 
             }
@@ -78,10 +78,10 @@ public class HomeFragment extends Fragment {
                 /*Fragment selectedFragment = new SiparisFragment();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         selectedFragment).commit();
-                ((MainActivity) getActivity()).initToolBar("Sipariş");
-                ((MainActivity) getActivity()).ekleButon.setVisibility(View.VISIBLE);
-                ((MainActivity) getActivity()).click_ekle_button("Sipariş");*/
-             //   ((MainActivity) getActivity()).bottomNavigationView.setSelectedItemId(R.id.nav_siparis);
+                ((MainActivity2) getActivity()).initToolBar("Sipariş");
+                ((MainActivity2) getActivity()).ekleButon.setVisibility(View.VISIBLE);
+                ((MainActivity2) getActivity()).click_ekle_button("Sipariş");*/
+             //   ((MainActivity2) getActivity()).bottomNavigationView.setSelectedItemId(R.id.nav_siparis);
 
 
             }
@@ -95,8 +95,8 @@ public class HomeFragment extends Fragment {
                /* Fragment selectedFragment = new MusteriGorevlerimFragment();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         selectedFragment).commit();
-                ((MainActivity) getActivity()).initToolBar("Görevlerim");
-                ((MainActivity) getActivity()).ekleButon.setVisibility(View.VISIBLE);*/
+                ((MainActivity2) getActivity()).initToolBar("Görevlerim");
+                ((MainActivity2) getActivity()).ekleButon.setVisibility(View.VISIBLE);*/
                 ((MainActivity) getActivity()).bottomNavigationView.setSelectedItemId(R.id.nav_musterigorevlerim);
 
             }

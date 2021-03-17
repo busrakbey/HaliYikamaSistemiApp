@@ -61,4 +61,7 @@ public interface KaynakDao {
     @Query("UPDATE KAYNAK set secilenKaynakMi = :durum where mid = :mid")
     int updateSecilenKaynakMi(Long mid, Boolean durum);
 
+
+
+
 }

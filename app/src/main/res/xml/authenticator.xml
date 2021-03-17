@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <account-authenticator xmlns:android="http://schemas.android.com/apk/res/android"
-                       android:accountType="com.example.haliyikamaapp"
-                       android:icon="@drawable/login_logo"
-                       android:smallIcon="@drawable/login_logo"
-                       android:label="uuuu"
-                       android:accountPreferences="@xml/prefs"/>
+    android:accountType=" com.example.haliyikamaapp"
+    android:icon="@drawable/login_logo"
+    android:label="@string/app_name"
+    android:smallIcon="@drawable/login_logo" />

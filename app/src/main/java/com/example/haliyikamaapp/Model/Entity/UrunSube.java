@@ -48,6 +48,9 @@ public class UrunSube {
     @ColumnInfo(name = "tenantId")
     public Long tenantId;
 
+    @ColumnInfo(name = "fiyat")
+    public Double fiyat;
+
     @ColumnInfo(name = "senkronEdildi")
     public Boolean senkronEdildi;
 
@@ -155,5 +158,13 @@ public class UrunSube {
 
     public void setSubeMid(Long subeMid) {
         this.subeMid = subeMid;
+    }
+
+    public Double getFiyat() {
+        return fiyat;
+    }
+
+    public void setFiyat(Double fiyat) {
+        this.fiyat = fiyat;
     }
 }

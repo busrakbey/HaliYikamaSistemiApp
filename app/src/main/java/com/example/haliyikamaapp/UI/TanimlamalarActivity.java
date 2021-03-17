@@ -185,7 +185,7 @@ TanimlamalarActivity extends AppCompatActivity {
                     Intent i = null;
                     switch (item.getItemId()) {
                      /*   case R.id.nav_home:
-                            i = new Intent(TanimlamalarActivity.this, MainActivity.class);
+                            i = new Intent(TanimlamalarActivity.this, MainActivity2.class);
                             i.putExtra("gelenPage", "anasayfa");
                             startActivity(i);
                             break;*/
@@ -195,7 +195,7 @@ TanimlamalarActivity extends AppCompatActivity {
                             startActivity(i);
                             break;
                       /*  case R.id.nav_siparis:
-                            i = new Intent(TanimlamalarActivity.this, MainActivity.class);
+                            i = new Intent(TanimlamalarActivity.this, MainActivity2.class);
                             i.putExtra("gelenPage", "sipariş");
                             startActivity(i);
                             break;*/

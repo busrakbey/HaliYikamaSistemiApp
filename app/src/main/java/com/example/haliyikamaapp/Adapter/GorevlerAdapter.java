@@ -87,7 +87,9 @@ public class GorevlerAdapter extends RecyclerView.Adapter<GorevlerAdapter.MyView
             //  holder.tarih_item.setText(f.format(date));
         }
 
-        holder.siparis_sube_adi.setText(data.get(position).getSubeAdi() != null ? data.get(position).getSubeAdi() : "");
+        holder.siparis_sube_adi.setText((data.get(position).getSubeAdi() != null ? data.get(position).getSubeAdi() : "" )+ " / " +
+                (data.get(position).getKaynakAdi() != null ? data.get(position).getKaynakAdi() : ""));
+
         holder.siparis_tutari_item.setText(data.get(position).getTaskDescription());
         holder.sipariş_durumu_item.setText(data.get(position).getTaskName());
         holder.siparis_no_item.setText("\n000" + data.get(position).getSiparisId().toString() + "\n");

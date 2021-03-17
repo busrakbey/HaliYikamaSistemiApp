@@ -116,12 +116,12 @@ public class SiparisAdapter extends RecyclerView.Adapter<SiparisAdapter.MyViewHo
         if (musteriListId.size() > 0) {
             holder.adres_item.setText((musteriListId.get(0).getAdres() != null ? musteriListId.get(0).getAdres() : "") + " / " +
                     (musteriListId.get(0).getBolge() != null ? musteriListId.get(0).getBolge() : ""));
-            holder.musteri_adi.setText(musteriListId.get(0).getMusteriAdi() + " " + musteriListId.get(0).getMusteriSoyadi());
+            holder.musteri_adi.setText(musteriListId.get(0).getMusteriAdi() );
         } else {
             musteriListId = db.musteriDao().getMusteriForMid(itemsFiltered.get(position).getMusteriMid());
             holder.adres_item.setText((musteriListId.get(0).getAdres() != null ? musteriListId.get(0).getAdres() : "") + " / " +
                     (musteriListId.get(0).getBolge() != null ? musteriListId.get(0).getBolge() : ""));
-            holder.musteri_adi.setText(musteriListId.get(0).getMusteriAdi() + " " + musteriListId.get(0).getMusteriSoyadi());
+            holder.musteri_adi.setText(musteriListId.get(0).getMusteriAdi());
 
         }
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -51,13 +52,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="15dp"
                 android:src="@drawable/money"
-                android:visibility="gone" />
+                android:visibility="gone"
+                tools:visibility="gone" />
 
             <ImageView
                 android:id="@+id/urun_detay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_edit" />
+                android:src="@android:drawable/ic_menu_edit"
+                android:visibility="gone"
+                tools:visibility="gone" />
 
             <ImageView
                 android:id="@+id/sube_senkron_et"

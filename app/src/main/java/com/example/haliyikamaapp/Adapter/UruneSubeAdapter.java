@@ -37,6 +37,7 @@ public class UruneSubeAdapter extends RecyclerView.Adapter<UruneSubeAdapter.MyVi
     @Override
     public UruneSubeAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.urun_sube_item, parent, false);
+        itemView.getContext();
         return new UruneSubeAdapter.MyViewHolder(itemView);
     }
 
@@ -47,25 +48,28 @@ public class UruneSubeAdapter extends RecyclerView.Adapter<UruneSubeAdapter.MyVi
         holder.urun_adi_item.setText(data.get(position).getSubeAdi());
 
         holder.urun_birim_item.setText(db.olcuBirimDao().getOlcuBirimForId(data.get(position).getOlcuBirimId()).get(0).getOlcuBirimi());
-      /*  holder.urun_fiyat_item.setText(db.urunFiyatDao().getForUrunSubeId(data.get(position).getId()).get(0).getBirimFiyat() != null ?
-                db.urunFiyatDao().getForUrunSubeId(data.get(position).getId()).get(0).getBirimFiyat().toString() : null);*/
-
-
-        holder.urun_durum_item.setText(data.get(position).getAktif() != null &&data.get(position).getAktif() == true ? "Aktif" : "" );
+        holder.urun_fiyat_item.setText(data.get(position).getFiyat() != null ? data.get(position).getFiyat().toString() : null);
+        holder.urun_durum_item.setText(data.get(position).getAktif() != null && data.get(position).getAktif() == true ? "Aktif" : "");
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((UruneSubeTanimlamaActivity)mContext).getEditMode(data.get(position).getMid());
+                Intent musteri = new Intent(mContext, UruneSubeTanimlamaActivity.class);
+                musteri.putExtra("urunSubeId", String.valueOf(data.get(position).getId()));
+                musteri.putExtra("urunSubeMid", String.valueOf(data.get(position).getMid()));
+                musteri.putExtra("urunId", String.valueOf(data.get(position).getUrunId()));
+                musteri.putExtra("urunMid", String.valueOf(data.get(position).getUrunMid()));
+                musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.getApplicationContext().startActivity(musteri);
+               // ((UruneSubeTanimlamaActivity) mContext).getEditMode(data.get(position).getMid());
             }
         });
-
 
         holder.fiyat_gir_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent musteri = new Intent(mContext, UruneFiyatTanimlamaActivity.class);
-                musteri.putExtra("urunSubeMid" , String.valueOf(data.get(position).getMid()));
-                musteri.putExtra("urunSubeId" , String.valueOf(data.get(position).getId()));
+                musteri.putExtra("urunSubeMid", String.valueOf(data.get(position).getMid()));
+                musteri.putExtra("urunSubeId", String.valueOf(data.get(position).getId()));
 
                 musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.getApplicationContext().startActivity(musteri);

@@ -15,9 +15,12 @@ import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.Urun;
 import com.example.haliyikamaapp.R;
 import com.example.haliyikamaapp.UI.UrunTanimlamaActivity;
+import com.example.haliyikamaapp.UI.UrunTanimlamaKayitActivity;
 import com.example.haliyikamaapp.UI.UruneSubeTanimlamaActivity;
 
 import java.util.List;
+
+import static android.view.View.GONE;
 
 public class UrunAdapter extends RecyclerView.Adapter<UrunAdapter.MyViewHolder> {
 
@@ -49,6 +52,8 @@ public class UrunAdapter extends RecyclerView.Adapter<UrunAdapter.MyViewHolder> 
             }
         });
 
+        holder.urune_sube_ekle_button.setVisibility(GONE);
+        holder.sube_senkron_et.setVisibility(GONE);
         holder.sube_senkron_et.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -61,7 +66,19 @@ public class UrunAdapter extends RecyclerView.Adapter<UrunAdapter.MyViewHolder> 
             }
         });
 
-        holder.urune_sube_ekle_button.setVisibility(View.VISIBLE);
+
+        holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent musteri = new Intent(mContext, UrunTanimlamaKayitActivity.class);
+                musteri.putExtra("urunId", String.valueOf(data.get(position).getId()));
+                musteri.putExtra("urunMid", String.valueOf(data.get(position).getMid()));
+                musteri.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.getApplicationContext().startActivity(musteri);
+            }
+        });
+
+      //  holder.urune_sube_ekle_button.setVisibility(View.VISIBLE);
         holder.urune_sube_ekle_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

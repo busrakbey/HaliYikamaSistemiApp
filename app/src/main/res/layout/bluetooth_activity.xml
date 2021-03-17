@@ -1,10 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_gravity="center"
     android:layout_height="fill_parent"
     android:orientation="vertical">
 
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/whiteCardColor"
+        android:elevation="4dp"
+        app:buttonGravity="bottom"
+        app:contentInsetEnd="0dp"
+        app:contentInsetStart="5dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:layout_collapseMode="pin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center"
+                android:layout_weight="1"
+                android:fontFamily="@font/museosans"
+                android:text="Yazıcı İşlemleri"
+                android:textColor="@color/text"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:fontFamily="@font/segoeuib" />
+
+
+            <ImageView
+                android:id="@+id/toolbar_right_subtitle"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:padding="5dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/user_profile"
+                android:textSize="16dp"
+                android:visibility="gone" />
+        </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
 
     <Button
         android:id="@+id/Scan"

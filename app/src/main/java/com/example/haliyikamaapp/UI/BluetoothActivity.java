@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.haliyikamaapp.Database.HaliYikamaDatabase;
 import com.example.haliyikamaapp.Model.Entity.Siparis;
@@ -66,13 +67,15 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
     BluetoothDevice mBluetoothDevice;
     String gelenSiparisId="0", gelenSiparisMid, gelenSubeAdi;
     String mDeviceAddress = "02:3C:6E:1A:2F:7F";
+    Toolbar toolbar;
+
 
     @Override
     public void onCreate(Bundle mSavedInstanceState) {
         super.onCreate(mSavedInstanceState);
         setContentView(R.layout.bluetooth_activity);
         mScan = (Button) findViewById(R.id.Scan);
-
+        initToolBar();
         gelenSiparisId = getIntent().getStringExtra("siparisId");
         gelenSiparisMid = getIntent().getStringExtra("siparisMid");
         gelenSubeAdi = getIntent().getStringExtra("subeAdi");
@@ -417,5 +420,28 @@ public class BluetoothActivity extends AppCompatActivity implements Runnable {
         return sonuc;
         //  System.out.println(sonuc);
     }
+
+    public void initToolBar() {
+        try {
+
+            toolbar = (Toolbar) findViewById(R.id.toolbar);
+            toolbar.setNavigationIcon(R.drawable.left);
+            TextView toolbarTextView = (TextView) findViewById(R.id.toolbar_title);
+            toolbarTextView.setText("Yazıcı İşlemleri");
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

@@ -126,7 +126,7 @@ public class GorevlerimFragment2 extends Fragment {
     Long seciliKaynakId = null;
     ImageView barcode_scanner;
     Long okunanSiparisId = null;
-    Gorevler urunEklendiktenSonraGorev= null;
+    Gorevler urunEklendiktenSonraGorev = null;
     Button gorev_kaynak_secimi;
 
 
@@ -152,22 +152,10 @@ public class GorevlerimFragment2 extends Fragment {
         }
 
 
-        get_list(null, "", seciliKaynakId);
+        get_list(durumList, "", seciliKaynakId);
 
-     /*   ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
-        scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
-            public void run() {
 
-                try {
-                    getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }, 0, 10, TimeUnit.SECONDS);*/
-
-        final Handler handler = new Handler();
+      /*  final Handler handler = new Handler();
         final int delay = 120000; // 1000 milliseconds == 1 second
 
         handler.postDelayed(new Runnable() {
@@ -180,26 +168,21 @@ public class GorevlerimFragment2 extends Fragment {
                 }
                 handler.postDelayed(this, delay);
             }
-        }, delay);
-
-
-       /* if (urunEklendiktenSonraGorev != null) {
-            List<Siparis> siparisList = db.siparisDao().getSiparisForSiparisId(urunEklendiktenSonraGorev.getSiparisId());
-            if (siparisList.size() > 0) {
-                siparisDetayListGorevTamamlama = db.siparisDetayDao().getSiparisDetayForSiparisMid(siparisList.get(0).getMid());
-                if (siparisDetayListGorevTamamlama != null && siparisDetayListGorevTamamlama.size() > 0)
-                    postSiparisListFromService(siparisList.get(0), siparisList.get(0).getMid());
-            }
-        }*/
+        }, delay);*/
 
 
     }
 
 
-
-
-
     void siparis_islemleri() {
+
+        try {
+            getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         for (Siparis item : db.siparisDao().getSiparisAll()) {
             if (item.getMusteriId() == null && db.musteriDao().getMusteriForMid(item.getMusteriMid()).size() > 0) {
                 Musteri musteri = db.musteriDao().getMusteriForMid(item.getMusteriMid()).get(0);
@@ -212,13 +195,6 @@ public class GorevlerimFragment2 extends Fragment {
             postSiparisListFromService(item, item.getMid());
         }
         getSiparisListFromService();
-
-
-        try {
-            getGorevlerimFromService(db.userDao().getUserAll().get(0).getId());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
 
     }
@@ -278,7 +254,7 @@ public class GorevlerimFragment2 extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getContext(), KaynakActivity.class);
-                i.putExtra("gorevdenMi" , true);
+                i.putExtra("gorevdenMi", true);
                 startActivity(i);
             }
         });
@@ -305,7 +281,7 @@ public class GorevlerimFragment2 extends Fragment {
             @Override
             public void onRefresh() {
                 pd = ProgressDialog.show(getContext(), "Sistem",
-                        "Tüm bilgiler güncellenmektedir.Bu işlem yaklaşık 5 sn. sürmektedir. \nLütfen bekleyiniz.", true);
+                        "Tüm bilgiler güncellenmektedir.Bu işlem yaklaşık 6 sn. sürmektedir. \nLütfen bekleyiniz.", true);
                 pd.setCancelable(false);
                 pd.setProgressStyle(ProgressDialog.BUTTON_NEGATIVE);
                 pd.show();
@@ -499,8 +475,8 @@ public class GorevlerimFragment2 extends Fragment {
                                                     if (siparisDetayListGorevTamamlama != null && siparisDetayListGorevTamamlama.size() > 0)
                                                         postSiparisListFromService(siparisList.get(0), siparisList.get(0).getMid());
                                                     else {
-                                                       // MessageBox.showAlert(getContext(), "Görevi tamamlamak için ürün eklemeniz lazım.", false);
-                                                        Toast.makeText(mContext,"Görevi tamamlamak için ürün eklemeniz lazım.",Toast.LENGTH_LONG).show();
+                                                        // MessageBox.showAlert(getContext(), "Görevi tamamlamak için ürün eklemeniz lazım.", false);
+                                                        Toast.makeText(mContext, "Görevi tamamlamak için ürün eklemeniz lazım.", Toast.LENGTH_LONG).show();
                                                         Intent i = new Intent(mContext, SiparisDetayActivity.class);
                                                         // i.putExtra("gelenPage", "sipariş");
                                                         i.putExtra("siparisId", String.valueOf(gorevlerAdapter.getData().get(position).getSiparisId()));
@@ -551,23 +527,21 @@ public class GorevlerimFragment2 extends Fragment {
             durumList.add("Teslime Çıktı");
             durumList.add("Yıkanacak");
         }
-        // gorevlerList = db.gorevlerDao().getGorevAllForKaynakId(seciliKaynakId);
 
-
+        gorevlerList = db.gorevlerDao().getYikamaAllForKaynakId(seciliKaynakId);
         if (searchViewText == null)
             searchViewText = "";
         if ((siparisDurumu != null && siparisDurumu.size() > 0) || (searchViewText != null && !searchViewText.equalsIgnoreCase("")))
-
-            gorevlerList = db.gorevlerDao().getquery(searchViewText, siparisDurumu, seciliKaynakId);
+            gorevlerList = db.gorevlerDao().getYikamaAllAndKaynakId(searchViewText, siparisDurumu, seciliKaynakId);
 
            /* if (tarihBugundeMi)
                 gorevlerList = db.gorevlerDao().getQueryIleriTarihTeslimAlmaTarihi(searchViewText, siparisDurumu, dateFiltre, seciliKaynakId);
             else
                 gorevlerList = db.gorevlerDao().getGorevQueryPrameterTeslimAlmaTarihi(searchViewText, siparisDurumu, dateFiltre, seciliKaynakId);*/
-
         else
             //  gorevlerList = db.gorevlerDao().getQueryIleriTarihTeslimAlmaTarihi(searchViewText, siparisDurumu, dateFiltre, seciliKaynakId);
-            gorevlerList = db.gorevlerDao().getGorevAllForKaynakId(seciliKaynakId);
+            gorevlerList = db.gorevlerDao().getYikamaAllForKaynakId(seciliKaynakId);
+
         gorevlerAdapter = new GorevlerAdapter(getContext(), gorevlerList);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -637,8 +611,11 @@ public class GorevlerimFragment2 extends Fragment {
                                 Boolean kayitSilinecekMi = true;
                                 JSONObject rowObject = new JSONObject(rowArray.getString(i));
                                 List<Gorevler> gelenGorevList = Arrays.asList(gson.fromJson(rowObject.toString(), Gorevler.class));
-                                if (allGorevList != null && allGorevList.size() == 0)
-                                    db.gorevlerDao().setGorevList(gelenGorevList);
+                                //  if (allGorevList != null && allGorevList.size() == 0) {
+                                db.gorevlerDao().setGorevList(gelenGorevList);
+
+
+                             /*   }
                                 else {
                                     for (Gorevler gelenGorev : gelenGorevList) {
                                         for (Gorevler item : allGorevList) {
@@ -659,9 +636,8 @@ public class GorevlerimFragment2 extends Fragment {
                                             db.gorevlerDao().deletedGorevForTaskId(gelenGorev.getTaskId());
                                     }
 
-                                }
+                                }*/
                             }
-
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -669,15 +645,13 @@ public class GorevlerimFragment2 extends Fragment {
                             e.printStackTrace();
                         }
 
-                        get_list(durumList, "", seciliKaynakId);
                         if (gorevTamamlandiMi) {
                             MessageBox.showAlert(getContext(), "Görev başarıyla tamamlanmıştır..", false);
                             // Toast.makeText(getContext(), "Görev başarıyla tamamlanmıştır.", Toast.LENGTH_LONG).show();
                             gorevTamamlandiMi = false;
                         }
-
-                        progressDoalog.dismiss();
                         get_list(durumList, "", seciliKaynakId);
+                        progressDoalog.dismiss();
 
                         List<Gorevler> totalGorevList = db.gorevlerDao().getGorevAll();
                         for (Gorevler item : totalGorevList) {
@@ -745,7 +719,7 @@ public class GorevlerimFragment2 extends Fragment {
                         }
 
                         progressDoalog.dismiss();
-                        get_list(durumList, searchviewText, seciliKaynakId);
+                        // get_list(durumList, searchviewText, seciliKaynakId);
 
 
                     }
@@ -771,10 +745,9 @@ public class GorevlerimFragment2 extends Fragment {
         }
 
 
-
     }
 
-    public  void urunEkleGorevTamamla(){
+    public void urunEkleGorevTamamla() {
         if (urunEklendiktenSonraGorev != null) {
             List<Siparis> siparisList = db.siparisDao().getSiparisForSiparisId(urunEklendiktenSonraGorev.getSiparisId());
             if (siparisList.size() > 0) {
@@ -784,7 +757,6 @@ public class GorevlerimFragment2 extends Fragment {
             }
         }
     }
-
 
 
     private void setupSearchView() {

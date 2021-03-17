@@ -140,7 +140,7 @@ public class KaynakActivity extends AppCompatActivity {
                     Intent i = null;
                     switch (item.getItemId()) {
                        /* case R.id.nav_home:
-                            i = new Intent(KaynakActivity.this, MainActivity.class);
+                            i = new Intent(KaynakActivity.this, MainActivity2.class);
                             i.putExtra("gelenPage", "anasayfa");
                             startActivity(i);
                             break;*/
@@ -150,7 +150,7 @@ public class KaynakActivity extends AppCompatActivity {
                             startActivity(i);
                             break;
                         /*case R.id.nav_siparis:
-                            i = new Intent(KaynakActivity.this, MainActivity.class);
+                            i = new Intent(KaynakActivity.this, MainActivity2.class);
                             i.putExtra("gelenPage", "sipariş");
                             startActivity(i);
                             break;*/
@@ -337,7 +337,10 @@ public class KaynakActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        senkronEdilmeyenKayitlariGonder();
+        if (OrtakFunction.internetKontrol(getApplicationContext()))
+            senkronEdilmeyenKayitlariGonder();
+        else
+            get_list();
 
     }
 

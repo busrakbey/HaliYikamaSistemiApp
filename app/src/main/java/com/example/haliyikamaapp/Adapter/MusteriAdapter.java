@@ -181,7 +181,7 @@ public class MusteriAdapter extends RecyclerView.Adapter<MusteriAdapter.MyViewHo
                 musteri.musteriTuru = itemsFiltered.get(position).getMusteriTuru();
                 musteri.musteriAdi = itemsFiltered.get(position).getMusteriAdi();
                 musteri.musteriSoyadi = itemsFiltered.get(position).getMusteriSoyadi();
-             //   ((MainActivity)mContext).postMusteriListFromService(musteri);
+             //   ((MainActivity2)mContext).postMusteriListFromService(musteri);
             }
         });
 
